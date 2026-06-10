@@ -1,9 +1,10 @@
 import { Link } from 'react-router-dom'
+import { Baby, Users, Sparkles } from 'lucide-react'
 
 const features = [
-  { icon: '🍼', text: 'Find trusted babysitters' },
-  { icon: '👯', text: 'Meet expat parents nearby' },
-  { icon: '🧘', text: 'Discover local services' },
+  { Icon: Baby, text: 'Find trusted babysitters' },
+  { Icon: Users, text: 'Meet expat parents nearby' },
+  { Icon: Sparkles, text: 'Discover local services' },
 ]
 
 export default function Home() {
@@ -38,15 +39,13 @@ export default function Home() {
       {/* Tagline section — 3 icons */}
       <section className="w-full px-6 pb-24">
         <div className="mx-auto max-w-5xl grid gap-8 sm:grid-cols-3">
-          {features.map((f) => (
+          {features.map(({ Icon, text }) => (
             <div
-              key={f.text}
+              key={text}
               className="flex flex-col items-center text-center gap-3 rounded-xl border border-white/10 bg-white/5 px-6 py-8"
             >
-              <span className="text-4xl" role="img" aria-hidden="true">
-                {f.icon}
-              </span>
-              <p className="text-white/80 font-medium">{f.text}</p>
+              <Icon size={48} stroke="white" strokeWidth={1.5} aria-hidden="true" />
+              <p className="text-white/80 font-medium">{text}</p>
             </div>
           ))}
         </div>
