@@ -1,16 +1,36 @@
-# React + Vite
+# RaisingAmsterdam
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Expat parent community app — Amsterdam.
 
-Currently, two official plugins are available:
+Built with **React + Vite**, **Supabase**, **React Router** and **Tailwind CSS**.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Setup
 
-## React Compiler
+```bash
+npm install
+cp .env.example .env   # then fill in VITE_SUPABASE_ANON_KEY
+npm run dev
+```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Environment variables
 
-## Expanding the ESLint configuration
+Create a `.env` file (gitignored) based on `.env.example`:
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```
+VITE_SUPABASE_URL=https://biisjnorqwifyrfemjyt.supabase.co
+VITE_SUPABASE_ANON_KEY=your-supabase-publishable-anon-key
+```
+
+## Scripts
+
+- `npm run dev` — start the dev server
+- `npm run build` — production build into `dist/`
+- `npm run preview` — preview the production build
+
+## Structure
+
+- `src/lib/supabase.js` — Supabase client initialized from env vars
+- `src/App.jsx` — React Router with routes `/`, `/register`, `/listings`
+- `src/pages/` — page components
+
+Navy color scheme: `#042C53`.
