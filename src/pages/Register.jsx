@@ -148,7 +148,7 @@ export default function Register() {
           style={{ display: 'flex', borderBottom: '1px solid rgba(255,255,255,0.1)' }}
         >
           <TabButton active={tab === 'sitter'} onClick={() => switchTab('sitter')}>
-            Find an oppas
+            Find a babysitter
           </TabButton>
           <TabButton active={tab === 'parent'} onClick={() => switchTab('parent')}>
             Join as parent
@@ -162,7 +162,7 @@ export default function Register() {
             style={{ display: 'flex', flexDirection: 'column', gap: 14, marginTop: 24 }}
           >
             <p className="text-white/60 text-sm">
-              Register as a sitter — it's free. We'll send you a magic link to sign in.
+              Register as a babysitter — it's free. We'll send you a magic link to sign in.
             </p>
             <input
               type="email"
