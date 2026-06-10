@@ -14,3 +14,47 @@ body {
   margin: 0;
   min-height: 100vh;
 }
+
+/* --- Animated feature icons (Home) --- */
+
+/* Floating bob */
+@keyframes feature-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-7px);
+  }
+}
+
+/* Stroke draw-on (uses pathLength="1" so every shape normalizes to length 1) */
+@keyframes feature-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.feature-icon {
+  display: inline-flex;
+  animation: feature-float 3s ease-in-out infinite;
+}
+
+.feature-icon .draw-path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: feature-draw 1.4s ease forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .feature-icon {
+    animation: none;
+  }
+  .feature-icon .draw-path {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+}

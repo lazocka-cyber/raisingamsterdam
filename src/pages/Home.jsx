@@ -1,10 +1,56 @@
 import { Link } from 'react-router-dom'
-import { Baby, Users, Sparkles } from 'lucide-react'
+
+const STROKE = '#a78bfa'
+const ACCENT = '#34d399'
+
+const svgProps = {
+  width: 56,
+  height: 56,
+  viewBox: '0 0 56 56',
+  fill: 'none',
+  strokeWidth: 2.2,
+  strokeLinecap: 'round',
+  strokeLinejoin: 'round',
+}
 
 const features = [
-  { Icon: Baby, text: 'Find trusted babysitters' },
-  { Icon: Users, text: 'Meet expat parents nearby' },
-  { Icon: Sparkles, text: 'Discover local services' },
+  {
+    text: 'Find trusted babysitters',
+    delay: '0s',
+    icon: (
+      <svg {...svgProps}>
+        <circle className="draw-path" pathLength="1" cx="28" cy="20" r="9" stroke={STROKE} />
+        <path className="draw-path" pathLength="1" d="M12 48c0-8.8 7.2-16 16-16s16 7.2 16 16" stroke={STROKE} />
+        <circle className="draw-path" pathLength="1" cx="42" cy="16" r="6" stroke={ACCENT} />
+        <path className="draw-path" pathLength="1" d="M47 30c4 1.8 7 5.8 7 10.5" stroke={ACCENT} />
+      </svg>
+    ),
+  },
+  {
+    text: 'Meet expat parents nearby',
+    delay: '0.5s',
+    icon: (
+      <svg {...svgProps}>
+        <circle className="draw-path" pathLength="1" cx="22" cy="20" r="8" stroke={STROKE} />
+        <circle className="draw-path" pathLength="1" cx="36" cy="20" r="8" stroke={STROKE} />
+        <path className="draw-path" pathLength="1" d="M6 48c0-8.8 7.2-16 16-16" stroke={STROKE} />
+        <path className="draw-path" pathLength="1" d="M50 48c0-8.8-7.2-16-16-16" stroke={STROKE} />
+        <path className="draw-path" pathLength="1" d="M22 32c2-0.7 4-1 6-1s4 0.3 6 1" stroke={ACCENT} />
+      </svg>
+    ),
+  },
+  {
+    text: 'Discover local services',
+    delay: '1s',
+    icon: (
+      <svg {...svgProps}>
+        <rect className="draw-path" pathLength="1" x="10" y="12" width="36" height="26" rx="4" stroke={STROKE} />
+        <path className="draw-path" pathLength="1" d="M20 44h16" stroke={STROKE} />
+        <path className="draw-path" pathLength="1" d="M28 38v6" stroke={STROKE} />
+        <path className="draw-path" pathLength="1" d="M20 26l5 5 11-11" stroke={ACCENT} />
+      </svg>
+    ),
+  },
 ]
 
 export default function Home() {
@@ -36,15 +82,22 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Tagline section — 3 icons */}
+      {/* Tagline section — 3 animated SVG icons */}
       <section className="w-full px-6 pb-24">
         <div className="mx-auto max-w-5xl grid gap-8 sm:grid-cols-3">
-          {features.map(({ Icon, text }) => (
+          {features.map(({ icon, text, delay }) => (
             <div
               key={text}
-              className="flex flex-col items-center text-center gap-3 rounded-xl border border-white/10 bg-white/5 px-6 py-8"
+              className="flex flex-col items-center text-center gap-3 rounded-xl border border-white/10 px-6 py-8"
+              style={{ background: '#1a1a2e' }}
             >
-              <Icon size={48} stroke="white" strokeWidth={1.5} aria-hidden="true" />
+              <span
+                className="feature-icon"
+                style={{ animationDelay: delay }}
+                aria-hidden="true"
+              >
+                {icon}
+              </span>
               <p className="text-white/80 font-medium">{text}</p>
             </div>
           ))}
