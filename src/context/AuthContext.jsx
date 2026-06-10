@@ -35,15 +35,8 @@ export function AuthProvider({ children }) {
       }
     }
 
-    // 1) Initial session on mount
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
-      if (!active) return
-      setUser(session?.user ?? null)
-      await loadProfile(session?.user ?? null)
-      if (active) setLoading(false)
-    })
-
-    // 2) React to future auth changes (login / logout / token refresh).
+    // 1) Register the listener FIRST so we never miss the SIGNED_IN event
+    //    fired when Supabase processes a magic-link redirect on load.
     //    Profile fetch is deferred with setTimeout to avoid the known
     //    Supabase deadlock when awaiting supabase calls inside this callback.
     const {
@@ -55,6 +48,14 @@ export function AuthProvider({ children }) {
       setTimeout(() => {
         if (active) loadProfile(nextUser)
       }, 0)
+    })
+
+    // 2) Then load any existing session on mount.
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      if (!active) return
+      setUser(session?.user ?? null)
+      await loadProfile(session?.user ?? null)
+      if (active) setLoading(false)
     })
 
     return () => {

@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import {
   BrowserRouter,
   Routes,
@@ -8,12 +9,28 @@ import {
   useNavigate,
 } from 'react-router-dom'
 import { AuthProvider, useAuth } from './context/AuthContext.jsx'
+import { supabase } from './lib/supabase'
 import Home from './pages/Home.jsx'
 import Register from './pages/Register.jsx'
 import Listings from './pages/Listings.jsx'
 import Dashboard from './pages/Dashboard.jsx'
 
 const NAVY = '#042C53'
+
+// Handles the Supabase magic-link redirect. Supabase appends #access_token
+// to the URL hash; once the session is established we send the user to the
+// dashboard.
+function AuthCallback() {
+  const navigate = useNavigate()
+  useEffect(() => {
+    if (window.location.hash.includes('access_token')) {
+      supabase.auth.getSession().then(() => {
+        navigate('/dashboard', { replace: true })
+      })
+    }
+  }, [navigate])
+  return null
+}
 
 const linkClass = ({ isActive }) =>
   `px-4 py-2 rounded-md text-sm font-medium transition-colors ${
@@ -99,6 +116,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
+        <AuthCallback />
         <Layout>
           <Routes>
             <Route path="/" element={<Home />} />

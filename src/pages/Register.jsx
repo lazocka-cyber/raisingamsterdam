@@ -73,7 +73,10 @@ export default function Register() {
     try {
       const { error: otpError } = await supabase.auth.signInWithOtp({
         email: sitterEmail,
-        options: { data: { role: 'sitter' } },
+        options: {
+          data: { role: 'sitter' },
+          emailRedirectTo: `${window.location.origin}/dashboard`,
+        },
       })
       if (otpError) {
         setError(otpError.message)
@@ -113,7 +116,10 @@ export default function Register() {
       // c) Valid → send magic link with parent role + license
       const { error: otpError } = await supabase.auth.signInWithOtp({
         email: parentEmail,
-        options: { data: { role: 'parent', license_key: licenseKey } },
+        options: {
+          data: { role: 'parent', license_key: licenseKey },
+          emailRedirectTo: `${window.location.origin}/dashboard`,
+        },
       })
       if (otpError) {
         setError(otpError.message)
