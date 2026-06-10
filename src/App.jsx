@@ -22,21 +22,19 @@ function Layout({ children }) {
           </Link>
           <div className="flex items-center gap-1">
             <NavLink to="/" end className={linkClass}>
-              Domů
+              Home
             </NavLink>
             <NavLink to="/register" className={linkClass}>
-              Registrace
+              Register
             </NavLink>
             <NavLink to="/listings" className={linkClass}>
-              Nabídky
+              Listings
             </NavLink>
           </div>
         </nav>
       </header>
 
-      <main className="flex-1 mx-auto w-full max-w-5xl px-6 py-12">
-        {children}
-      </main>
+      <main className="flex-1 w-full">{children}
 
       <footer className="border-t border-white/10">
         <div className="mx-auto max-w-5xl px-6 py-6 text-center text-white/40 text-sm">
