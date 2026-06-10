@@ -14,6 +14,7 @@ import Home from './pages/Home.jsx'
 import Register from './pages/Register.jsx'
 import Listings from './pages/Listings.jsx'
 import Dashboard from './pages/Dashboard.jsx'
+import PostListing from './pages/PostListing.jsx'
 
 const NAVY = '#042C53'
 
@@ -127,6 +128,14 @@ export default function App() {
               element={
                 <ProtectedRoute>
                   <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/post-listing"
+              element={
+                <ProtectedRoute>
+                  <PostListing />
                 </ProtectedRoute>
               }
             />

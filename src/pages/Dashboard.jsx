@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
 const messages = {
@@ -33,7 +34,19 @@ export default function Dashboard() {
           </span>
         )}
 
-        <div className="mt-8">
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+          <Link
+            to="/post-listing"
+            style={{
+              background: '#34d399',
+              color: '#042C53',
+              borderRadius: 10,
+              padding: '12px 24px',
+              fontWeight: 600,
+            }}
+          >
+            Post a listing
+          </Link>
           <button
             type="button"
             onClick={signOut}

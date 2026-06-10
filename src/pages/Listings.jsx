@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
 
@@ -114,6 +114,18 @@ export default function Listings() {
   const [error, setError] = useState('')
   const [active, setActive] = useState('all')
 
+  // Success toast passed via navigate() state from PostListing
+  const location = useLocation()
+  const [toast, setToast] = useState(location.state?.toast || '')
+  useEffect(() => {
+    if (!location.state?.toast) return
+    // Clear router state so the toast doesn't reappear on refresh / back
+    window.history.replaceState({}, '')
+    const t = setTimeout(() => setToast(''), 5000)
+    return () => clearTimeout(t)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   useEffect(() => {
     let cancelled = false
     async function load() {
@@ -145,6 +157,22 @@ export default function Listings() {
 
   return (
     <section className="mx-auto max-w-5xl px-6 py-12">
+      {toast && (
+        <div
+          style={{
+            background: 'rgba(52,211,153,0.15)',
+            border: '1px solid rgba(52,211,153,0.4)',
+            color: '#34d399',
+            borderRadius: 10,
+            padding: '12px 16px',
+            marginBottom: 16,
+            fontWeight: 600,
+          }}
+        >
+          {toast}
+        </div>
+      )}
+
       <h1 className="text-3xl font-bold text-white">Listings</h1>
       <p className="mt-2 text-white/60">
         Browse the RaisingAmsterdam marketplace.
