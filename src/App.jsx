@@ -34,7 +34,7 @@ function Layout({ children }) {
         </nav>
       </header>
 
-      <main className="flex-1 w-full">{children}
+      <main className="flex-1 w-full">{children}</main>
 
       <footer className="border-t border-white/10">
         <div className="mx-auto max-w-5xl px-6 py-6 text-center text-white/40 text-sm">
