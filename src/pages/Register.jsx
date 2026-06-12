@@ -154,10 +154,10 @@ export default function Register() {
           style={{ display: 'flex', borderBottom: '1px solid rgba(255,255,255,0.1)' }}
         >
           <TabButton active={tab === 'sitter'} onClick={() => switchTab('sitter')}>
-            Find a babysitter
+            🍼 I'm a babysitter
           </TabButton>
           <TabButton active={tab === 'parent'} onClick={() => switchTab('parent')}>
-            Join as parent
+            👨‍👩‍👧 I'm a parent
           </TabButton>
         </div>
 
@@ -168,7 +168,7 @@ export default function Register() {
             style={{ display: 'flex', flexDirection: 'column', gap: 14, marginTop: 24 }}
           >
             <p className="text-white/60 text-sm">
-              Register as a babysitter — it's free. We'll send you a magic link to sign in.
+              Offer babysitting to families in Amsterdam. Free — we'll email you a sign-in link.
             </p>
             <input
               type="email"
@@ -191,7 +191,7 @@ export default function Register() {
             style={{ display: 'flex', flexDirection: 'column', gap: 14, marginTop: 24 }}
           >
             <p className="text-white/60 text-sm">
-              Join as a parent with your Gumroad license key.
+              Find babysitters and local services. Enter your Gumroad license key from your purchase.
             </p>
             <input
               type="email"
