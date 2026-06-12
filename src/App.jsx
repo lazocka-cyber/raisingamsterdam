@@ -13,6 +13,7 @@ import { supabase } from './lib/supabase'
 import Home from './pages/Home.jsx'
 import Register from './pages/Register.jsx'
 import Listings from './pages/Listings.jsx'
+import ListingDetail from './pages/ListingDetail.jsx'
 import Dashboard from './pages/Dashboard.jsx'
 import PostListing from './pages/PostListing.jsx'
 
@@ -123,6 +124,7 @@ export default function App() {
             <Route path="/" element={<Home />} />
             <Route path="/register" element={<Register />} />
             <Route path="/listings" element={<Listings />} />
+            <Route path="/listings/:id" element={<ListingDetail />} />
             <Route
               path="/dashboard"
               element={

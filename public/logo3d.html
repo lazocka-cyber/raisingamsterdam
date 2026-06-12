@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RaisingAmsterdam — 3D logo (ukázka)</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    background: radial-gradient(ellipse at 50% 35%, #2a2547 0%, #1a1a2e 65%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: system-ui, -apple-system, sans-serif;
+    color: white;
+    overflow: hidden;
+  }
+  #globe { cursor: pointer; }
+  h1 {
+    font-size: clamp(2rem, 6vw, 3.2rem);
+    font-weight: 800;
+    letter-spacing: -1px;
+    margin-top: 1.4rem;
+    min-height: 1.3em;
+  }
+  h1 .ams { color: #a78bfa; }
+  h1 .cursor {
+    display: inline-block; width: 3px; height: 0.9em;
+    background: white; vertical-align: -0.08em; margin-left: 3px;
+    animation: blink 1s step-end infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+  p.tag {
+    color: #34d399;
+    font-weight: 600;
+    margin-top: 0.5rem;
+    opacity: 0;
+    transition: opacity 1s ease;
+  }
+  p.tag.show { opacity: 1; }
+  p.hint { position: fixed; bottom: 18px; color: rgba(255,255,255,0.35); font-size: 0.8rem; }
+</style>
+</head>
+<body>
+
+<canvas id="globe" width="320" height="320" title="Klikni pro přehrání znovu"></canvas>
+<h1><span id="typed"></span><span class="cursor" id="cursor"></span></h1>
+<p class="tag" id="tag">Pro rodiče v Amsterdamu · binnenkort</p>
+<p class="hint">klikni na zeměkouli pro přehrání znovu</p>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+// ── Typewriter: Raising (bílá) + Amsterdam (fialová) ──────────
+const FULL = 'RaisingAmsterdam';
+const typedEl = document.getElementById('typed');
+let ti = 0;
+setTimeout(function type() {
+  ti++;
+  const head = FULL.slice(0, Math.min(ti, 7));
+  const tail = FULL.slice(7, ti);
+  typedEl.innerHTML = head + (tail ? '<span class="ams">' + tail + '</span>' : '');
+  if (ti < FULL.length) setTimeout(type, 80);
+  else {
+    setTimeout(() => { document.getElementById('cursor').style.display = 'none'; }, 1200);
+    document.getElementById('tag').classList.add('show');
+  }
+}, 2600);
+
+// ── Zeměkoule: roztočení → zabrzdění na NL → zoom na Amsterdam ──
+(function () {
+  if (typeof THREE === 'undefined') return;
+
+  const LAT = 52.37 * Math.PI / 180;   // Amsterdam
+  const LON = 4.90 * Math.PI / 180;
+  const TARGET_Y = -Math.PI / 2 - LON; // Amsterdam čelem ke kameře
+  const SPINS = 4, SPIN_MS = 4500, ZOOM_DELAY = 300, ZOOM_MS = 2000;
+  const CAM_FAR = 6, CAM_NEAR = 5.45, R = 1.85; // zoom končí tak, aby zůstala celá koule
+
+  const easeOutQuart = (p) => 1 - Math.pow(1 - p, 4);
+  const easeInOutCubic = (p) => (p < 0.5 ? 4*p*p*p : 1 - Math.pow(-2*p + 2, 3) / 2);
+  const clamp01 = (v) => Math.min(1, Math.max(0, v));
+
+  const canvas = document.getElementById('globe');
+  const sizePx = 320;
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+  renderer.setSize(sizePx, sizePx);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 100);
+  camera.position.z = CAM_FAR;
+
+  const tex = new THREE.TextureLoader().load('earth-texture.jpg');
+  const earth = new THREE.Mesh(
+    new THREE.SphereGeometry(R, 64, 64),
+    new THREE.MeshStandardMaterial({ map: tex, roughness: 0.85, metalness: 0 })
+  );
+  earth.rotation.order = 'XYZ';
+  scene.add(earth);
+
+  // atmosféra
+  scene.add(new THREE.Mesh(
+    new THREE.SphereGeometry(R * 1.05, 64, 64),
+    new THREE.MeshBasicMaterial({ color: 0x47bfff, transparent: true, opacity: 0.16, side: THREE.BackSide })
+  ));
+
+  // zelená tečka na Amsterdamu + pulz
+  const phi = LON + Math.PI;
+  const pos = new THREE.Vector3(
+    -Math.cos(LAT) * Math.cos(phi) * R,
+    Math.sin(LAT) * R,
+    Math.cos(LAT) * Math.sin(phi) * R
+  ).multiplyScalar(1.01);
+  const dotMat = new THREE.MeshBasicMaterial({ color: 0x34d399, transparent: true, opacity: 0 });
+  const dot = new THREE.Mesh(new THREE.SphereGeometry(0.04, 16, 16), dotMat);
+  dot.position.copy(pos);
+  earth.add(dot);
+  const pulseMat = new THREE.MeshBasicMaterial({ color: 0x34d399, transparent: true, opacity: 0 });
+  const pulse = new THREE.Mesh(new THREE.SphereGeometry(0.04, 16, 16), pulseMat);
+  pulse.position.copy(pos);
+  earth.add(pulse);
+
+  // světla
+  const sun = new THREE.DirectionalLight(0xffffff, 1.6);
+  sun.position.set(-3, 2, 5);
+  scene.add(sun);
+  scene.add(new THREE.AmbientLight(0xaab6cc, 0.85));
+
+  // myš (jemná paralaxa po dokončení) + klik = replay
+  let mx = 0, my = 0, cx = 0, cy = 0;
+  window.addEventListener('pointermove', (e) => {
+    mx = e.clientX / window.innerWidth - 0.5;
+    my = e.clientY / window.innerHeight - 0.5;
+  });
+  let start = performance.now();
+  canvas.addEventListener('click', () => { start = performance.now(); });
+
+  (function animate(now) {
+    requestAnimationFrame(animate);
+    const t = now - start;
+
+    const p = clamp01(t / SPIN_MS);
+    earth.rotation.y = TARGET_Y - SPINS * 2 * Math.PI * (1 - easeOutQuart(p));
+    const q = easeInOutCubic(clamp01((p - 0.55) / 0.45));
+    earth.rotation.x = LAT * q;
+
+    const dotIn = clamp01((p - 0.8) / 0.2);
+    dotMat.opacity = dotIn;
+
+    const z = easeInOutCubic(clamp01((t - SPIN_MS - ZOOM_DELAY) / ZOOM_MS));
+    camera.position.z = CAM_FAR - (CAM_FAR - CAM_NEAR) * z;
+
+    if (z >= 1) {
+      const s = 1 + 0.6 * (0.5 + 0.5 * Math.sin(now * 0.004));
+      pulse.scale.setScalar(s * 1.8);
+      pulseMat.opacity = 0.35 * (1 - (s - 1) / 0.6) * dotIn;
+      cx += (mx - cx) * 0.05;
+      cy += (my - cy) * 0.05;
+      earth.rotation.y = TARGET_Y + cx * 0.12;
+      earth.rotation.x = LAT + cy * 0.08;
+    }
+
+    renderer.render(scene, camera);
+  })(start);
+})();
+</script>
+</body>
+</html>

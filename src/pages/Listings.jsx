@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
+import { BADGE, formatPrice, waNumber } from '../lib/listingUtils'
 
 const CATEGORIES = [
   { key: 'all', label: 'All' },
@@ -10,13 +11,6 @@ const CATEGORIES = [
   { key: 'services', label: 'Services' },
   { key: 'community', label: 'Community' },
 ]
-
-const BADGE = {
-  babysitter: { label: 'Babysitter', color: '#a78bfa' },
-  secondhand: { label: 'Second-hand', color: '#34d399' },
-  services: { label: 'Services', color: '#60d0ff' },
-  community: { label: 'Community', color: '#f97316' },
-}
 
 const PURPLE = '#a78bfa'
 
@@ -44,19 +38,46 @@ function CategoryBadge({ category }) {
 }
 
 function ContactAction({ listing, isParent }) {
+  // Stop the click from bubbling to the card's navigate handler.
+  const stop = (e) => e.stopPropagation()
   if (isParent) {
+    if (!listing.phone) {
+      return (
+        <button
+          type="button"
+          disabled
+          onClick={stop}
+          style={{
+            background: 'rgba(255,255,255,0.08)',
+            color: 'rgba(255,255,255,0.4)',
+            border: '1px solid rgba(255,255,255,0.12)',
+            borderRadius: 8,
+            padding: '8px 14px',
+            fontSize: 13,
+            fontWeight: 600,
+            cursor: 'not-allowed',
+          }}
+        >
+          No contact info
+        </button>
+      )
+    }
     return (
       <a
-        href={`mailto:${listing.contact_email}`}
+        href={`https://wa.me/${waNumber(listing.phone)}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={stop}
         style={{ color: '#34d399', fontWeight: 600, fontSize: 14 }}
       >
-        {listing.contact_email}
+        Contact via WhatsApp
       </a>
     )
   }
   return (
     <Link
       to="/register"
+      onClick={stop}
       style={{
         background: 'rgba(255,255,255,0.08)',
         color: 'rgba(255,255,255,0.55)',
@@ -73,10 +94,20 @@ function ContactAction({ listing, isParent }) {
 }
 
 function ListingCard({ listing, isParent }) {
+  const navigate = useNavigate()
   return (
     <div
-      style={{ background: '#1a1a2e', borderRadius: 16, padding: '1.5rem' }}
-      className="flex flex-col gap-3"
+      role="button"
+      tabIndex={0}
+      onClick={() => navigate(`/listings/${listing.id}`)}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          navigate(`/listings/${listing.id}`)
+        }
+      }}
+      style={{ background: '#1a1a2e', borderRadius: 16, padding: '1.5rem', cursor: 'pointer' }}
+      className="listing-card flex flex-col gap-3"
     >
       <div className="flex items-start justify-between gap-3">
         <h3 className="text-white font-semibold text-lg leading-snug">
@@ -94,7 +125,7 @@ function ListingCard({ listing, isParent }) {
       <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-white/50">
         {listing.location && <span>📍 {listing.location}</span>}
         {listing.price && (
-          <span className="text-white/80 font-medium">{listing.price}</span>
+          <span className="text-white/80 font-medium">{formatPrice(listing.price)}</span>
         )}
       </div>
 

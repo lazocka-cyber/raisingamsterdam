@@ -58,3 +58,155 @@ body {
     stroke-dashoffset: 0;
   }
 }
+
+/* Clickable listing cards (Listings grid) */
+.listing-card {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.listing-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px -10px rgba(0, 0, 0, 0.6);
+}
+
+/* ===========================================================
+   Post a Listing — playful redesign
+   Each card sets its own --accent; pills/inputs/icons read it.
+   =========================================================== */
+
+/* Particle header strip + overlapping title */
+.pl-header {
+  position: relative;
+  width: 100%;
+  height: 180px;
+}
+.pl-header canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+.pl-title {
+  position: absolute;
+  left: 2px;
+  bottom: 4px;
+  margin: 0;
+  color: #fff;
+  font-weight: 800;
+  font-size: clamp(30px, 6vw, 46px);
+  letter-spacing: 0.5px;
+  line-height: 1;
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.55);
+}
+@media (max-width: 640px) {
+  .pl-header {
+    height: 120px;
+  }
+}
+
+/* Section cards */
+.pl-card {
+  background: #1a1a2e;
+  border-radius: 20px;
+  border-left: 4px solid var(--accent);
+  box-shadow: 0 0 26px -8px var(--accent);
+  padding: 1.75rem;
+}
+.pl-card + .pl-card {
+  margin-top: 20px;
+}
+.pl-card__title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--accent);
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+/* Inputs — focus glow uses the section accent */
+.pl-input {
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  padding: 12px 16px;
+  color: white;
+  width: 100%;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.pl-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 32%, transparent);
+}
+
+/* Interactive pills */
+.pl-pill {
+  border-radius: 999px;
+  padding: 7px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  color: white;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  transition: border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+}
+.pl-pill:hover {
+  border-color: var(--accent);
+}
+.pl-pill--on {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #0b1220;
+}
+.pl-pop {
+  animation: pl-pop 200ms ease;
+}
+@keyframes pl-pop {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Submit button — animated gradient + lift */
+.pl-submit {
+  margin-top: 8px;
+  background: linear-gradient(90deg, #a78bfa, #60d0ff);
+  background-size: 200% 100%;
+  background-position: 0% 0%;
+  color: white;
+  border-radius: 12px;
+  padding: 15px;
+  width: 100%;
+  font-weight: 700;
+  font-size: 15px;
+  border: none;
+  cursor: pointer;
+  transition: background-position 0.45s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+.pl-submit:hover:not(:disabled) {
+  background-position: 100% 0%;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 26px -8px rgba(96, 208, 255, 0.55);
+}
+.pl-submit:disabled {
+  opacity: 0.7;
+  cursor: default;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pl-pop {
+    animation: none;
+  }
+  .pl-submit {
+    transition: none;
+  }
+}

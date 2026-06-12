@@ -2,9 +2,17 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
+import ParticleHeader from '../components/ParticleHeader'
 
-const PURPLE = '#a78bfa'
 const DESC_MAX = 500
+
+// Section accent colours
+const ACCENT = {
+  basic: '#a78bfa',
+  location: '#60d0ff',
+  experience: '#34d399',
+  contact: '#f97316',
+}
 
 const CATEGORIES = [
   { value: 'babysitter', label: 'Babysitter' },
@@ -30,22 +38,84 @@ const AVAILABILITY = [
   'Overnight stays',
 ]
 
-const inputStyle = {
-  background: 'rgba(255,255,255,0.07)',
-  border: '1px solid rgba(255,255,255,0.15)',
-  borderRadius: 10,
-  padding: '12px 16px',
-  color: 'white',
-  width: '100%',
-  outline: 'none',
+// ─── Animated draw-on section icons (same style as the homepage icons) ───
+function Icon({ children }) {
+  return (
+    <span className="feature-icon">
+      <svg
+        width="26"
+        height="26"
+        viewBox="0 0 24 24"
+        fill="none"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        {children}
+      </svg>
+    </span>
+  )
 }
 
-function Section({ title, children }) {
+function PencilIcon({ color }) {
   return (
-    <div style={{ paddingTop: 24, marginTop: 24, borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-      <h2 style={{ fontSize: 18, marginBottom: 16 }} className="text-white font-semibold">
-        {title}
-      </h2>
+    <Icon>
+      <path
+        className="draw-path"
+        pathLength="1"
+        stroke={color}
+        d="M4 20l4-1 9.6-9.6a2 2 0 0 0-2.8-2.8L5.2 15.2 4 20z"
+      />
+      <path className="draw-path" pathLength="1" stroke={color} d="M18.5 4.5l.6 1.5 1.5.6-1.5.6-.6 1.5-.6-1.5L16.4 6.6l1.5-.6z" />
+    </Icon>
+  )
+}
+
+function PinIcon({ color }) {
+  return (
+    <Icon>
+      <path className="draw-path" pathLength="1" stroke={color} d="M12 21s7-6.3 7-11a7 7 0 0 0-14 0c0 4.7 7 11 7 11z" />
+      <circle className="draw-path" pathLength="1" stroke={color} cx="12" cy="10" r="2.6" />
+    </Icon>
+  )
+}
+
+function StarIcon({ color }) {
+  return (
+    <Icon>
+      <path
+        className="draw-path"
+        pathLength="1"
+        stroke={color}
+        d="M12 3.2l2.6 5.6 6 .8-4.4 4.1 1.1 6L12 16.9 6.7 19.7l1.1-6L3.4 9.6l6-.8z"
+      />
+    </Icon>
+  )
+}
+
+function ChatIcon({ color }) {
+  return (
+    <Icon>
+      <path
+        className="draw-path"
+        pathLength="1"
+        stroke={color}
+        d="M5 5h14a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H9l-4 3.5V6a1 1 0 0 1 1-1z"
+      />
+      <path className="draw-path" pathLength="1" stroke={color} d="M8 9.5h8" />
+      <path className="draw-path" pathLength="1" stroke={color} d="M8 12.5h5" />
+    </Icon>
+  )
+}
+
+// ─── Layout helpers ───
+function Card({ accent, icon, title, children }) {
+  return (
+    <div className="pl-card" style={{ '--accent': accent }}>
+      <div className="pl-card__title">
+        {icon}
+        <span>{title}</span>
+      </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>{children}</div>
     </div>
   )
@@ -56,20 +126,16 @@ function Label({ children }) {
 }
 
 function Pill({ selected, onClick, children }) {
+  const [pop, setPop] = useState(false)
   return (
     <button
       type="button"
-      onClick={onClick}
-      style={{
-        borderRadius: 999,
-        padding: '7px 14px',
-        fontSize: 13,
-        fontWeight: 600,
-        cursor: 'pointer',
-        color: 'white',
-        background: selected ? PURPLE : 'transparent',
-        border: selected ? `1px solid ${PURPLE}` : '1px solid rgba(255,255,255,0.25)',
+      className={`pl-pill${selected ? ' pl-pill--on' : ''}${pop ? ' pl-pop' : ''}`}
+      onClick={() => {
+        setPop(true)
+        onClick()
       }}
+      onAnimationEnd={() => setPop(false)}
     >
       {children}
     </button>
@@ -102,7 +168,6 @@ export default function PostListing() {
   const [ageGroups, setAgeGroups] = useState([])
   const [languages, setLanguages] = useState([])
   const [availability, setAvailability] = useState([])
-  const [contactEmail, setContactEmail] = useState(user?.email ?? '')
   const [phone, setPhone] = useState('')
 
   const [error, setError] = useState('')
@@ -124,6 +189,16 @@ export default function PostListing() {
       return
     }
 
+    const normalizedPhone = phone.replace(/[\s-]/g, '')
+    if (!normalizedPhone) {
+      setError('Please enter a WhatsApp number so members can contact you.')
+      return
+    }
+    if (!/^(\+\d{8,15}|0\d{8,12})$/.test(normalizedPhone)) {
+      setError('Enter a valid WhatsApp number, e.g. +31612345678 or 0612345678.')
+      return
+    }
+
     setSubmitting(true)
     try {
       const { error: dbError } = await supabase.from('listings').insert({
@@ -138,8 +213,7 @@ export default function PostListing() {
         age_groups: ageGroups.length ? ageGroups : null,
         languages: languages.length ? languages : null,
         availability: availability.length ? availability : null,
-        contact_email: contactEmail.trim() || null,
-        phone: phone.trim() || null,
+        phone: normalizedPhone,
       })
       if (dbError) {
         setError(dbError.message)
@@ -155,20 +229,17 @@ export default function PostListing() {
 
   return (
     <section className="mx-auto px-6 py-12" style={{ maxWidth: 680 }}>
-      <h1 className="text-3xl font-bold text-white">Post a listing</h1>
-      <p className="mt-2 text-white/60">
+      <ParticleHeader>
+        <h1 className="pl-title">Post a listing</h1>
+      </ParticleHeader>
+
+      <p className="mt-3 text-white/60">
         Share your profile with the RaisingAmsterdam community.
       </p>
 
-      <form
-        onSubmit={handleSubmit}
-        style={{ background: '#1a1a2e', borderRadius: 16, padding: '2rem', marginTop: 24 }}
-      >
+      <form onSubmit={handleSubmit} style={{ marginTop: 24 }}>
         {/* 1. BASIC INFO */}
-        <h2 style={{ fontSize: 18, marginBottom: 16 }} className="text-white font-semibold">
-          Basic info
-        </h2>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+        <Card accent={ACCENT.basic} icon={<PencilIcon color={ACCENT.basic} />} title="Basic info">
           <label style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
             <Label>Title</Label>
             <input
@@ -176,7 +247,7 @@ export default function PostListing() {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Experienced babysitter in De Pijp"
-              style={inputStyle}
+              className="pl-input"
             />
           </label>
 
@@ -185,7 +256,7 @@ export default function PostListing() {
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              style={inputStyle}
+              className="pl-input"
             >
               {CATEGORIES.map((c) => (
                 <option key={c.value} value={c.value} style={{ color: 'black' }}>
@@ -203,18 +274,21 @@ export default function PostListing() {
               onChange={(e) => setDescription(e.target.value)}
               rows={4}
               placeholder="Tell families about yourself…"
-              style={{ ...inputStyle, resize: 'vertical' }}
+              className="pl-input"
+              style={{ resize: 'vertical' }}
             />
-            <span
-              style={{ color: '#9ca3af', fontSize: 12, textAlign: 'right' }}
-            >
+            <span style={{ color: '#9ca3af', fontSize: 12, textAlign: 'right' }}>
               {description.length}/{DESC_MAX}
             </span>
           </label>
-        </div>
+        </Card>
 
         {/* 2. LOCATION & RATE */}
-        <Section title="Location & rate">
+        <Card
+          accent={ACCENT.location}
+          icon={<PinIcon color={ACCENT.location} />}
+          title="Location & rate"
+        >
           <label style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
             <Label>Postcode</Label>
             <input
@@ -222,18 +296,21 @@ export default function PostListing() {
               value={postcode}
               onChange={(e) => setPostcode(e.target.value)}
               placeholder="1234 AB"
-              style={inputStyle}
+              className="pl-input"
             />
           </label>
           <label style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-            <Label>Neighbourhood</Label>
+            <Label>Area(s)</Label>
             <input
               type="text"
               value={neighbourhood}
               onChange={(e) => setNeighbourhood(e.target.value)}
               placeholder="De Pijp, Oud-West…"
-              style={inputStyle}
+              className="pl-input"
             />
+            <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: 12 }}>
+              Where you work or where the item can be picked up
+            </span>
           </label>
           <label style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
             <Label>Price</Label>
@@ -242,19 +319,23 @@ export default function PostListing() {
               value={price}
               onChange={(e) => setPrice(e.target.value)}
               placeholder="€12/hour or Free or negotiable"
-              style={inputStyle}
+              className="pl-input"
             />
           </label>
-        </Section>
+        </Card>
 
-        {/* 3. EXPERIENCE */}
-        <Section title="Experience">
+        {/* 3. EXPERIENCE + AVAILABILITY */}
+        <Card
+          accent={ACCENT.experience}
+          icon={<StarIcon color={ACCENT.experience} />}
+          title="Experience & availability"
+        >
           <label style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
             <Label>Years of experience</Label>
             <select
               value={experienceYears}
               onChange={(e) => setExperienceYears(e.target.value)}
-              style={inputStyle}
+              className="pl-input"
             >
               <option value="" style={{ color: 'black' }}>
                 Select…
@@ -269,76 +350,45 @@ export default function PostListing() {
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             <Label>Age groups you work with</Label>
-            <PillGroup
-              options={AGE_GROUPS}
-              selected={ageGroups}
-              onToggle={toggle(setAgeGroups)}
-            />
+            <PillGroup options={AGE_GROUPS} selected={ageGroups} onToggle={toggle(setAgeGroups)} />
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             <Label>Languages spoken</Label>
+            <PillGroup options={LANGUAGES} selected={languages} onToggle={toggle(setLanguages)} />
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <Label>Availability</Label>
             <PillGroup
-              options={LANGUAGES}
-              selected={languages}
-              onToggle={toggle(setLanguages)}
+              options={AVAILABILITY}
+              selected={availability}
+              onToggle={toggle(setAvailability)}
             />
           </div>
-        </Section>
+        </Card>
 
-        {/* 4. AVAILABILITY */}
-        <Section title="Availability">
-          <PillGroup
-            options={AVAILABILITY}
-            selected={availability}
-            onToggle={toggle(setAvailability)}
-          />
-        </Section>
-
-        {/* 5. CONTACT */}
-        <Section title="Contact">
+        {/* 4. CONTACT */}
+        <Card accent={ACCENT.contact} icon={<ChatIcon color={ACCENT.contact} />} title="Contact">
           <label style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-            <Label>Contact email</Label>
+            <Label>WhatsApp number</Label>
             <input
-              type="email"
-              value={contactEmail}
-              onChange={(e) => setContactEmail(e.target.value)}
-              placeholder="you@example.com"
-              style={inputStyle}
-            />
-          </label>
-          <label style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-            <Label>Phone / WhatsApp (optional)</Label>
-            <input
-              type="text"
+              type="tel"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              placeholder="+31 6 …"
-              style={inputStyle}
+              placeholder="+31612345678 or 0612345678"
+              className="pl-input"
             />
+            <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: 12 }}>
+              Members will contact you via WhatsApp
+            </span>
           </label>
-        </Section>
+        </Card>
 
-        {error && (
-          <p style={{ color: '#f87171', marginTop: 16, fontSize: 14 }}>{error}</p>
-        )}
+        {error && <p style={{ color: '#f87171', marginTop: 16, fontSize: 14 }}>{error}</p>}
 
-        <button
-          type="submit"
-          disabled={submitting}
-          style={{
-            marginTop: 24,
-            background: PURPLE,
-            color: 'white',
-            borderRadius: 10,
-            padding: 14,
-            width: '100%',
-            fontWeight: 600,
-            border: 'none',
-            cursor: 'pointer',
-          }}
-        >
-          {submitting ? 'Publishing…' : 'Publish listing'}
+        <button type="submit" disabled={submitting} className="pl-submit">
+          {submitting ? 'Publishing…' : '🎉 Publish listing'}
         </button>
       </form>
     </section>
