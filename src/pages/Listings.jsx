@@ -7,7 +7,6 @@ import { BADGE, formatPrice, waNumber } from '../lib/listingUtils'
 const CATEGORIES = [
   { key: 'all', label: 'All' },
   { key: 'babysitter', label: 'Babysitters' },
-  { key: 'secondhand', label: 'Second-hand' },
   { key: 'services', label: 'Services' },
   { key: 'community', label: 'Community' },
 ]

@@ -309,7 +309,7 @@ export default function PostListing() {
               className="pl-input"
             />
             <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: 12 }}>
-              Where you work or where the item can be picked up
+              Where you work / where you're based
             </span>
           </label>
           <label style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
