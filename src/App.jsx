@@ -16,6 +16,7 @@ import Listings from './pages/Listings.jsx'
 import ListingDetail from './pages/ListingDetail.jsx'
 import Dashboard from './pages/Dashboard.jsx'
 import PostListing from './pages/PostListing.jsx'
+import MyListings from './pages/MyListings.jsx'
 
 const NAVY = '#042C53'
 
@@ -81,6 +82,9 @@ function NavBar() {
               <NavLink to="/dashboard" className={linkClass}>
                 Dashboard
               </NavLink>
+              <NavLink to="/my-listings" className={linkClass}>
+                My listings
+              </NavLink>
               <button
                 type="button"
                 onClick={handleSignOut}
@@ -134,7 +138,23 @@ export default function App() {
               }
             />
             <Route
+              path="/my-listings"
+              element={
+                <ProtectedRoute>
+                  <MyListings />
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/post-listing"
+              element={
+                <ProtectedRoute>
+                  <PostListing />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/post-listing/:id"
               element={
                 <ProtectedRoute>
                   <PostListing />

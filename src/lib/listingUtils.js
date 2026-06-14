@@ -3,7 +3,6 @@
 // Category badge colours (match the form's section accent colours).
 export const BADGE = {
   babysitter: { label: 'Babysitter', color: '#a78bfa' },
-  secondhand: { label: 'Second-hand', color: '#34d399' },
   services: { label: 'Services', color: '#60d0ff' },
   community: { label: 'Community', color: '#f97316' },
 }

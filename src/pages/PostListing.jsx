@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
 import ParticleHeader from '../components/ParticleHeader'
@@ -157,6 +157,8 @@ function PillGroup({ options, selected, onToggle }) {
 export default function PostListing() {
   const { user } = useAuth()
   const navigate = useNavigate()
+  const { id } = useParams()
+  const isEdit = Boolean(id)
 
   const [title, setTitle] = useState('')
   const [category, setCategory] = useState('babysitter')
@@ -172,6 +174,47 @@ export default function PostListing() {
 
   const [error, setError] = useState('')
   const [submitting, setSubmitting] = useState(false)
+  const [loading, setLoading] = useState(isEdit)
+
+  // In edit mode, load the existing listing (only if it belongs to the user)
+  // and prefill the form.
+  useEffect(() => {
+    if (!isEdit || !user) return
+    let cancelled = false
+    async function load() {
+      setLoading(true)
+      const { data, error: dbError } = await supabase
+        .from('listings')
+        .select('*')
+        .eq('id', id)
+        .eq('user_id', user.id)
+        .single()
+      if (cancelled) return
+      if (dbError || !data) {
+        setError("This listing couldn't be loaded, or it isn't yours to edit.")
+        setLoading(false)
+        return
+      }
+      setTitle(data.title ?? '')
+      setCategory(data.category ?? 'babysitter')
+      setDescription(data.description ?? '')
+      setPostcode(data.postcode ?? '')
+      setNeighbourhood(data.location ?? '')
+      setPrice(data.price ?? '')
+      setExperienceYears(
+        data.experience_years == null ? '' : String(data.experience_years),
+      )
+      setAgeGroups(data.age_groups ?? [])
+      setLanguages(data.languages ?? [])
+      setAvailability(data.availability ?? [])
+      setPhone(data.phone ?? '')
+      setLoading(false)
+    }
+    load()
+    return () => {
+      cancelled = true
+    }
+  }, [isEdit, id, user])
 
   function toggle(setter) {
     return (value) =>
@@ -201,8 +244,7 @@ export default function PostListing() {
 
     setSubmitting(true)
     try {
-      const { error: dbError } = await supabase.from('listings').insert({
-        user_id: user?.id ?? null,
+      const payload = {
         title: title.trim(),
         category,
         description: description.trim() || null,
@@ -214,12 +256,23 @@ export default function PostListing() {
         languages: languages.length ? languages : null,
         availability: availability.length ? availability : null,
         phone: normalizedPhone,
-      })
+      }
+
+      const { error: dbError } = isEdit
+        ? await supabase.from('listings').update(payload).eq('id', id)
+        : await supabase
+            .from('listings')
+            .insert({ ...payload, user_id: user?.id ?? null })
+
       if (dbError) {
         setError(dbError.message)
         return
       }
-      navigate('/listings', { state: { toast: 'Your listing is live! 🎉' } })
+      if (isEdit) {
+        navigate('/my-listings', { state: { toast: 'Listing updated! ✅' } })
+      } else {
+        navigate('/listings', { state: { toast: 'Your listing is live! 🎉' } })
+      }
     } catch (err) {
       setError(err.message || 'Something went wrong. Please try again.')
     } finally {
@@ -227,14 +280,24 @@ export default function PostListing() {
     }
   }
 
+  if (isEdit && loading) {
+    return (
+      <section className="mx-auto px-6 py-16 text-center text-white/60" style={{ maxWidth: 680 }}>
+        Loading your listing…
+      </section>
+    )
+  }
+
   return (
     <section className="mx-auto px-6 py-12" style={{ maxWidth: 680 }}>
       <ParticleHeader>
-        <h1 className="pl-title">Post a listing</h1>
+        <h1 className="pl-title">{isEdit ? 'Edit listing' : 'Post a listing'}</h1>
       </ParticleHeader>
 
       <p className="mt-3 text-white/60">
-        Share your profile with the RaisingAmsterdam community.
+        {isEdit
+          ? 'Update your listing details below.'
+          : 'Share your profile with the RaisingAmsterdam community.'}
       </p>
 
       <form onSubmit={handleSubmit} style={{ marginTop: 24 }}>
@@ -388,7 +451,13 @@ export default function PostListing() {
         {error && <p style={{ color: '#f87171', marginTop: 16, fontSize: 14 }}>{error}</p>}
 
         <button type="submit" disabled={submitting} className="pl-submit">
-          {submitting ? 'Publishing…' : '🎉 Publish listing'}
+          {submitting
+            ? isEdit
+              ? 'Saving…'
+              : 'Publishing…'
+            : isEdit
+              ? '✅ Save changes'
+              : '🎉 Publish listing'}
         </button>
       </form>
     </section>

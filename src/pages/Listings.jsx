@@ -11,7 +11,22 @@ const CATEGORIES = [
   { key: 'community', label: 'Community' },
 ]
 
+// Filter options (mirror the Post-a-Listing form)
+const LANGUAGES = ['English', 'Dutch', 'French', 'German', 'Spanish', 'Other']
+const AGE_GROUPS = ['0-1 year', '1-2 years', '2-4 years', '4-6 years', '6-12 years']
+
 const PURPLE = '#a78bfa'
+
+const selectStyle = {
+  background: 'rgba(255,255,255,0.07)',
+  border: '1px solid rgba(255,255,255,0.18)',
+  borderRadius: 10,
+  padding: '9px 14px',
+  color: 'white',
+  fontSize: 14,
+  outline: 'none',
+  cursor: 'pointer',
+}
 
 function truncate(text, max = 100) {
   if (!text) return ''
@@ -144,6 +159,11 @@ export default function Listings() {
   const [error, setError] = useState('')
   const [active, setActive] = useState('all')
 
+  // Search & filters
+  const [query, setQuery] = useState('')
+  const [language, setLanguage] = useState('')
+  const [ageGroup, setAgeGroup] = useState('')
+
   // Success toast passed via navigate() state from PostListing
   const location = useLocation()
   const [toast, setToast] = useState(location.state?.toast || '')
@@ -180,10 +200,29 @@ export default function Listings() {
     }
   }, [])
 
-  const visible =
-    active === 'all'
-      ? listings
-      : listings.filter((l) => l.category === active)
+  const q = query.trim().toLowerCase()
+  const visible = listings.filter((l) => {
+    if (active !== 'all' && l.category !== active) return false
+    if (language && !(l.languages ?? []).includes(language)) return false
+    if (ageGroup && !(l.age_groups ?? []).includes(ageGroup)) return false
+    if (q) {
+      const haystack = [l.title, l.description, l.location, l.postcode]
+        .filter(Boolean)
+        .join(' ')
+        .toLowerCase()
+      if (!haystack.includes(q)) return false
+    }
+    return true
+  })
+
+  const hasFilters = Boolean(q || language || ageGroup || active !== 'all')
+
+  function clearFilters() {
+    setQuery('')
+    setLanguage('')
+    setAgeGroup('')
+    setActive('all')
+  }
 
   return (
     <section className="mx-auto max-w-5xl px-6 py-12">
@@ -236,6 +275,68 @@ export default function Listings() {
         })}
       </div>
 
+      {/* Search + filters */}
+      <div className="mt-4 flex flex-wrap items-center gap-3">
+        <input
+          type="search"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="🔍 Search by name, area, keyword…"
+          style={{
+            ...selectStyle,
+            cursor: 'text',
+            flex: '1 1 240px',
+            minWidth: 200,
+          }}
+        />
+        <select
+          value={language}
+          onChange={(e) => setLanguage(e.target.value)}
+          style={selectStyle}
+        >
+          <option value="" style={{ color: 'black' }}>
+            🗣 Any language
+          </option>
+          {LANGUAGES.map((l) => (
+            <option key={l} value={l} style={{ color: 'black' }}>
+              {l}
+            </option>
+          ))}
+        </select>
+        <select
+          value={ageGroup}
+          onChange={(e) => setAgeGroup(e.target.value)}
+          style={selectStyle}
+        >
+          <option value="" style={{ color: 'black' }}>
+            👶 Any age group
+          </option>
+          {AGE_GROUPS.map((a) => (
+            <option key={a} value={a} style={{ color: 'black' }}>
+              {a}
+            </option>
+          ))}
+        </select>
+        {hasFilters && (
+          <button
+            type="button"
+            onClick={clearFilters}
+            style={{
+              background: 'transparent',
+              color: 'rgba(255,255,255,0.6)',
+              border: '1px solid rgba(255,255,255,0.2)',
+              borderRadius: 10,
+              padding: '9px 14px',
+              fontSize: 14,
+              fontWeight: 600,
+              cursor: 'pointer',
+            }}
+          >
+            ✕ Clear
+          </button>
+        )}
+      </div>
+
       {/* Content */}
       <div className="mt-8">
         {loading ? (
@@ -243,17 +344,27 @@ export default function Listings() {
         ) : error ? (
           <p style={{ color: '#f87171' }}>Could not load listings: {error}</p>
         ) : visible.length === 0 ? (
-          <p className="text-white/50">No listings yet. Be the first to post!</p>
+          <p className="text-white/50">
+            {hasFilters
+              ? 'No listings match your search. Try clearing the filters.'
+              : 'No listings yet. Be the first to post!'}
+          </p>
         ) : (
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {visible.map((listing) => (
-              <ListingCard
-                key={listing.id}
-                listing={listing}
-                isParent={isParent}
-              />
-            ))}
-          </div>
+          <>
+            <p className="text-white/40 text-sm mb-4">
+              {visible.length} {visible.length === 1 ? 'listing' : 'listings'}
+              {hasFilters ? ' found' : ''}
+            </p>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {visible.map((listing) => (
+                <ListingCard
+                  key={listing.id}
+                  listing={listing}
+                  isParent={isParent}
+                />
+              ))}
+            </div>
+          </>
         )}
       </div>
     </section>
