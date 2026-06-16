@@ -29,10 +29,15 @@ const supabase = createClient(
 )
 
 Deno.serve(async (req) => {
+  console.log('sos-notify: invoked')
+
   // Reject anyone who doesn't know the shared secret.
   if (req.headers.get('x-sos-secret') !== SOS_WEBHOOK_SECRET) {
+    console.log('sos-notify: bad or missing x-sos-secret header')
     return new Response('Unauthorized', { status: 401 })
   }
+
+  console.log('sos-notify: vapid public set?', VAPID_PUBLIC_KEY.length > 0, 'private set?', VAPID_PRIVATE_KEY.length > 0)
 
   try {
     const body = await req.json().catch(() => ({}))
@@ -48,29 +53,30 @@ Deno.serve(async (req) => {
 
     const { data: subs, error } = await supabase.from('push_subscriptions').select('*')
     if (error) throw error
+    console.log('sos-notify: subscriptions found =', subs?.length ?? 0)
 
     let sent = 0
     let removed = 0
-    await Promise.all(
-      (subs ?? []).map(async (row) => {
-        try {
-          await webpush.sendNotification(row.subscription, payload)
-          sent++
-        } catch (err) {
-          const code = err?.statusCode
-          // 404/410 = subscription gone → clean it up.
-          if (code === 404 || code === 410) {
-            await supabase.from('push_subscriptions').delete().eq('endpoint', row.endpoint)
-            removed++
-          }
+    for (const row of subs ?? []) {
+      try {
+        await webpush.sendNotification(row.subscription, payload)
+        sent++
+      } catch (err) {
+        const code = err?.statusCode
+        console.log('sos-notify: send error', code, err?.body || err?.message || String(err))
+        if (code === 404 || code === 410) {
+          await supabase.from('push_subscriptions').delete().eq('endpoint', row.endpoint)
+          removed++
         }
-      }),
-    )
+      }
+    }
 
+    console.log('sos-notify: done. sent =', sent, 'removed =', removed)
     return new Response(JSON.stringify({ sent, removed }), {
       headers: { 'Content-Type': 'application/json' },
     })
   } catch (e) {
+    console.log('sos-notify: fatal error', String(e))
     return new Response(JSON.stringify({ error: String(e) }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },
