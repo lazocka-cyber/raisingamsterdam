@@ -59,6 +59,27 @@ body {
   }
 }
 
+/* --- Hero typewriter (Home) --- */
+.tw-cursor {
+  display: inline-block;
+  width: 3px;
+  height: 0.9em;
+  margin-left: 4px;
+  background: #fff;
+  vertical-align: -0.08em;
+  animation: tw-blink 1s step-end infinite;
+}
+@keyframes tw-blink {
+  50% {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tw-cursor {
+    animation: none;
+  }
+}
+
 /* Clickable listing cards (Listings grid) */
 .listing-card {
   transition: transform 0.15s ease, box-shadow 0.15s ease;

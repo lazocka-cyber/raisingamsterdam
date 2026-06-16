@@ -1,4 +1,6 @@
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import Logo3D from '../components/Logo3D'
 
 const STROKE = '#a78bfa'
 const ACCENT = '#34d399'
@@ -53,15 +55,51 @@ const features = [
   },
 ]
 
+const TW_FULL = 'RaisingAmsterdam'
+const TW_SPLIT = 7 // „Raising" bíle | „Amsterdam" fialově
+
+// Typewriter nadpis hero sekce — vypíše „RaisingAmsterdam" znak po znaku,
+// po dopsání zůstane stát s blikajícím kurzorem.
+function Typewriter() {
+  const [count, setCount] = useState(0)
+  useEffect(() => {
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setCount(TW_FULL.length)
+      return
+    }
+    let i = 0
+    let timer
+    const tick = () => {
+      i += 1
+      setCount(i)
+      if (i < TW_FULL.length) timer = setTimeout(tick, 80)
+    }
+    timer = setTimeout(tick, 400) // krátká prodleva po načtení
+    return () => clearTimeout(timer)
+  }, [])
+
+  const head = TW_FULL.slice(0, Math.min(count, TW_SPLIT))
+  const tail = TW_FULL.slice(TW_SPLIT, count)
+  return (
+    <h1
+      aria-label={TW_FULL}
+      className="mt-6 text-4xl sm:text-6xl font-bold text-white tracking-tight min-h-[1.3em]"
+    >
+      {head}
+      {tail && <span className="text-[#a78bfa]">{tail}</span>}
+      <span className="tw-cursor" aria-hidden="true" />
+    </h1>
+  )
+}
+
 export default function Home() {
   return (
     <div className="w-full">
       {/* Hero — full width */}
       <section className="w-full px-6 py-20 sm:py-28 text-center">
-        <div className="mx-auto max-w-4xl">
-          <h1 className="text-4xl sm:text-6xl font-bold text-white tracking-tight">
-            Welcome to <span className="text-sky-300">RaisingAmsterdam</span>
-          </h1>
+        <div className="mx-auto max-w-4xl flex flex-col items-center">
+          <Logo3D size={300} />
+          <Typewriter />
           <p className="mt-5 text-lg sm:text-xl text-white/70 max-w-2xl mx-auto">
             The expat parent community in Amsterdam — connect, share and belong.
           </p>
