@@ -17,6 +17,8 @@ import ListingDetail from './pages/ListingDetail.jsx'
 import Dashboard from './pages/Dashboard.jsx'
 import PostListing from './pages/PostListing.jsx'
 import MyListings from './pages/MyListings.jsx'
+import SosBoard from './pages/SosBoard.jsx'
+import PostSos from './pages/PostSos.jsx'
 
 const NAVY = '#042C53'
 
@@ -77,6 +79,9 @@ function NavBar() {
           <NavLink to="/listings" className={linkClass}>
             Listings
           </NavLink>
+          <NavLink to="/sos" className={linkClass} title="Need a sitter urgently?">
+            <span className="sos-nav">🚨 SOS</span>
+          </NavLink>
           {user ? (
             <>
               <NavLink to="/dashboard" className={linkClass}>
@@ -129,6 +134,15 @@ export default function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/listings" element={<Listings />} />
             <Route path="/listings/:id" element={<ListingDetail />} />
+            <Route path="/sos" element={<SosBoard />} />
+            <Route
+              path="/sos/new"
+              element={
+                <ProtectedRoute>
+                  <PostSos />
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="/dashboard"
               element={

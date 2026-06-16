@@ -201,6 +201,7 @@ export default function Listings() {
 
   const [listings, setListings] = useState([])
   const [ratings, setRatings] = useState({})
+  const [sosCount, setSosCount] = useState(0)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [active, setActive] = useState('all')
@@ -248,6 +249,14 @@ export default function Listings() {
         for (const r of ratingRows) map[r.listing_id] = r
         setRatings(map)
       }
+
+      // Active SOS count for the urgent banner (non-blocking nice-to-have).
+      const { count } = await supabase
+        .from('sos_requests')
+        .select('id', { count: 'exact', head: true })
+        .eq('status', 'open')
+        .gt('expires_at', new Date().toISOString())
+      if (!cancelled && typeof count === 'number') setSosCount(count)
     }
     load()
     return () => {
@@ -301,6 +310,14 @@ export default function Listings() {
       <p className="mt-2 text-white/60">
         Browse the RaisingAmsterdam marketplace.
       </p>
+
+      {sosCount > 0 && (
+        <Link to="/sos" className="sos-banner">
+          <span className="sos-banner__dot" />
+          🚨 {sosCount} {sosCount === 1 ? 'family needs' : 'families need'} a sitter right now
+          <span className="sos-banner__cta">See SOS →</span>
+        </Link>
+      )}
 
       {/* Category filter pills */}
       <div className="mt-6 flex flex-wrap gap-2">
