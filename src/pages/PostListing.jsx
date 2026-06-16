@@ -108,6 +108,42 @@ function ChatIcon({ color }) {
   )
 }
 
+// Resize/compress an image in the browser before upload so any phone photo
+// works: scale longest side down to `maxSize` px and export as JPEG. Returns
+// a Blob, or rejects if the file isn't a readable image.
+function resizeImage(file, maxSize = 600, quality = 0.85) {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file)
+    const img = new Image()
+    img.onload = () => {
+      URL.revokeObjectURL(url)
+      let { width, height } = img
+      if (width >= height && width > maxSize) {
+        height = Math.round((height * maxSize) / width)
+        width = maxSize
+      } else if (height > width && height > maxSize) {
+        width = Math.round((width * maxSize) / height)
+        height = maxSize
+      }
+      const canvas = document.createElement('canvas')
+      canvas.width = width
+      canvas.height = height
+      const ctx = canvas.getContext('2d')
+      ctx.drawImage(img, 0, 0, width, height)
+      canvas.toBlob(
+        (blob) => (blob ? resolve(blob) : reject(new Error('Could not process that image.'))),
+        'image/jpeg',
+        quality,
+      )
+    }
+    img.onerror = () => {
+      URL.revokeObjectURL(url)
+      reject(new Error('Could not read that image.'))
+    }
+    img.src = url
+  })
+}
+
 // ─── Layout helpers ───
 function Card({ accent, icon, title, children }) {
   return (
@@ -237,8 +273,8 @@ export default function PostListing() {
       setPhotoError('Please choose an image file (JPG or PNG).')
       return
     }
-    if (file.size > 5 * 1024 * 1024) {
-      setPhotoError('That image is too large — max 5 MB.')
+    if (file.size > 25 * 1024 * 1024) {
+      setPhotoError('That image is enormous — please pick one under 25 MB.')
       return
     }
     if (!user) {
@@ -248,11 +284,12 @@ export default function PostListing() {
 
     setPhotoUploading(true)
     try {
-      const ext = (file.name.split('.').pop() || 'jpg').toLowerCase()
-      const path = `${user.id}/${Date.now()}.${ext}`
+      // Shrink in the browser first, so even big phone photos upload fast.
+      const blob = await resizeImage(file)
+      const path = `${user.id}/${Date.now()}.jpg`
       const { error: upErr } = await supabase.storage
         .from('listing-photos')
-        .upload(path, file, { upsert: true, cacheControl: '3600' })
+        .upload(path, blob, { upsert: true, cacheControl: '3600', contentType: 'image/jpeg' })
       if (upErr) {
         setPhotoError(upErr.message)
         return
@@ -423,7 +460,7 @@ export default function PostListing() {
               </div>
             </div>
             <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: 12 }}>
-              A friendly face helps parents choose you. JPG or PNG, max 5 MB.
+              A friendly face helps parents choose you. Any photo works — we'll resize it for you.
             </span>
             {photoError && (
               <span style={{ color: '#f87171', fontSize: 12 }}>{photoError}</span>
