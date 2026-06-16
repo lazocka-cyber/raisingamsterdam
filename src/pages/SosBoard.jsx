@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
 import { waNumber } from '../lib/listingUtils'
+import NotifyButton from '../components/NotifyButton'
 
 const RED = '#ef4444'
 
@@ -169,6 +170,8 @@ export default function SosBoard() {
           {user ? '+ Post SOS' : 'Sign in to post SOS'}
         </button>
       </div>
+
+      <NotifyButton />
 
       {toast && (
         <div
