@@ -25,13 +25,15 @@ export function AuthProvider({ children }) {
         .from('profiles')
         .select('*')
         .eq('id', currentUser.id)
-        .single()
+        .maybeSingle()
       if (!active) return
       if (error) {
         console.warn('Could not load profile:', error.message)
         setProfile(null)
       } else {
-        setProfile(data ?? null)
+        // New users may briefly have no profile row yet (trigger runs server
+        // side). Treat a missing role as 'sitter' so the UI behaves sensibly.
+        setProfile(data ?? { id: currentUser.id, role: 'sitter' })
       }
     }
 

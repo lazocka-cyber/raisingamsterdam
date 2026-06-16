@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
 import { BADGE, formatPrice, waNumber } from '../lib/listingUtils'
+import { Stars } from '../components/Stars'
 
 const CATEGORIES = [
   { key: 'all', label: 'All' },
@@ -48,6 +49,40 @@ function CategoryBadge({ category }) {
     >
       {badge.label}
     </span>
+  )
+}
+
+// Small round avatar: the uploaded photo, or a tinted emoji fallback.
+function ListingAvatar({ listing }) {
+  const badge = BADGE[listing.category] ?? { color: '#9ca3af' }
+  const fallback =
+    listing.category === 'babysitter' ? '🍼' : listing.category === 'services' ? '🛠' : '🤝'
+  return (
+    <div
+      style={{
+        width: 48,
+        height: 48,
+        borderRadius: '50%',
+        flexShrink: 0,
+        overflow: 'hidden',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: 22,
+        background: `${badge.color}1f`,
+        border: `1px solid ${badge.color}55`,
+      }}
+    >
+      {listing.photo_url ? (
+        <img
+          src={listing.photo_url}
+          alt=""
+          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+        />
+      ) : (
+        <span>{fallback}</span>
+      )}
+    </div>
   )
 }
 
@@ -107,7 +142,7 @@ function ContactAction({ listing, isParent }) {
   )
 }
 
-function ListingCard({ listing, isParent }) {
+function ListingCard({ listing, isParent, rating }) {
   const navigate = useNavigate()
   return (
     <div
@@ -123,12 +158,22 @@ function ListingCard({ listing, isParent }) {
       style={{ background: '#1a1a2e', borderRadius: 16, padding: '1.5rem', cursor: 'pointer' }}
       className="listing-card flex flex-col gap-3"
     >
-      <div className="flex items-start justify-between gap-3">
-        <h3 className="text-white font-semibold text-lg leading-snug">
-          {listing.title}
-        </h3>
-        <CategoryBadge category={listing.category} />
+      <div className="flex items-start gap-3">
+        <ListingAvatar listing={listing} />
+        <div className="flex items-start justify-between gap-3 flex-1 min-w-0">
+          <h3 className="text-white font-semibold text-lg leading-snug">
+            {listing.title}
+          </h3>
+          <CategoryBadge category={listing.category} />
+        </div>
       </div>
+
+      {rating?.review_count > 0 && (
+        <span className="flex items-center gap-2 text-white/55 text-xs">
+          <Stars value={Number(rating.avg_rating)} size={13} />
+          {Number(rating.avg_rating).toFixed(1)} ({rating.review_count})
+        </span>
+      )}
 
       {listing.description && (
         <p className="text-white/60 text-sm">
@@ -155,6 +200,7 @@ export default function Listings() {
   const isParent = Boolean(user) && profile?.role === 'parent'
 
   const [listings, setListings] = useState([])
+  const [ratings, setRatings] = useState({})
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [active, setActive] = useState('all')
@@ -193,6 +239,15 @@ export default function Listings() {
         setListings(data ?? [])
       }
       setLoading(false)
+
+      // Ratings are a nice-to-have; load them separately so a missing
+      // listing_ratings view never blocks the listings themselves.
+      const { data: ratingRows } = await supabase.from('listing_ratings').select('*')
+      if (!cancelled && ratingRows) {
+        const map = {}
+        for (const r of ratingRows) map[r.listing_id] = r
+        setRatings(map)
+      }
     }
     load()
     return () => {
@@ -361,6 +416,7 @@ export default function Listings() {
                   key={listing.id}
                   listing={listing}
                   isParent={isParent}
+                  rating={ratings[listing.id]}
                 />
               ))}
             </div>

@@ -3,6 +3,8 @@ import { Link, useParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
 import { BADGE, EXPERIENCE_LABELS, formatPrice, waNumber } from '../lib/listingUtils'
+import { Stars } from '../components/Stars'
+import ReviewsSection from '../components/ReviewsSection'
 
 function CategoryBadge({ category }) {
   const badge = BADGE[category] ?? { label: category, color: '#9ca3af' }
@@ -127,6 +129,7 @@ export default function ListingDetail() {
   const [listing, setListing] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [reviewSummary, setReviewSummary] = useState({ avg: 0, count: 0 })
 
   useEffect(() => {
     let cancelled = false
@@ -177,11 +180,55 @@ export default function ListingDetail() {
         ) : (
           <div style={{ background: '#1a1a2e', borderRadius: 20, padding: '2rem' }}>
             {/* Header */}
-            <div className="flex items-start justify-between gap-4">
-              <h1 className="text-white font-bold text-3xl leading-tight">
-                {listing.title}
-              </h1>
-              <CategoryBadge category={listing.category} />
+            <div className="flex items-start gap-5">
+              <div
+                style={{
+                  width: 88,
+                  height: 88,
+                  borderRadius: '50%',
+                  flexShrink: 0,
+                  overflow: 'hidden',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: 38,
+                  background: 'rgba(167,139,250,0.15)',
+                  border: '2px solid rgba(167,139,250,0.4)',
+                }}
+              >
+                {listing.photo_url ? (
+                  <img
+                    src={listing.photo_url}
+                    alt={listing.title}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  />
+                ) : (
+                  <span>
+                    {listing.category === 'babysitter'
+                      ? '🍼'
+                      : listing.category === 'services'
+                        ? '🛠'
+                        : '🤝'}
+                  </span>
+                )}
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-start justify-between gap-4">
+                  <h1 className="text-white font-bold text-3xl leading-tight">
+                    {listing.title}
+                  </h1>
+                  <CategoryBadge category={listing.category} />
+                </div>
+                {reviewSummary.count > 0 && (
+                  <div className="flex items-center gap-2" style={{ marginTop: 8 }}>
+                    <Stars value={reviewSummary.avg} size={16} />
+                    <span className="text-white/60 text-sm">
+                      {reviewSummary.avg.toFixed(1)} · {reviewSummary.count}{' '}
+                      {reviewSummary.count === 1 ? 'review' : 'reviews'}
+                    </span>
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Full description */}
@@ -232,6 +279,15 @@ export default function ListingDetail() {
             <div style={{ marginTop: 32, paddingTop: 24, borderTop: '1px solid rgba(255,255,255,0.1)' }}>
               <ContactButton listing={listing} isParent={isParent} />
             </div>
+
+            {/* Reviews */}
+            <ReviewsSection
+              listingId={listing.id}
+              listingOwnerId={listing.user_id}
+              user={user}
+              isParent={isParent}
+              onSummary={setReviewSummary}
+            />
           </div>
         )}
       </div>

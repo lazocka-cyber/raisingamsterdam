@@ -171,10 +171,13 @@ export default function PostListing() {
   const [languages, setLanguages] = useState([])
   const [availability, setAvailability] = useState([])
   const [phone, setPhone] = useState('')
+  const [photoUrl, setPhotoUrl] = useState('')
 
   const [error, setError] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [loading, setLoading] = useState(isEdit)
+  const [photoUploading, setPhotoUploading] = useState(false)
+  const [photoError, setPhotoError] = useState('')
 
   // In edit mode, load the existing listing (only if it belongs to the user)
   // and prefill the form.
@@ -208,6 +211,7 @@ export default function PostListing() {
       setLanguages(data.languages ?? [])
       setAvailability(data.availability ?? [])
       setPhone(data.phone ?? '')
+      setPhotoUrl(data.photo_url ?? '')
       setLoading(false)
     }
     load()
@@ -221,6 +225,45 @@ export default function PostListing() {
       setter((prev) =>
         prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value],
       )
+  }
+
+  async function handlePhotoChange(e) {
+    const file = e.target.files?.[0]
+    e.target.value = '' // allow re-selecting the same file later
+    if (!file) return
+    setPhotoError('')
+
+    if (!file.type.startsWith('image/')) {
+      setPhotoError('Please choose an image file (JPG or PNG).')
+      return
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setPhotoError('That image is too large — max 5 MB.')
+      return
+    }
+    if (!user) {
+      setPhotoError('Please sign in again to upload a photo.')
+      return
+    }
+
+    setPhotoUploading(true)
+    try {
+      const ext = (file.name.split('.').pop() || 'jpg').toLowerCase()
+      const path = `${user.id}/${Date.now()}.${ext}`
+      const { error: upErr } = await supabase.storage
+        .from('listing-photos')
+        .upload(path, file, { upsert: true, cacheControl: '3600' })
+      if (upErr) {
+        setPhotoError(upErr.message)
+        return
+      }
+      const { data } = supabase.storage.from('listing-photos').getPublicUrl(path)
+      setPhotoUrl(data.publicUrl)
+    } catch (err) {
+      setPhotoError(err.message || 'Upload failed. Please try again.')
+    } finally {
+      setPhotoUploading(false)
+    }
   }
 
   async function handleSubmit(e) {
@@ -256,6 +299,7 @@ export default function PostListing() {
         languages: languages.length ? languages : null,
         availability: availability.length ? availability : null,
         phone: normalizedPhone,
+        photo_url: photoUrl || null,
       }
 
       const { error: dbError } = isEdit
@@ -303,6 +347,89 @@ export default function PostListing() {
       <form onSubmit={handleSubmit} style={{ marginTop: 24 }}>
         {/* 1. BASIC INFO */}
         <Card accent={ACCENT.basic} icon={<PencilIcon color={ACCENT.basic} />} title="Basic info">
+          {/* Photo */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <Label>Photo</Label>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+              <div
+                style={{
+                  width: 84,
+                  height: 84,
+                  borderRadius: '50%',
+                  flexShrink: 0,
+                  overflow: 'hidden',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: 32,
+                  background: 'rgba(255,255,255,0.07)',
+                  border: `2px solid ${ACCENT.basic}55`,
+                }}
+              >
+                {photoUrl ? (
+                  <img
+                    src={photoUrl}
+                    alt="Your listing"
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  />
+                ) : (
+                  <span>🍼</span>
+                )}
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                <label
+                  style={{
+                    background: 'rgba(167,139,250,0.15)',
+                    color: ACCENT.basic,
+                    border: `1px solid ${ACCENT.basic}55`,
+                    borderRadius: 8,
+                    padding: '8px 16px',
+                    fontSize: 13,
+                    fontWeight: 600,
+                    cursor: photoUploading ? 'wait' : 'pointer',
+                    width: 'fit-content',
+                  }}
+                >
+                  {photoUploading
+                    ? 'Uploading…'
+                    : photoUrl
+                      ? 'Change photo'
+                      : '📷 Upload photo'}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handlePhotoChange}
+                    disabled={photoUploading}
+                    style={{ display: 'none' }}
+                  />
+                </label>
+                {photoUrl && !photoUploading && (
+                  <button
+                    type="button"
+                    onClick={() => setPhotoUrl('')}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      color: 'rgba(255,255,255,0.5)',
+                      fontSize: 12,
+                      cursor: 'pointer',
+                      textAlign: 'left',
+                      padding: 0,
+                    }}
+                  >
+                    Remove
+                  </button>
+                )}
+              </div>
+            </div>
+            <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: 12 }}>
+              A friendly face helps parents choose you. JPG or PNG, max 5 MB.
+            </span>
+            {photoError && (
+              <span style={{ color: '#f87171', fontSize: 12 }}>{photoError}</span>
+            )}
+          </div>
+
           <label style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
             <Label>Title</Label>
             <input

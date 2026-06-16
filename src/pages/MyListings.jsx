@@ -44,11 +44,38 @@ function MyListingCard({ listing, onEdit, onDelete, deleting }) {
       style={{ background: '#1a1a2e', borderRadius: 16, padding: '1.5rem' }}
       className="flex flex-col gap-3"
     >
-      <div className="flex items-start justify-between gap-3">
-        <h3 className="text-white font-semibold text-lg leading-snug">
-          {listing.title}
-        </h3>
-        <CategoryBadge category={listing.category} />
+      <div className="flex items-start gap-3">
+        <div
+          style={{
+            width: 44,
+            height: 44,
+            borderRadius: '50%',
+            flexShrink: 0,
+            overflow: 'hidden',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: 20,
+            background: 'rgba(255,255,255,0.06)',
+            border: '1px solid rgba(255,255,255,0.12)',
+          }}
+        >
+          {listing.photo_url ? (
+            <img
+              src={listing.photo_url}
+              alt=""
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            />
+          ) : (
+            <span>🍼</span>
+          )}
+        </div>
+        <div className="flex items-start justify-between gap-3 flex-1 min-w-0">
+          <h3 className="text-white font-semibold text-lg leading-snug">
+            {listing.title}
+          </h3>
+          <CategoryBadge category={listing.category} />
+        </div>
       </div>
 
       <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-white/50">
