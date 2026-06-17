@@ -141,6 +141,7 @@ export default function Membership() {
         </p>
         <ul style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           <Perk>Message babysitters & local services directly on WhatsApp</Perk>
+          <Perk>Post urgent 🚨 SOS requests when you need a sitter last-minute</Perk>
           <Perk>Reach out as often as you like — pay once, keep forever</Perk>
           <Perk>Support a small, ad-free community for expat parents 💛</Perk>
         </ul>

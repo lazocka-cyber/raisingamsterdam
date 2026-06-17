@@ -1,9 +1,11 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
 
 const RED = '#ef4444'
+const GREEN = '#34d399'
+const NAVY = '#042C53'
 const AGE_GROUPS = ['0-1 year', '1-2 years', '2-4 years', '4-6 years', '6-12 years']
 
 const inputStyle = {
@@ -21,8 +23,30 @@ function Label({ children }) {
 }
 
 export default function PostSos() {
-  const { user } = useAuth()
+  const { user, isMember } = useAuth()
   const navigate = useNavigate()
+
+  // Posting an SOS is a member perk.
+  if (!isMember) {
+    return (
+      <section className="mx-auto px-6 py-16" style={{ maxWidth: 520 }}>
+        <div style={{ background: '#1a1a2e', borderRadius: 16 }} className="p-10 text-center">
+          <div style={{ fontSize: 38 }}>🚨</div>
+          <h1 className="text-white text-2xl font-bold mt-2">Posting SOS is a member feature</h1>
+          <p className="text-white/65 mt-3">
+            Become a member to post urgent requests and reach nearby babysitters in
+            seconds. Browsing and helping out stays free for everyone.
+          </p>
+          <Link
+            to="/membership"
+            style={{ display: 'inline-block', marginTop: 22, background: GREEN, color: NAVY, borderRadius: 10, padding: '11px 22px', fontWeight: 700 }}
+          >
+            Become a member
+          </Link>
+        </div>
+      </section>
+    )
+  }
 
   const [neededDate, setNeededDate] = useState('')
   const [neededTime, setNeededTime] = useState('')

@@ -86,9 +86,13 @@ function SosCard({ sos, isOwner, onClose, onDelete, busy }) {
 }
 
 export default function SosBoard() {
-  const { user } = useAuth()
+  const { user, isMember } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
+
+  // Posting an SOS is a member perk; responding to one stays free for sitters.
+  const postTarget = !user ? '/register' : !isMember ? '/membership' : '/sos/new'
+  const postLabel = !user ? 'Sign in to post SOS' : !isMember ? '🔒 Unlock to post SOS' : '+ Post SOS'
 
   const [requests, setRequests] = useState([])
   const [loading, setLoading] = useState(true)
@@ -156,7 +160,7 @@ export default function SosBoard() {
         </div>
         <button
           type="button"
-          onClick={() => navigate(user ? '/sos/new' : '/register')}
+          onClick={() => navigate(postTarget)}
           style={{
             background: `linear-gradient(90deg, ${RED}, #f97316)`,
             color: 'white',
@@ -167,7 +171,7 @@ export default function SosBoard() {
             cursor: 'pointer',
           }}
         >
-          {user ? '+ Post SOS' : 'Sign in to post SOS'}
+          {postLabel}
         </button>
       </div>
 
@@ -185,9 +189,9 @@ export default function SosBoard() {
         }}
       >
         <strong className="text-white/80">How SOS works:</strong> stuck without a sitter?
-        Post a quick request — it shows up here in red and nearby babysitters can see it
-        right away. They reach you on WhatsApp. Turn on alerts below to get a ping when a
-        new SOS appears.
+        Members can post a quick request — it shows up here in red and nearby babysitters
+        get a ping right away, then reach you on WhatsApp. Browsing and helping out is free
+        for everyone; turn on alerts below so you never miss an SOS.
       </div>
 
       <NotifyButton />
