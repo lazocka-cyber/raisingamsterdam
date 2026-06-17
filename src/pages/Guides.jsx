@@ -65,15 +65,57 @@ const SECTIONS = [
     emoji: '🧸',
     title: 'Childcare & daycare',
     intro:
-      'Daycare is widely used but in high demand — the secret is to register early and claim the allowance.',
-    points: [
-      'Main types: dagopvang (0–4), BSO / after-school care (4–12), gastouder (a registered childminder), and peuterspeelzaal / peuteropvang (a playgroup, roughly 2–4).',
-      'Childcare allowance (kinderopvangtoeslag): the government refunds a large share of the cost when both parents work or study and the provider is in the national register (LRK). In 2026, lower incomes can get up to ~96% back, on up to 230 hours per child per month. You apply through the tax office (Toeslagen) with your DigiD.',
-      '⏳ Register EARLY. Around 70% of daycares have waiting lists, so many parents sign up during pregnancy. Don’t wait until you need a spot.',
-    ],
-    links: [
-      { label: 'Childcare allowance — The Hague Int’l Centre', url: 'https://www.thehagueinternationalcentre.nl/news/2025-11/childcare-costs-made-easier-your-guide-to-dutch-childcare-allowance' },
-      { label: 'Apply for toeslagen — Belastingdienst', url: 'https://www.belastingdienst.nl/wps/wcm/connect/nl/toeslagen/toeslagen' },
+      'The Dutch childcare world decoded — KDV, peuteropvang and VVE — plus how to pick a place that feels right.',
+    subsections: [
+      {
+        title: '🍼 KDV — full-day daycare (0–4)',
+        points: [
+          'A kinderdagverblijf (KDV) is full-day care for children from about 6 weeks up to 4 years, made for working or studying parents.',
+          'Open on weekdays, usually around 7:30–18:30; you can book whole or half days.',
+          'Children are in age-based groups (separate baby and toddler groups) with trained pedagogical staff who follow each child’s own rhythm of sleeping, eating and playing — focusing on feeling safe, developing and learning to be with other children.',
+        ],
+      },
+      {
+        title: '🎨 Peuteropvang / peuterspeelzaal (2–4)',
+        points: [
+          'Peuteropvang (the former peuterspeelzaal) is for toddlers 2–4, in half-day parts (a morning or an afternoon) rather than full days.',
+          'It runs a playful, structured programme (like Piramide or Uk & Puk) that gently prepares children for primary school.',
+          'A lovely lighter option if you don’t need full-day care but want your toddler to play, socialise and get school-ready.',
+        ],
+      },
+      {
+        title: '📚 VVE — a little extra early education',
+        points: [
+          'VVE (voor- en vroegschoolse educatie) is extra early-learning support — mainly around language — for children who could use a boost, continuing into the first years of primary school.',
+          'The consultatiebureau decides whether your child gets a VVE indication (indicatie): a first look around 11 months, confirmed around 14 months, looking at things like the language spoken at home.',
+          'In Amsterdam a child with a VVE indication gets 16 hours a week of voorschool, and around 300 centres run a VVE programme. The voorschool is open to all Amsterdam toddlers but especially helps those at risk of a language gap — a real plus for many expat families.',
+        ],
+        links: [
+          { label: 'Voorschool & VVE — Gemeente Amsterdam', url: 'https://www.amsterdam.nl/sociaaldomein/onderwijs-leerplicht/vroegschoolse/' },
+        ],
+      },
+      {
+        title: '💶 Costs & allowance',
+        points: [
+          'Working or studying? You get kinderopvangtoeslag from the tax office for KDV, BSO and registered childminders — in 2026 up to ~96% for lower incomes, on up to 230 hours per child per month. The provider must be in the national register (LRK).',
+          'Not working? No toeslag, but the gemeente helps — in Amsterdam up to 16 hours a week of subsidised peuteropvang.',
+        ],
+        links: [
+          { label: 'Apply for toeslagen — Belastingdienst', url: 'https://www.belastingdienst.nl/wps/wcm/connect/nl/toeslagen/toeslagen' },
+        ],
+      },
+      {
+        title: '💛 How to choose a good one',
+        points: [
+          'Read the free GGD inspection report — every registered location has one in the national register (LRK). In plain language it tells you whether the place meets the rules.',
+          'Then trust your eyes on a visit: are the children relaxed and happy? Are the carers warm, down on the floor and really with the kids?',
+          'Ask what matters for little ones: do the same faces come back each day (a stable stamgroep)? how often do staff change? how does settling-in (wennen) work? how many children per carer? how much time outdoors?',
+          '⏳ Register early — around 70% of daycares have waiting lists, and many parents sign up during pregnancy.',
+        ],
+        links: [
+          { label: 'Check a daycare — Landelijk Register Kinderopvang', url: 'https://www.landelijkregisterkinderopvang.nl/pp/' },
+        ],
+      },
     ],
   },
   {
@@ -108,6 +150,31 @@ const SECTIONS = [
     ],
   },
 ]
+
+function PointList({ points }) {
+  return (
+    <ul style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+      {points.map((point, i) => (
+        <li key={i} style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
+          <span
+            style={{
+              flexShrink: 0,
+              width: 7,
+              height: 7,
+              borderRadius: '50%',
+              background: PURPLE,
+              marginTop: 7,
+            }}
+            aria-hidden="true"
+          />
+          <span style={{ color: 'rgba(255,255,255,0.8)', fontSize: 14.5, lineHeight: 1.55 }}>
+            {point}
+          </span>
+        </li>
+      ))}
+    </ul>
+  )
+}
 
 function GuideLink({ label, url }) {
   return (
@@ -168,32 +235,42 @@ function GuideSection({ section, open, onToggle }) {
 
       {open && (
         <div className="px-5 sm:px-6 pb-6" style={{ paddingLeft: 'calc(1.25rem + 26px + 0.75rem)' }}>
-          <ul style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-            {section.points.map((point, i) => (
-              <li key={i} style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
-                <span
+          {section.subsections ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              {section.subsections.map((sub) => (
+                <div
+                  key={sub.title}
                   style={{
-                    flexShrink: 0,
-                    width: 7,
-                    height: 7,
-                    borderRadius: '50%',
-                    background: PURPLE,
-                    marginTop: 7,
+                    background: 'rgba(255,255,255,0.04)',
+                    border: '1px solid rgba(255,255,255,0.08)',
+                    borderRadius: 12,
+                    padding: '14px 16px',
                   }}
-                  aria-hidden="true"
-                />
-                <span style={{ color: 'rgba(255,255,255,0.8)', fontSize: 14.5, lineHeight: 1.55 }}>
-                  {point}
-                </span>
-              </li>
-            ))}
-          </ul>
-
-          <div className="mt-5 flex flex-wrap gap-2">
-            {section.links.map((l) => (
-              <GuideLink key={l.url} label={l.label} url={l.url} />
-            ))}
-          </div>
+                >
+                  <p className="text-white font-semibold" style={{ marginBottom: 10 }}>
+                    {sub.title}
+                  </p>
+                  <PointList points={sub.points} />
+                  {sub.links && (
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      {sub.links.map((l) => (
+                        <GuideLink key={l.url} label={l.label} url={l.url} />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <>
+              <PointList points={section.points} />
+              <div className="mt-5 flex flex-wrap gap-2">
+                {section.links.map((l) => (
+                  <GuideLink key={l.url} label={l.label} url={l.url} />
+                ))}
+              </div>
+            </>
+          )}
         </div>
       )}
     </div>
