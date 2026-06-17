@@ -256,8 +256,39 @@ export default function Meetups() {
         </div>
       ) : (
         <>
+          {/* How it works — so parents instantly get the two post types */}
+          <div
+            className="mt-6"
+            style={{
+              background: 'rgba(255,255,255,0.04)',
+              border: '1px solid rgba(255,255,255,0.1)',
+              borderRadius: 14,
+              padding: '14px 16px',
+            }}
+          >
+            <p className="text-white/80 text-sm font-semibold" style={{ marginBottom: 10 }}>
+              New here? Two easy ways to connect 👇
+            </p>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div>
+                <span style={{ color: BLUE, fontWeight: 700, fontSize: 13 }}>🗓️ Meetup</span>
+                <p className="text-white/60 text-sm mt-1">
+                  Plan a get-together at a set time — a coffee, a walk, a playdate — and
+                  other parents can join.
+                </p>
+              </div>
+              <div>
+                <span style={{ color: GREEN, fontWeight: 700, fontSize: 13 }}>👋 Intro</span>
+                <p className="text-white/60 text-sm mt-1">
+                  No plan yet? Just say hi — share your area and your kids’ ages, and
+                  nearby families can reach out to you.
+                </p>
+              </div>
+            </div>
+          </div>
+
           {/* Filter pills */}
-          <div className="flex flex-wrap gap-2 mt-6">
+          <div className="flex flex-wrap gap-2 mt-5">
             {FILTERS.map((f) => {
               const active = filter === f.key
               return (

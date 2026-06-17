@@ -171,6 +171,25 @@ export default function SosBoard() {
         </button>
       </div>
 
+      {/* How it works — quick explainer for newcomers */}
+      <div
+        style={{
+          marginTop: 16,
+          background: 'rgba(255,255,255,0.04)',
+          border: '1px solid rgba(255,255,255,0.1)',
+          borderRadius: 14,
+          padding: '14px 16px',
+          color: 'rgba(255,255,255,0.6)',
+          fontSize: 13.5,
+          lineHeight: 1.55,
+        }}
+      >
+        <strong className="text-white/80">How SOS works:</strong> stuck without a sitter?
+        Post a quick request — it shows up here in red and nearby babysitters can see it
+        right away. They reach you on WhatsApp. Turn on alerts below to get a ping when a
+        new SOS appears.
+      </div>
+
       <NotifyButton />
 
       {toast && (

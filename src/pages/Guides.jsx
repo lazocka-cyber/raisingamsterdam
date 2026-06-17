@@ -374,7 +374,9 @@ export default function Guides() {
     <section className="mx-auto max-w-3xl px-6 py-12">
       <h1 className="text-3xl font-bold text-white">Guides</h1>
       <p className="mt-2 text-white/60">
-        Finding your way around the Dutch system as an expat parent. Tap a topic to read more.
+        Finding your way around the Dutch system as an expat parent — health, having a baby,
+        childcare, school, swimming and the paperwork that gets you started. Tap a topic to
+        read more.
       </p>
 
       <div className="mt-6 flex flex-col gap-3">

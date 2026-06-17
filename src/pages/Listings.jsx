@@ -12,6 +12,15 @@ const CATEGORIES = [
   { key: 'community', label: 'Community' },
 ]
 
+// A one-line explainer per category, shown under the filter pills so parents
+// instantly understand what belongs where.
+const CATEGORY_HINTS = {
+  all: 'Everything in one place — babysitters, local services and community groups.',
+  babysitter: '🍼 Babysitters offering childcare — browse profiles, reviews and rates.',
+  services: '🛠 Paid local services for families — cleaning, tutoring, classes, photography and more.',
+  community: '🤝 Community & groups — playgroups, language groups and (often free) activities to join.',
+}
+
 // Filter options (mirror the Post-a-Listing form)
 const LANGUAGES = ['English', 'Dutch', 'French', 'German', 'Spanish', 'Other']
 const AGE_GROUPS = ['0-1 year', '1-2 years', '2-4 years', '4-6 years', '6-12 years']
@@ -352,6 +361,9 @@ export default function Listings() {
           )
         })}
       </div>
+
+      {/* One-line explainer for the selected category */}
+      <p className="mt-3 text-white/55 text-sm">{CATEGORY_HINTS[active]}</p>
 
       {/* Search + filters */}
       <div className="mt-4 flex flex-wrap items-center gap-3">
