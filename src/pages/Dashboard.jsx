@@ -433,7 +433,11 @@ function ParentOnboarding() {
         nearby babysitters see it right away.
       </GuideCard>
 
-      <GuideCard emoji="💬" title="How to get in touch">
+      <GuideCard
+        emoji="💬"
+        title="How to get in touch"
+        actions={<GuideButton to="/listings?cat=babysitter" label="Browse babysitters" />}
+      >
         Found someone? Open their listing and tap{' '}
         <strong>Contact via WhatsApp</strong> to message them directly — no
         middleman, no waiting.
