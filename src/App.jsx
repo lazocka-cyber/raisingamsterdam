@@ -13,6 +13,7 @@ import { supabase } from './lib/supabase'
 import Home from './pages/Home.jsx'
 import Register from './pages/Register.jsx'
 import Listings from './pages/Listings.jsx'
+import Guides from './pages/Guides.jsx'
 import ListingDetail from './pages/ListingDetail.jsx'
 import Dashboard from './pages/Dashboard.jsx'
 import PostListing from './pages/PostListing.jsx'
@@ -76,6 +77,9 @@ function NavBar() {
       </NavLink>
       <NavLink to="/listings" className={linkClass} onClick={() => setOpen(false)}>
         Listings
+      </NavLink>
+      <NavLink to="/guides" className={linkClass} onClick={() => setOpen(false)}>
+        Guides
       </NavLink>
       <NavLink
         to="/sos"
@@ -184,6 +188,7 @@ export default function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/listings" element={<Listings />} />
             <Route path="/listings/:id" element={<ListingDetail />} />
+            <Route path="/guides" element={<Guides />} />
             <Route path="/sos" element={<SosBoard />} />
             <Route
               path="/sos/new"
