@@ -122,16 +122,67 @@ const SECTIONS = [
     emoji: '🎒',
     title: 'Primary school (basisschool)',
     intro:
-      'In Amsterdam there’s one shared system, and it starts earlier than you’d expect.',
-    points: [
-      'Children start basisschool at age 4; school becomes compulsory (leerplicht) at 5.',
-      'Amsterdam uses one joint registration system. Around your child’s 3rd birthday the city sends you a registration form and a brochure — that’s your cue to pick a school and apply.',
-      'A handful of schools (~10) register separately from the central system, so always check the individual school too.',
-      'All schools, dates and how to apply are on the city’s School Finder (schoolwijzer).',
-    ],
-    links: [
-      { label: 'Amsterdam School Finder — schoolwijzer', url: 'https://schoolwijzer.amsterdam.nl/en/' },
-      { label: 'Primary school — I amsterdam', url: 'https://www.iamsterdam.com/en/live-work-study/living/education-family/primary-school' },
+      'Choosing a school in Amsterdam, made simpler — how it works, the different styles, and an honest tip on what really matters.',
+    subsections: [
+      {
+        title: '🗓️ How it works (Amsterdam)',
+        points: [
+          'Children start basisschool at age 4; school becomes compulsory (leerplicht) at 5.',
+          'Amsterdam uses one joint registration system. Around your child’s 3rd birthday the city sends you a registration form and a brochure — that’s your cue to pick a school and apply.',
+          'A handful of schools (~10) register separately from the central system, so always check the individual school too.',
+        ],
+        links: [
+          { label: 'Amsterdam School Finder — schoolwijzer', url: 'https://schoolwijzer.amsterdam.nl/en/' },
+          { label: 'Primary school — I amsterdam', url: 'https://www.iamsterdam.com/en/live-work-study/living/education-family/primary-school' },
+        ],
+      },
+      {
+        title: '🧭 Public or faith-based? (openbaar vs bijzonder)',
+        points: [
+          'Openbaar (public) schools welcome every child and aren’t based on a religion or worldview.',
+          'Bijzonder schools teach from a particular conviction or vision — religious (Catholic, Protestant, Islamic, Jewish…) or a special idea about education. “Oecumenical” boards like AMOS (29 schools across Amsterdam) are Christian in roots but open to all beliefs.',
+          'A lovely Dutch quirk: both public and bijzonder schools are fully funded by the government — there’s no tuition, just a small voluntary contribution (vrijwillige ouderbijdrage). “Special” here doesn’t mean paying.',
+        ],
+        links: [
+          { label: 'Openbaar vs bijzonder — OCO', url: 'https://www.onderwijsconsument.nl/wat-is-openbaar-onderwijs-en-bijzonder-onderwijs/' },
+          { label: 'AMOS schools — amosonderwijs.nl', url: 'https://amosonderwijs.nl/scholen/' },
+        ],
+      },
+      {
+        title: '🎨 Teaching styles (onderwijsconcepten)',
+        points: [
+          'Many schools follow a “regular” (klassikaal) programme; others follow a renewing concept built around the individual child, independence and working together. The best-known ones:',
+          'Montessori — “help me to do it myself”: children follow their natural curiosity and learn by choosing their own work with special materials, at their own pace.',
+          'Dalton — independence and cooperation: children work through day- or week-tasks and learn to plan their own time.',
+          'Jenaplan — learning to live together: a strong focus on social skills, often in mixed-age groups.',
+          'Vrijeschool (Steiner/Waldorf) — head, heart and hands: the rhythm of the year, lots of art, music, movement and storytelling (an anthroposophic approach).',
+          'Reggio Emilia — the “competent child” who discovers through long, curious projects; the space and materials are part of the learning.',
+          'Freinet — children bring their own topics in a democratic classroom, with lots of expression, stories and crafts.',
+        ],
+        links: [
+          { label: 'School styles explained — Ouders.nl', url: 'https://www.ouders.nl/artikelen/welke-basisschoolvorm-kies-ik-voor-mijn-kind' },
+        ],
+      },
+      {
+        title: '💛 How to choose (the honest tip)',
+        points: [
+          'Closeness to home matters more than you’d expect. With the Dutch weather you’ll bike and walk in the rain a lot — a school around the corner makes every single day easier. ☔🚲',
+          'Friendships live in the neighbourhood, too: after school, kids pop over to each other’s houses to play, so a local school usually means local friends and easy playdates.',
+          'Go to an open day (open dag), trust the feeling in the building, and don’t overthink the “perfect method” — a warm, nearby school your child loves usually beats a famous one across town.',
+          'Apply early, around your child’s 3rd birthday — popular schools fill up.',
+        ],
+      },
+      {
+        title: '✨ A little help from RaisingAmsterdam',
+        points: [
+          'Settling in with little ones is a journey — that’s exactly why this community exists. Browse babysitters, local services and community tips made for expat parents in Amsterdam.',
+          'Want more on raising children far from home? Follow RaisingWorldKids on YouTube for ideas, stories and parenting abroad.',
+        ],
+        links: [
+          { label: 'Browse RaisingAmsterdam', url: '/listings' },
+          { label: 'RaisingWorldKids on YouTube', url: 'https://www.youtube.com/@raisingworldkids' },
+        ],
+      },
     ],
   },
   {
