@@ -95,63 +95,59 @@ function ListingAvatar({ listing }) {
   )
 }
 
-function ContactAction({ listing, isParent }) {
+const pillStyle = {
+  background: 'rgba(255,255,255,0.08)',
+  border: '1px solid rgba(255,255,255,0.12)',
+  borderRadius: 8,
+  padding: '8px 14px',
+  fontSize: 13,
+  fontWeight: 600,
+}
+
+function ContactAction({ listing, user, isMember }) {
   // Stop the click from bubbling to the card's navigate handler.
   const stop = (e) => e.stopPropagation()
-  if (isParent) {
-    if (!listing.phone) {
-      return (
-        <button
-          type="button"
-          disabled
-          onClick={stop}
-          style={{
-            background: 'rgba(255,255,255,0.08)',
-            color: 'rgba(255,255,255,0.4)',
-            border: '1px solid rgba(255,255,255,0.12)',
-            borderRadius: 8,
-            padding: '8px 14px',
-            fontSize: 13,
-            fontWeight: 600,
-            cursor: 'not-allowed',
-          }}
-        >
-          No contact info
-        </button>
-      )
-    }
+
+  // Not signed in → invite to join (free).
+  if (!user) {
     return (
-      <a
-        href={`https://wa.me/${waNumber(listing.phone)}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        onClick={stop}
-        style={{ color: '#34d399', fontWeight: 600, fontSize: 14 }}
-      >
-        Contact via WhatsApp
-      </a>
+      <Link to="/register" onClick={stop} style={{ ...pillStyle, color: 'rgba(255,255,255,0.55)' }}>
+        Sign in to contact
+      </Link>
     )
   }
+
+  // Signed in but not a member → send to the unlock page.
+  if (!isMember) {
+    return (
+      <Link to="/membership" onClick={stop} style={{ color: '#a78bfa', fontWeight: 700, fontSize: 14 }}>
+        🔒 Unlock to contact
+      </Link>
+    )
+  }
+
+  // Member, but the listing has no number.
+  if (!listing.phone) {
+    return (
+      <span style={{ ...pillStyle, color: 'rgba(255,255,255,0.4)' }}>No contact info</span>
+    )
+  }
+
+  // Member with a number → live WhatsApp link.
   return (
-    <Link
-      to="/register"
+    <a
+      href={`https://wa.me/${waNumber(listing.phone)}`}
+      target="_blank"
+      rel="noopener noreferrer"
       onClick={stop}
-      style={{
-        background: 'rgba(255,255,255,0.08)',
-        color: 'rgba(255,255,255,0.55)',
-        border: '1px solid rgba(255,255,255,0.12)',
-        borderRadius: 8,
-        padding: '8px 14px',
-        fontSize: 13,
-        fontWeight: 600,
-      }}
+      style={{ color: '#34d399', fontWeight: 600, fontSize: 14 }}
     >
-      Join as parent to contact
-    </Link>
+      💬 Contact via WhatsApp
+    </a>
   )
 }
 
-function ListingCard({ listing, isParent, rating }) {
+function ListingCard({ listing, user, isMember, rating }) {
   const navigate = useNavigate()
   return (
     <div
@@ -198,7 +194,7 @@ function ListingCard({ listing, isParent, rating }) {
       </div>
 
       <div className="mt-2 pt-3 border-t border-white/10">
-        <ContactAction listing={listing} isParent={isParent} />
+        <ContactAction listing={listing} user={user} isMember={isMember} />
       </div>
     </div>
   )
@@ -206,7 +202,7 @@ function ListingCard({ listing, isParent, rating }) {
 
 export default function Listings() {
   const { user, profile } = useAuth()
-  const isParent = Boolean(user) && profile?.role === 'parent'
+  const isMember = Boolean(profile?.is_member)
 
   const [listings, setListings] = useState([])
   const [ratings, setRatings] = useState({})
@@ -450,7 +446,8 @@ export default function Listings() {
                 <ListingCard
                   key={listing.id}
                   listing={listing}
-                  isParent={isParent}
+                  user={user}
+                  isMember={isMember}
                   rating={ratings[listing.id]}
                 />
               ))}
