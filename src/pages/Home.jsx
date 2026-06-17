@@ -18,6 +18,7 @@ const svgProps = {
 const features = [
   {
     text: 'Find trusted babysitters',
+    to: '/listings?cat=babysitter',
     delay: '0s',
     icon: (
       <svg {...svgProps}>
@@ -30,6 +31,7 @@ const features = [
   },
   {
     text: 'Meet expat parents nearby',
+    to: '/listings?cat=community',
     delay: '0.5s',
     icon: (
       <svg {...svgProps}>
@@ -43,6 +45,7 @@ const features = [
   },
   {
     text: 'Discover local services',
+    to: '/listings?cat=services',
     delay: '1s',
     icon: (
       <svg {...svgProps}>
@@ -123,10 +126,11 @@ export default function Home() {
       {/* Tagline section — 3 animated SVG icons */}
       <section className="w-full px-6 pb-24">
         <div className="mx-auto max-w-5xl grid gap-8 sm:grid-cols-3">
-          {features.map(({ icon, text, delay }) => (
-            <div
+          {features.map(({ icon, text, delay, to }) => (
+            <Link
               key={text}
-              className="flex flex-col items-center text-center gap-3 rounded-xl border border-white/10 px-6 py-8"
+              to={to}
+              className="flex flex-col items-center text-center gap-3 rounded-xl border border-white/10 px-6 py-8 transition-colors transition-transform hover:border-white/30 hover:-translate-y-1"
               style={{ background: '#1a1a2e' }}
             >
               <span
@@ -137,7 +141,7 @@ export default function Home() {
                 {icon}
               </span>
               <p className="text-white/80 font-medium">{text}</p>
-            </div>
+            </Link>
           ))}
         </div>
       </section>

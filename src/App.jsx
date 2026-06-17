@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import {
   BrowserRouter,
   Routes,
@@ -60,51 +60,101 @@ function ProtectedRoute({ children }) {
 function NavBar() {
   const { user, signOut } = useAuth()
   const navigate = useNavigate()
+  const [open, setOpen] = useState(false)
 
   async function handleSignOut() {
+    setOpen(false)
     await signOut()
     navigate('/')
   }
 
+  // The links shared by the desktop row and the mobile dropdown.
+  const navLinks = (
+    <>
+      <NavLink to="/" end className={linkClass} onClick={() => setOpen(false)}>
+        Home
+      </NavLink>
+      <NavLink to="/listings" className={linkClass} onClick={() => setOpen(false)}>
+        Listings
+      </NavLink>
+      <NavLink
+        to="/sos"
+        className={linkClass}
+        title="Need a sitter urgently?"
+        onClick={() => setOpen(false)}
+      >
+        <span className="sos-nav">🚨 SOS</span>
+      </NavLink>
+      {user ? (
+        <>
+          <NavLink to="/dashboard" className={linkClass} onClick={() => setOpen(false)}>
+            Dashboard
+          </NavLink>
+          <NavLink to="/my-listings" className={linkClass} onClick={() => setOpen(false)}>
+            My listings
+          </NavLink>
+          <button
+            type="button"
+            onClick={handleSignOut}
+            className="px-4 py-2 rounded-md text-sm font-medium text-left text-white/70 hover:text-white hover:bg-white/10 transition-colors"
+          >
+            Sign out
+          </button>
+        </>
+      ) : (
+        <NavLink to="/register" className={linkClass} onClick={() => setOpen(false)}>
+          Register
+        </NavLink>
+      )}
+    </>
+  )
+
   return (
-    <header className="border-b border-white/10">
+    <header
+      className="border-b border-white/10"
+      style={{ paddingTop: 'env(safe-area-inset-top)' }}
+    >
       <nav className="mx-auto max-w-5xl flex items-center justify-between px-6 py-4">
-        <Link to="/" className="text-white text-lg font-bold tracking-tight">
+        <Link
+          to="/"
+          className="text-white text-lg font-bold tracking-tight"
+          onClick={() => setOpen(false)}
+        >
           Raising<span className="text-sky-300">Amsterdam</span>
         </Link>
-        <div className="flex items-center gap-1">
-          <NavLink to="/" end className={linkClass}>
-            Home
-          </NavLink>
-          <NavLink to="/listings" className={linkClass}>
-            Listings
-          </NavLink>
-          <NavLink to="/sos" className={linkClass} title="Need a sitter urgently?">
-            <span className="sos-nav">🚨 SOS</span>
-          </NavLink>
-          {user ? (
-            <>
-              <NavLink to="/dashboard" className={linkClass}>
-                Dashboard
-              </NavLink>
-              <NavLink to="/my-listings" className={linkClass}>
-                My listings
-              </NavLink>
-              <button
-                type="button"
-                onClick={handleSignOut}
-                className="px-4 py-2 rounded-md text-sm font-medium text-white/70 hover:text-white hover:bg-white/10 transition-colors"
-              >
-                Sign out
-              </button>
-            </>
-          ) : (
-            <NavLink to="/register" className={linkClass}>
-              Register
-            </NavLink>
-          )}
-        </div>
+
+        {/* Desktop links */}
+        <div className="hidden sm:flex items-center gap-1">{navLinks}</div>
+
+        {/* Mobile hamburger */}
+        <button
+          type="button"
+          aria-label="Menu"
+          aria-expanded={open}
+          onClick={() => setOpen((v) => !v)}
+          className="sm:hidden flex flex-col justify-center gap-[5px] p-2 rounded-md hover:bg-white/10 transition-colors"
+        >
+          <span
+            className="block h-0.5 w-6 bg-white transition-transform"
+            style={open ? { transform: 'translateY(7px) rotate(45deg)' } : undefined}
+          />
+          <span
+            className="block h-0.5 w-6 bg-white transition-opacity"
+            style={open ? { opacity: 0 } : undefined}
+          />
+          <span
+            className="block h-0.5 w-6 bg-white transition-transform"
+            style={open ? { transform: 'translateY(-7px) rotate(-45deg)' } : undefined}
+          />
+        </button>
       </nav>
+
+      {/* Mobile dropdown menu */}
+      {open && (
+        <div className="sm:hidden border-t border-white/10 px-4 pb-4 pt-2">
+          <div className="flex flex-col gap-1">{navLinks}</div>
+        </div>
+      )}
     </header>
   )
 }

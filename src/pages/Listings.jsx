@@ -204,7 +204,12 @@ export default function Listings() {
   const [sosCount, setSosCount] = useState(0)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
-  const [active, setActive] = useState('all')
+  // Initial category can come from the URL (?cat=babysitter), e.g. when the
+  // user taps a card on the Home page. Falls back to 'all'.
+  const [active, setActive] = useState(() => {
+    const cat = new URLSearchParams(window.location.search).get('cat')
+    return ['babysitter', 'services', 'community'].includes(cat) ? cat : 'all'
+  })
 
   // Search & filters
   const [query, setQuery] = useState('')
@@ -308,7 +313,8 @@ export default function Listings() {
 
       <h1 className="text-3xl font-bold text-white">Listings</h1>
       <p className="mt-2 text-white/60">
-        Browse the RaisingAmsterdam marketplace.
+        Trusted babysitters and local family services in Amsterdam — for a little
+        more peace of mind.
       </p>
 
       {sosCount > 0 && (

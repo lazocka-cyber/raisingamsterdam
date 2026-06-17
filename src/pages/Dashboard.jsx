@@ -7,6 +7,29 @@ const GREEN = '#34d399'
 const PURPLE = '#a78bfa'
 const NAVY = '#042C53'
 
+function RoleBadge({ role }) {
+  const isParent = role === 'parent'
+  return (
+    <span
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: 5,
+        fontSize: 12,
+        fontWeight: 700,
+        lineHeight: 1,
+        padding: '4px 10px',
+        borderRadius: 999,
+        color: isParent ? NAVY : 'white',
+        background: isParent ? GREEN : 'rgba(167,139,250,0.18)',
+        border: isParent ? 'none' : `1px solid ${PURPLE}66`,
+      }}
+    >
+      {isParent ? '👨‍👩‍👧 Parent' : '🍼 Babysitter'}
+    </span>
+  )
+}
+
 function StepIcon({ done, n }) {
   return (
     <div
@@ -220,7 +243,10 @@ export default function Dashboard() {
       <div className="flex items-center justify-between gap-4 mb-6">
         <div>
           <h1 className="text-3xl font-bold text-white">Dashboard</h1>
-          {user?.email && <p className="mt-1 text-white/40 text-sm">{user.email}</p>}
+          <div className="mt-1 flex items-center gap-2 flex-wrap">
+            {user?.email && <span className="text-white/40 text-sm">{user.email}</span>}
+            <RoleBadge role={role} />
+          </div>
         </div>
         <button
           type="button"
