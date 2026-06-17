@@ -284,6 +284,7 @@ export default function ListingDetail() {
             <ReviewsSection
               listingId={listing.id}
               listingOwnerId={listing.user_id}
+              category={listing.category}
               user={user}
               isParent={isParent}
               onSummary={setReviewSummary}

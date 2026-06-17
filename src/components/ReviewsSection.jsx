@@ -18,7 +18,21 @@ function formatDate(value) {
 
 const card = { background: 'rgba(255,255,255,0.04)', borderRadius: 12, padding: '16px 18px' }
 
-export default function ReviewsSection({ listingId, listingOwnerId, user, isParent, onSummary }) {
+// Category-aware copy so reviews read naturally for sitters, services and groups.
+function reviewPrompts(category) {
+  switch (category) {
+    case 'services':
+      return { invite: 'Used this service? Leave a review', join: 'to review this service' }
+    case 'community':
+      return { invite: 'Been to this group? Leave a review', join: 'to review this group' }
+    case 'babysitter':
+      return { invite: 'Worked with this babysitter? Leave a review', join: 'to review this babysitter' }
+    default:
+      return { invite: 'Leave a review', join: 'to leave a review' }
+  }
+}
+
+export default function ReviewsSection({ listingId, listingOwnerId, category, user, isParent, onSummary }) {
   const [reviews, setReviews] = useState([])
   const [loading, setLoading] = useState(true)
 
@@ -30,6 +44,7 @@ export default function ReviewsSection({ listingId, listingOwnerId, user, isPare
   const isOwner = Boolean(user) && user.id === listingOwnerId
   const myReview = user ? reviews.find((r) => r.reviewer_id === user.id) : null
   const canReview = isParent && !isOwner
+  const prompts = reviewPrompts(category)
 
   async function load() {
     setLoading(true)
@@ -129,7 +144,7 @@ export default function ReviewsSection({ listingId, listingOwnerId, user, isPare
       {canReview && (
         <form onSubmit={handleSubmit} style={{ ...card, marginBottom: 20 }}>
           <p className="text-white/80 font-semibold" style={{ marginBottom: 10 }}>
-            {myReview ? 'Edit your review' : 'Leave a review'}
+            {myReview ? 'Edit your review' : prompts.invite}
           </p>
           <StarInput value={rating} onChange={setRating} />
           <textarea
@@ -184,7 +199,7 @@ export default function ReviewsSection({ listingId, listingOwnerId, user, isPare
           <Link to="/register" className="underline">
             Join as a parent
           </Link>{' '}
-          to leave a review.
+          {prompts.join}.
         </p>
       )}
 
