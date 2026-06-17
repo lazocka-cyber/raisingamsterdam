@@ -187,17 +187,55 @@ const SECTIONS = [
   },
   {
     emoji: '📋',
-    title: 'Newcomer paperwork (the basics)',
+    title: 'Getting set up: paperwork & waiting lists',
     intro:
-      'Just arrived? A couple of steps unlock almost everything else.',
+      'The little admin jobs around a child — and the very Dutch art of signing up early.',
+    subsections: [
+      {
+        title: '🍼 Registering your baby',
+        points: [
+          'Register the birth at the municipality where your baby was born within 3 days (the birth day itself doesn’t count, and a weekend or holiday gives you an extra working day). Your baby is then added to the records and gets a BSN by post.',
+          'Register your baby with a health insurer within 4 months — children are insured for free, but they still need their own sign-up.',
+        ],
+        links: [
+          { label: 'Birth registration — Rijksoverheid', url: 'https://www.rijksoverheid.nl/onderwerpen/aangifte-geboorte-en-naamskeuze-kind/vraag-en-antwoord/aangifte-geboorte' },
+        ],
+      },
+      {
+        title: '🪪 Your own basics (newcomers)',
+        points: [
+          'Just arrived? Register at your gemeente within 5 days to get your BSN. In Amsterdam, book the appointment early — waits can be 6–8 weeks.',
+          'Bring your passport/ID, proof of your Dutch address, and an employment contract if you have one. Then set up a DigiD online — your login for insurance, school, toeslag and more.',
+        ],
+        links: [
+          { label: 'BSN & registration — I amsterdam', url: 'https://www.iamsterdam.com/en/live-work-study/moving-to-amsterdam/take-care-of-official-matters/bsn-and-the-personal-records-database' },
+        ],
+      },
+      {
+        title: '⏳ Register early — the waiting-list game',
+        points: [
+          'Midwife (verloskundige): book your first appointment as soon as your test is positive — usually around weeks 8–10.',
+          'Kraamzorg: sign up early because of waiting lists — ideally within the first 12 weeks, and in big cities like Amsterdam before week 8.',
+          'Daycare (KDV): around 70% have waiting lists, so many parents register during pregnancy.',
+          'Primary school: in Amsterdam you apply around your child’s 3rd birthday — popular schools fill up.',
+          'Swimming lessons: spots fill up too, so put your child on the list in good time (more on that below).',
+        ],
+      },
+    ],
+  },
+  {
+    emoji: '🏊',
+    title: 'Swimming & the zwemdiploma (very Dutch!)',
+    intro:
+      'In a country full of canals, learning to swim is a rite of passage — and it works differently here.',
     points: [
-      'Register at your gemeente (municipality) within 5 days of arriving — that’s how you get your BSN (citizen service number). If they’re fully booked, booking the appointment in time usually counts. In Amsterdam, book early: waits can be 6–8 weeks.',
-      'Bring your passport/ID, proof of your Dutch address, and an employment contract if you have one.',
-      'Once you have your BSN, set up a DigiD online — it’s your login for government services, health insurance and the tax/allowance portals.',
+      'Most Dutch children earn the Zwem-ABC: three national diplomas from the Nationale Raad Zwemveiligheid — A (aanleren / learning), B (beter maken / improving) and C (compleet maken / complete). After C, your child meets the national swimming-safety norm.',
+      'The famous twist: at the exam (afzwemmen) children swim in their clothes and shoes! Diploma A is in summer clothing; higher diplomas add long sleeves and trousers. It sounds funny, but it prepares children for a real, unexpected fall into cold water — very relevant in a city of canals. 🤿',
+      'Diplomas open doors at the pool: without one, a child needs armbands and an adult (often just one no-diploma child per grown-up). You usually need at least diploma A to swim on your own, B for pools with slides and waves (attractiebad), and C is the recommended minimum for the sea, a lake or holidays.',
+      'It’s a journey — on average 18–28 months for all three — and lessons can have waiting lists, so sign up in good time. School swimming is no longer standard, so most families arrange lessons themselves.',
     ],
     links: [
-      { label: 'BSN & registration — I amsterdam', url: 'https://www.iamsterdam.com/en/live-work-study/moving-to-amsterdam/take-care-of-official-matters/bsn-and-the-personal-records-database' },
-      { label: 'Registering with a municipality — Government.nl', url: 'https://www.government.nl/topics/personal-data/citizen-service-number-bsn' },
+      { label: 'Zwem-ABC — Nationale Raad Zwemveiligheid', url: 'https://www.nrz-nl.nl/licentie-nationale-zwemdiplomas/zwem-abc-en-andere-nationale-zwemdiplomas/' },
     ],
   },
 ]
