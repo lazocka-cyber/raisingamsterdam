@@ -186,28 +186,258 @@ function SitterOnboarding({ listings }) {
   )
 }
 
-function ParentWelcome() {
+// A single onboarding card: emoji, title, body and optional action buttons.
+function GuideCard({ emoji, title, children, actions }) {
   return (
-    <div style={{ background: '#1a1a2e', borderRadius: 16 }} className="p-10 text-center">
-      <h2 className="text-white text-xl font-bold">Welcome! 👋</h2>
-      <p className="text-white/70 mt-2">
-        You have full access to all listings. Browse babysitters and local services, and
-        contact them directly via WhatsApp.
-      </p>
-      <Link
-        to="/listings"
-        style={{
-          display: 'inline-block',
-          marginTop: 24,
-          background: GREEN,
-          color: NAVY,
-          borderRadius: 10,
-          padding: '12px 24px',
-          fontWeight: 600,
-        }}
+    <div
+      style={{ background: '#1a1a2e', borderRadius: 16 }}
+      className="p-6 text-left"
+    >
+      <div className="flex items-start gap-3">
+        <span style={{ fontSize: 26, lineHeight: 1 }} aria-hidden="true">
+          {emoji}
+        </span>
+        <div className="flex-1 min-w-0">
+          <h3 className="text-white font-bold">{title}</h3>
+          <div className="text-white/65 text-sm mt-1">{children}</div>
+          {actions && <div className="mt-4 flex flex-wrap gap-3">{actions}</div>}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function GuideButton({ to, label, primary }) {
+  return (
+    <Link
+      to={to}
+      style={{
+        background: primary ? GREEN : 'rgba(255,255,255,0.08)',
+        color: primary ? NAVY : 'white',
+        border: primary ? 'none' : '1px solid rgba(255,255,255,0.18)',
+        borderRadius: 10,
+        padding: '9px 18px',
+        fontWeight: 600,
+        fontSize: 14,
+      }}
+    >
+      {label}
+    </Link>
+  )
+}
+
+// A numbered, easy-to-follow step list.
+function Steps({ steps, note }) {
+  return (
+    <>
+      <ol style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 4 }}>
+        {steps.map((step, i) => (
+          <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
+            <span
+              style={{
+                flexShrink: 0,
+                width: 24,
+                height: 24,
+                borderRadius: '50%',
+                background: 'rgba(167,139,250,0.18)',
+                border: `1px solid ${PURPLE}66`,
+                color: 'white',
+                fontSize: 13,
+                fontWeight: 700,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              {i + 1}
+            </span>
+            <span style={{ color: 'rgba(255,255,255,0.8)', fontSize: 14, lineHeight: 1.5, paddingTop: 1 }}>
+              {step}
+            </span>
+          </li>
+        ))}
+      </ol>
+      {note && (
+        <p
+          style={{
+            marginTop: 14,
+            padding: '10px 12px',
+            borderRadius: 10,
+            background: 'rgba(52,211,153,0.1)',
+            border: '1px solid rgba(52,211,153,0.3)',
+            color: 'rgba(255,255,255,0.85)',
+            fontSize: 13,
+            lineHeight: 1.5,
+          }}
+        >
+          {note}
+        </p>
+      )}
+    </>
+  )
+}
+
+// Platform-aware "Add to home screen" instructions. Hides itself once the app
+// is already running as an installed PWA (standalone display mode).
+function AddToHomeScreen() {
+  const [installed, setInstalled] = useState(false)
+  const [platform, setPlatform] = useState('other') // 'ios' | 'android' | 'other'
+
+  useEffect(() => {
+    const standalone =
+      window.matchMedia?.('(display-mode: standalone)').matches ||
+      window.navigator.standalone === true
+    setInstalled(Boolean(standalone))
+
+    const ua = window.navigator.userAgent || ''
+    if (/iPhone|iPad|iPod/i.test(ua)) setPlatform('ios')
+    else if (/Android/i.test(ua)) setPlatform('android')
+  }, [])
+
+  if (installed) {
+    return (
+      <GuideCard emoji="✅" title="App added to your home screen">
+        You're all set — open RaisingAmsterdam any time straight from your home
+        screen, and you'll be able to receive SOS alerts.
+      </GuideCard>
+    )
+  }
+
+  let body
+  if (platform === 'ios') {
+    body = (
+      <Steps
+        steps={[
+          <>Open this page in <strong>Safari</strong> (it won't work in Chrome or in-app browsers on iPhone).</>,
+          <>Tap the <strong>Share</strong> button — the square with an arrow pointing up <span aria-hidden="true">⬆️</span> — in the bar at the bottom of the screen.</>,
+          <>In the menu that slides up, scroll down and tap <strong>Add to Home Screen</strong>.</>,
+          <>Tap <strong>Add</strong> in the top-right corner.</>,
+          <>Done! The <strong>RaisingAmsterdam</strong> icon is now on your home screen — open it from there from now on.</>,
+        ]}
+        note="📌 On iPhone, adding the app to your home screen is required to receive SOS alerts. Once added, open the app and tap “🔔 Get SOS alerts” on the SOS page to turn on notifications."
+      />
+    )
+  } else if (platform === 'android') {
+    body = (
+      <Steps
+        steps={[
+          <>Open this page in <strong>Chrome</strong>.</>,
+          <>Tap the menu — the three dots <span aria-hidden="true">⋮</span> in the top-right corner.</>,
+          <>Tap <strong>Install app</strong> (on some phones it says <strong>Add to Home screen</strong>).</>,
+          <>Confirm by tapping <strong>Install</strong> / <strong>Add</strong>.</>,
+          <>Done! The <strong>RaisingAmsterdam</strong> icon is now on your home screen.</>,
+        ]}
+        note="🔔 After installing, open the app and tap “Get SOS alerts” on the SOS page to turn on notifications."
+      />
+    )
+  } else {
+    body = (
+      <>
+        <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: 14, lineHeight: 1.5, marginBottom: 16 }}>
+          You're on a computer right now. To add RaisingAmsterdam to your phone,
+          open <strong>raisingamsterdam.vercel.app</strong> on your phone and follow
+          the steps below.
+        </p>
+        <div className="grid gap-6 sm:grid-cols-2">
+          {/* iPhone column */}
+          <div
+            style={{
+              background: 'rgba(255,255,255,0.04)',
+              border: '1px solid rgba(255,255,255,0.1)',
+              borderRadius: 12,
+              padding: 16,
+            }}
+          >
+            <p style={{ color: 'white', fontSize: 14, fontWeight: 600, marginBottom: 10 }}>
+              📱 On iPhone (Safari)
+            </p>
+            <Steps
+              steps={[
+                <>Open the page in <strong>Safari</strong>.</>,
+                <>Tap the <strong>Share</strong> button <span aria-hidden="true">⬆️</span> at the bottom.</>,
+                <>Scroll down and tap <strong>Add to Home Screen</strong>.</>,
+                <>Tap <strong>Add</strong> in the top-right corner.</>,
+              ]}
+              note="📌 On iPhone this is required to receive SOS alerts."
+            />
+          </div>
+
+          {/* Android column */}
+          <div
+            style={{
+              background: 'rgba(255,255,255,0.04)',
+              border: '1px solid rgba(255,255,255,0.1)',
+              borderRadius: 12,
+              padding: 16,
+            }}
+          >
+            <p style={{ color: 'white', fontSize: 14, fontWeight: 600, marginBottom: 10 }}>
+              🤖 On Android (Chrome)
+            </p>
+            <Steps
+              steps={[
+                <>Open the page in <strong>Chrome</strong>.</>,
+                <>Tap the menu <span aria-hidden="true">⋮</span> (top-right).</>,
+                <>Tap <strong>Install app</strong> / <strong>Add to Home screen</strong>.</>,
+                <>Confirm with <strong>Install</strong> / <strong>Add</strong>.</>,
+              ]}
+            />
+          </div>
+        </div>
+      </>
+    )
+  }
+
+  return (
+    <GuideCard emoji="📲" title="Add the app to your home screen">
+      {body}
+    </GuideCard>
+  )
+}
+
+function ParentOnboarding() {
+  return (
+    <div className="flex flex-col gap-4">
+      <div
+        style={{ background: '#1a1a2e', borderRadius: 16 }}
+        className="p-8 text-center"
       >
-        Browse listings
-      </Link>
+        <h2 className="text-white text-xl font-bold">Welcome! 👋</h2>
+        <p className="text-white/65 mt-2">
+          You have full access to RaisingAmsterdam. Here's how to make the most of it.
+        </p>
+      </div>
+
+      <GuideCard
+        emoji="🔎"
+        title="Find babysitters & local services"
+        actions={
+          <>
+            <GuideButton to="/listings?cat=babysitter" label="Find a babysitter" primary />
+            <GuideButton to="/listings?cat=services" label="Local services" />
+          </>
+        }
+      >
+        Browse trusted babysitters and family services in Amsterdam. Use the
+        filters to narrow by area, language and age group.
+      </GuideCard>
+
+      <AddToHomeScreen />
+
+      <GuideCard
+        emoji="🚨"
+        title="Need someone last-minute? Use SOS"
+        actions={<GuideButton to="/sos" label="Open SOS board" />}
+      >
+        Stuck without a sitter? Post a quick SOS request — it shows up in red and
+        nearby babysitters see it right away.
+      </GuideCard>
+
+      <GuideCard emoji="💬" title="How to get in touch">
+        Found someone? Open their listing and tap{' '}
+        <strong>Contact via WhatsApp</strong> to message them directly — no
+        middleman, no waiting.
+      </GuideCard>
     </div>
   )
 }
@@ -270,7 +500,7 @@ export default function Dashboard() {
           Loading…
         </div>
       ) : role === 'parent' ? (
-        <ParentWelcome />
+        <ParentOnboarding />
       ) : (
         <SitterOnboarding listings={listings} />
       )}
