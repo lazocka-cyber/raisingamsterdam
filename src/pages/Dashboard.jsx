@@ -446,8 +446,63 @@ function ParentOnboarding() {
   )
 }
 
+function MemberBadge({ isMember }) {
+  return (
+    <span
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: 5,
+        fontSize: 12,
+        fontWeight: 700,
+        lineHeight: 1,
+        padding: '4px 10px',
+        borderRadius: 999,
+        color: isMember ? NAVY : 'rgba(255,255,255,0.75)',
+        background: isMember ? GREEN : 'rgba(255,255,255,0.08)',
+        border: isMember ? 'none' : '1px solid rgba(255,255,255,0.2)',
+      }}
+    >
+      {isMember ? '💜 Member' : 'Free account'}
+    </span>
+  )
+}
+
+function MembershipBanner() {
+  return (
+    <div
+      style={{
+        background: 'rgba(167,139,250,0.1)',
+        border: `1px solid ${PURPLE}55`,
+        borderRadius: 16,
+      }}
+      className="p-6 mb-6"
+    >
+      <h2 className="text-white font-bold text-lg">🔓 Unlock contact</h2>
+      <p className="text-white/65 text-sm mt-1">
+        One-time payment — full access, no subscription. Message babysitters and local
+        services directly on WhatsApp, as often as you like.
+      </p>
+      <Link
+        to="/membership"
+        style={{
+          display: 'inline-block',
+          marginTop: 16,
+          background: `linear-gradient(90deg, ${PURPLE}, #60d0ff)`,
+          color: NAVY,
+          borderRadius: 10,
+          padding: '10px 20px',
+          fontWeight: 700,
+        }}
+      >
+        Become a member
+      </Link>
+    </div>
+  )
+}
+
 export default function Dashboard() {
-  const { user, profile, signOut } = useAuth()
+  const { user, profile, signOut, isMember } = useAuth()
   const role = profile?.role ?? 'sitter'
 
   const [listings, setListings] = useState([])
@@ -479,7 +534,7 @@ export default function Dashboard() {
           <h1 className="text-3xl font-bold text-white">Dashboard</h1>
           <div className="mt-1 flex items-center gap-2 flex-wrap">
             {user?.email && <span className="text-white/40 text-sm">{user.email}</span>}
-            <RoleBadge role={role} />
+            <MemberBadge isMember={isMember} />
           </div>
         </div>
         <button
@@ -497,6 +552,27 @@ export default function Dashboard() {
         >
           Sign out
         </button>
+      </div>
+
+      {/* Model B: anyone can unlock contact (one-time). Members don't see this. */}
+      {!isMember && <MembershipBanner />}
+
+      {/* Anyone can offer something — listing is free. */}
+      <div className="mb-6">
+        <Link
+          to="/post-listing"
+          style={{
+            display: 'inline-block',
+            background: 'rgba(255,255,255,0.08)',
+            color: 'white',
+            border: '1px solid rgba(255,255,255,0.18)',
+            borderRadius: 10,
+            padding: '10px 18px',
+            fontWeight: 600,
+          }}
+        >
+          ＋ Offer babysitting or a service — post a listing (free)
+        </Link>
       </div>
 
       {loading ? (

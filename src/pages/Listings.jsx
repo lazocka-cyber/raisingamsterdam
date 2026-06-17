@@ -193,7 +193,7 @@ function ListingCard({ listing, isParent, rating }) {
       <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-white/50">
         {listing.location && <span>📍 {listing.location}</span>}
         {listing.price && (
-          <span className="text-white/80 font-medium">{formatPrice(listing.price)}</span>
+          <span className="text-white/80 font-medium">💶 {formatPrice(listing.price)}</span>
         )}
       </div>
 

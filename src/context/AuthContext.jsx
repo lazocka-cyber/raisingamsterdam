@@ -31,6 +31,8 @@ const AuthContext = createContext({
   user: null,
   profile: null,
   loading: true,
+  isMember: false,
+  refreshProfile: async () => {},
   signOut: async () => {},
 })
 
@@ -137,14 +139,29 @@ export function AuthProvider({ children }) {
     }
   }, [])
 
+  // Re-read the profile from the database (e.g. after unlocking membership).
+  async function refreshProfile() {
+    if (!user) return
+    const { data } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', user.id)
+      .maybeSingle()
+    setProfile(data ?? null)
+  }
+
   async function signOut() {
     await supabase.auth.signOut()
     setUser(null)
     setProfile(null)
   }
 
+  const isMember = Boolean(profile?.is_member)
+
   return (
-    <AuthContext.Provider value={{ user, profile, loading, signOut }}>
+    <AuthContext.Provider
+      value={{ user, profile, loading, isMember, refreshProfile, signOut }}
+    >
       {children}
     </AuthContext.Provider>
   )

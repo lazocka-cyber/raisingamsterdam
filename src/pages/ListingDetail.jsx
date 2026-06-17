@@ -59,7 +59,7 @@ function InfoBlock({ icon, label, children }) {
   )
 }
 
-function ContactButton({ listing, isParent }) {
+function ContactButton({ listing, user, isMember }) {
   const base = {
     display: 'block',
     width: '100%',
@@ -71,7 +71,8 @@ function ContactButton({ listing, isParent }) {
     textDecoration: 'none',
   }
 
-  if (!isParent) {
+  // Not signed in → invite to join (free).
+  if (!user) {
     return (
       <Link
         to="/register"
@@ -82,7 +83,23 @@ function ContactButton({ listing, isParent }) {
           border: '1px solid rgba(255,255,255,0.15)',
         }}
       >
-        Join as parent to contact
+        Sign in to contact
+      </Link>
+    )
+  }
+
+  // Signed in but not a member → send to the unlock page.
+  if (!isMember) {
+    return (
+      <Link
+        to="/membership"
+        style={{
+          ...base,
+          background: 'linear-gradient(90deg, #a78bfa, #60d0ff)',
+          color: '#042C53',
+        }}
+      >
+        🔒 Unlock to contact
       </Link>
     )
   }
@@ -125,6 +142,7 @@ export default function ListingDetail() {
   const { id } = useParams()
   const { user, profile } = useAuth()
   const isParent = Boolean(user) && profile?.role === 'parent'
+  const isMember = Boolean(profile?.is_member)
 
   const [listing, setListing] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -277,7 +295,7 @@ export default function ListingDetail() {
 
             {/* Contact */}
             <div style={{ marginTop: 32, paddingTop: 24, borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-              <ContactButton listing={listing} isParent={isParent} />
+              <ContactButton listing={listing} user={user} isMember={isMember} />
             </div>
 
             {/* Reviews */}
