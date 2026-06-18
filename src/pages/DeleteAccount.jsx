@@ -15,6 +15,14 @@ export default function DeleteAccount() {
   const [done, setDone] = useState(false)
 
   async function handleDelete() {
+    // Final safety net — a last, unmissable confirmation before anything is deleted.
+    if (
+      !window.confirm(
+        'Last check: this permanently deletes your account and ALL your data (profile, listings, reviews, meetups, SOS). This cannot be undone. Delete now?',
+      )
+    ) {
+      return
+    }
     setError('')
     setBusy(true)
     try {

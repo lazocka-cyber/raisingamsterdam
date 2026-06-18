@@ -181,7 +181,7 @@ function Layout({ children }) {
           © {new Date().getFullYear()} RaisingAmsterdam
           <span className="mx-2">·</span>
           <Link to="/delete-account" className="hover:text-white/70 underline">
-            Delete account
+            🗑️ Delete account
           </Link>
         </div>
       </footer>
