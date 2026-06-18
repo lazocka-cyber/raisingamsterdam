@@ -62,6 +62,26 @@ const SECTIONS = [
     ],
   },
   {
+    emoji: '🚑',
+    title: 'Child & baby first aid (kinder-EHBO)',
+    intro:
+      'A short, friendly course that teaches you what to do in the first minutes of a choke, fall or burn — and a smart thing to ask any babysitter about.',
+    points: [
+      'On average more than 100 children a day in the Netherlands end up in A&E after an accident — most of them in and around the home. Knowing how to react in those first minutes (choking, a hard fall, a burn, a febrile seizure) really does change everything.',
+      'What it’s like: usually a few hours of online theory at home, plus one practical afternoon where you actually practise — CPR on a baby dummy, the choking grip, the recovery position. You leave with a recognised certificate (the Oranje Kruis “Eerste Hulp aan Kinderen” certificate is valid for 2 years, then topped up with a short refresher). Honestly one of the most useful — and surprisingly fun — afternoons you’ll spend as a parent.',
+      '💰 Good to know: because it’s a certified course, it’s often reimbursed through your aanvullende (supplementary) health insurance. It varies per insurer and package, so check your own policy first — but for many families the course effectively pays for itself.',
+      '🧑‍🍼 Choosing a babysitter? Ask whether she has a child first-aid certificate — it’s a real green flag. And if she doesn’t, suggest she takes the course: it’s affordable, often reimbursed, and makes her more bookable. A lovely win-win for both sides.',
+      'In and around Amsterdam several providers run the course in English (great for expat families) — see the links below. Het Oranje Kruis and the Rode Kruis are the two national standards, so look for a course that certifies through one of them.',
+    ],
+    links: [
+      { label: 'Kinder-EHBO in English — Geboortecentrum Amsterdam', url: 'https://geboortecentrum.nl/en/course-centre/kinder-ehbo/' },
+      { label: 'Baby & child first aid — Midwives 101', url: 'https://verloskundigen101.nl/en/cursus/eerste-hulp-baby-en-kind/' },
+      { label: 'First aid workshop — Femme Amsterdam', url: 'https://www.femme-amsterdam.nl/' },
+      { label: 'Eerste Hulp aan Kinderen — Het Oranje Kruis', url: 'https://www.hetoranjekruis.nl/diplomas/certificaat-eerste-hulp-aan-kinderen/' },
+      { label: 'EHBO voor kinderen — Rode Kruis', url: 'https://www.rodekruis.nl/ehbo/ehbo-cursus-kinderen/' },
+    ],
+  },
+  {
     emoji: '🧸',
     title: 'Childcare & daycare',
     intro:
@@ -375,8 +395,8 @@ export default function Guides() {
       <h1 className="text-3xl font-bold text-white">Guides</h1>
       <p className="mt-2 text-white/60">
         Finding your way around the Dutch system as an expat parent — health, having a baby,
-        childcare, school, swimming and the paperwork that gets you started. Tap a topic to
-        read more.
+        first aid, childcare, school, swimming and the paperwork that gets you started. Tap a
+        topic to read more.
       </p>
 
       <div className="mt-6 flex flex-col gap-3">
