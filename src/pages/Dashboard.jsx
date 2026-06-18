@@ -7,29 +7,6 @@ const GREEN = '#34d399'
 const PURPLE = '#a78bfa'
 const NAVY = '#042C53'
 
-function RoleBadge({ role }) {
-  const isParent = role === 'parent'
-  return (
-    <span
-      style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: 5,
-        fontSize: 12,
-        fontWeight: 700,
-        lineHeight: 1,
-        padding: '4px 10px',
-        borderRadius: 999,
-        color: isParent ? NAVY : 'white',
-        background: isParent ? GREEN : 'rgba(167,139,250,0.18)',
-        border: isParent ? 'none' : `1px solid ${PURPLE}66`,
-      }}
-    >
-      {isParent ? '👨‍👩‍👧 Parent' : '🍼 Babysitter'}
-    </span>
-  )
-}
-
 function StepIcon({ done, n }) {
   return (
     <div

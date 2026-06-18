@@ -141,7 +141,6 @@ function ContactButton({ listing, user, isMember }) {
 export default function ListingDetail() {
   const { id } = useParams()
   const { user, profile } = useAuth()
-  const isParent = Boolean(user) && profile?.role === 'parent'
   const isMember = Boolean(profile?.is_member)
 
   const [listing, setListing] = useState(null)
@@ -304,7 +303,7 @@ export default function ListingDetail() {
               listingOwnerId={listing.user_id}
               category={listing.category}
               user={user}
-              isParent={isParent}
+              isMember={isMember}
               onSummary={setReviewSummary}
             />
           </div>

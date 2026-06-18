@@ -32,7 +32,7 @@ function reviewPrompts(category) {
   }
 }
 
-export default function ReviewsSection({ listingId, listingOwnerId, category, user, isParent, onSummary }) {
+export default function ReviewsSection({ listingId, listingOwnerId, category, user, isMember, onSummary }) {
   const [reviews, setReviews] = useState([])
   const [loading, setLoading] = useState(true)
 
@@ -43,7 +43,7 @@ export default function ReviewsSection({ listingId, listingOwnerId, category, us
 
   const isOwner = Boolean(user) && user.id === listingOwnerId
   const myReview = user ? reviews.find((r) => r.reviewer_id === user.id) : null
-  const canReview = isParent && !isOwner
+  const canReview = isMember && !isOwner
   const prompts = reviewPrompts(category)
 
   async function load() {
@@ -193,11 +193,11 @@ export default function ReviewsSection({ listingId, listingOwnerId, category, us
         </form>
       )}
 
-      {/* Prompt for non-parents */}
+      {/* Prompt for non-members */}
       {!canReview && !isOwner && (
         <p className="text-white/50 text-sm" style={{ marginBottom: 16 }}>
-          <Link to="/register" className="underline">
-            Join as a parent
+          <Link to={user ? '/membership' : '/register'} className="underline">
+            {user ? 'Become a member' : 'Sign in'}
           </Link>{' '}
           {prompts.join}.
         </p>
