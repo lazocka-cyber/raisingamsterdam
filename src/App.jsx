@@ -23,6 +23,8 @@ import PostListing from './pages/PostListing.jsx'
 import MyListings from './pages/MyListings.jsx'
 import SosBoard from './pages/SosBoard.jsx'
 import PostSos from './pages/PostSos.jsx'
+import DeleteAccount from './pages/DeleteAccount.jsx'
+import OnboardingCarousel from './components/OnboardingCarousel.jsx'
 
 const NAVY = '#042C53'
 
@@ -177,6 +179,10 @@ function Layout({ children }) {
       <footer className="border-t border-white/10">
         <div className="mx-auto max-w-5xl px-6 py-6 text-center text-white/40 text-sm">
           © {new Date().getFullYear()} RaisingAmsterdam
+          <span className="mx-2">·</span>
+          <Link to="/delete-account" className="hover:text-white/70 underline">
+            Delete account
+          </Link>
         </div>
       </footer>
     </div>
@@ -188,6 +194,7 @@ export default function App() {
     <BrowserRouter>
       <AuthProvider>
         <AuthCallback />
+        <OnboardingCarousel />
         <Layout>
           <Routes>
             <Route path="/" element={<Home />} />
@@ -196,6 +203,7 @@ export default function App() {
             <Route path="/listings/:id" element={<ListingDetail />} />
             <Route path="/guides" element={<Guides />} />
             <Route path="/membership" element={<Membership />} />
+            <Route path="/delete-account" element={<DeleteAccount />} />
             <Route path="/meetups" element={<Meetups />} />
             <Route
               path="/meetups/new"

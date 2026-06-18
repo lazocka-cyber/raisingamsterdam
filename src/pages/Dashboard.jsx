@@ -561,6 +561,13 @@ export default function Dashboard() {
       ) : (
         <SitterOnboarding listings={listings} />
       )}
+
+      {/* Account management */}
+      <div className="mt-10 pt-6 border-t border-white/10 text-center">
+        <Link to="/delete-account" className="text-white/40 text-sm hover:text-white/70 underline">
+          Delete account
+        </Link>
+      </div>
     </section>
   )
 }
