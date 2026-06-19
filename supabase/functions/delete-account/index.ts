@@ -50,7 +50,28 @@ Deno.serve(async (req) => {
     }
     const userId = userData.user.id
 
-    // Delete the auth user → cascades to all their data.
+    // Storage is NOT covered by ON DELETE CASCADE (that only handles DB rows).
+    // First delete the user's uploaded photos from the 'listing-photos' bucket —
+    // they live under a folder named after the user id ("<userId>/<file>").
+    try {
+      const { data: files, error: listErr } = await admin.storage
+        .from('listing-photos')
+        .list(userId, { limit: 1000 })
+      if (listErr) {
+        console.log('delete-account: storage list error', userId, listErr.message)
+      } else if (files && files.length > 0) {
+        const paths = files.map((f) => `${userId}/${f.name}`)
+        const { error: rmErr } = await admin.storage
+          .from('listing-photos')
+          .remove(paths)
+        if (rmErr) console.log('delete-account: storage remove error', userId, rmErr.message)
+        else console.log('delete-account: removed', paths.length, 'photo(s) for', userId)
+      }
+    } catch (se) {
+      console.log('delete-account: storage cleanup failed', String(se))
+    }
+
+    // Delete the auth user → cascades to all their data (DB tables).
     const { error: delErr } = await admin.auth.admin.deleteUser(userId)
     if (delErr) {
       console.log('delete-account: error deleting', userId, delErr.message)
