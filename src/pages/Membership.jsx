@@ -7,7 +7,9 @@ const GREEN = '#34d399'
 const PURPLE = '#a78bfa'
 const BLUE = '#60d0ff'
 const NAVY = '#042C53'
-const GUMROAD_PERMALINK = 'raisingamsterdam'
+// Gumroad's license-verify API requires product_id (product_permalink is deprecated
+// and now returns a 500 error). This is the permanent product id for RaisingAmsterdam.
+const GUMROAD_PRODUCT_ID = 'VOF8vIcvX467FskYJ5A5Pg=='
 // On localhost we skip the Gumroad check so membership can be tested without a
 // real key. ALWAYS enforced in the production build on Vercel.
 const DEV_SKIP_LICENSE = import.meta.env.DEV
@@ -17,7 +19,7 @@ async function verifyGumroadLicense(licenseKey) {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: new URLSearchParams({
-      product_permalink: GUMROAD_PERMALINK,
+      product_id: GUMROAD_PRODUCT_ID,
       license_key: licenseKey,
       increment_uses_count: 'false',
     }),
