@@ -176,7 +176,7 @@ export default function Membership() {
         <p className="text-white/50 text-sm" style={{ marginTop: 16 }}>
           Don't have a key yet?{' '}
           <a
-            href="https://gumroad.com"
+            href="https://peuterpraktisch.gumroad.com/l/raisingamsterdam"
             target="_blank"
             rel="noopener noreferrer"
             style={{ color: BLUE, fontWeight: 600 }}
