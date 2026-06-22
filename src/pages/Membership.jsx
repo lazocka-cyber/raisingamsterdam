@@ -7,26 +7,10 @@ const GREEN = '#34d399'
 const PURPLE = '#a78bfa'
 const BLUE = '#60d0ff'
 const NAVY = '#042C53'
-// Gumroad's license-verify API requires product_id (product_permalink is deprecated
-// and now returns a 500 error). This is the permanent product id for RaisingAmsterdam.
-const GUMROAD_PRODUCT_ID = 'VOF8vIcvX467FskYJ5A5Pg=='
-// On localhost we skip the Gumroad check so membership can be tested without a
-// real key. ALWAYS enforced in the production build on Vercel.
-const DEV_SKIP_LICENSE = import.meta.env.DEV
-
-async function verifyGumroadLicense(licenseKey) {
-  const res = await fetch('https://api.gumroad.com/v2/licenses/verify', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: new URLSearchParams({
-      product_id: GUMROAD_PRODUCT_ID,
-      license_key: licenseKey,
-      increment_uses_count: 'false',
-    }),
-  })
-  const data = await res.json().catch(() => ({ success: false }))
-  return Boolean(data.success)
-}
+// Membership is granted SERVER-SIDE by the Edge Function `verify-membership`:
+// it checks the Gumroad licence with the secret service-role key and sets
+// is_member. The browser can no longer set is_member itself — that column is
+// locked in the database, so the only way in is through this verified path.
 
 const inputStyle = {
   background: 'rgba(255,255,255,0.06)',
@@ -102,23 +86,24 @@ export default function Membership() {
   async function handleUnlock(e) {
     e.preventDefault()
     setError('')
-    if (!DEV_SKIP_LICENSE && !licenseKey.trim()) {
+    if (!licenseKey.trim()) {
       setError('Enter your access key, or buy access below.')
       return
     }
     setLoading(true)
     try {
-      const valid = DEV_SKIP_LICENSE ? true : await verifyGumroadLicense(licenseKey.trim())
-      if (!valid) {
-        setError('That key looks invalid. Double-check it, or buy access below.')
-        return
-      }
-      const { error: dbError } = await supabase
-        .from('profiles')
-        .update({ is_member: true, license_key: licenseKey.trim() || null })
-        .eq('id', user.id)
-      if (dbError) {
-        setError(dbError.message)
+      const { data, error: fnError } = await supabase.functions.invoke('verify-membership', {
+        body: { license_key: licenseKey.trim() },
+      })
+      if (fnError || !data?.ok) {
+        const code = data?.error
+        setError(
+          code === 'REFUNDED'
+            ? 'This purchase was refunded, so it can no longer unlock access.'
+            : code === 'INVALID_KEY'
+              ? 'That key looks invalid. Double-check it, or buy access below.'
+              : 'Could not verify your key right now. Please try again.',
+        )
         return
       }
       await refreshProfile()
