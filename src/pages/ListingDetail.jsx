@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
-import { BADGE, EXPERIENCE_LABELS, formatPrice, waNumber } from '../lib/listingUtils'
+import { BADGE, EXPERIENCE_LABELS, formatPrice, LISTING_COLUMNS, openListingContact } from '../lib/listingUtils'
 import { Stars } from '../components/Stars'
 import ReviewsSection from '../components/ReviewsSection'
 
@@ -104,37 +104,21 @@ function ContactButton({ listing, user, isMember }) {
     )
   }
 
-  if (!listing.phone) {
-    return (
-      <button
-        type="button"
-        disabled
-        style={{
-          ...base,
-          background: 'rgba(255,255,255,0.08)',
-          color: 'rgba(255,255,255,0.4)',
-          border: '1px solid rgba(255,255,255,0.12)',
-          cursor: 'not-allowed',
-        }}
-      >
-        No contact info
-      </button>
-    )
-  }
-
+  // Member → fetch the number securely on click, then open WhatsApp.
   return (
-    <a
-      href={`https://wa.me/${waNumber(listing.phone)}`}
-      target="_blank"
-      rel="noopener noreferrer"
+    <button
+      type="button"
+      onClick={() => openListingContact(listing.id)}
       style={{
         ...base,
         background: 'linear-gradient(90deg, #34d399, #60d0ff)',
         color: '#0b1220',
+        border: 'none',
+        cursor: 'pointer',
       }}
     >
       💬 Contact via WhatsApp
-    </a>
+    </button>
   )
 }
 
@@ -154,7 +138,7 @@ export default function ListingDetail() {
       setLoading(true)
       const { data, error: dbError } = await supabase
         .from('listings')
-        .select('*')
+        .select(LISTING_COLUMNS)
         .eq('id', id)
         .single()
       if (cancelled) return

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
-import { BADGE, formatPrice } from '../lib/listingUtils'
+import { BADGE, formatPrice, LISTING_COLUMNS } from '../lib/listingUtils'
 
 function CategoryBadge({ category }) {
   const badge = BADGE[category] ?? { label: category, color: '#9ca3af' }
@@ -198,7 +198,7 @@ export default function MyListings() {
       setLoading(true)
       const { data, error: dbError } = await supabase
         .from('listings')
-        .select('*')
+        .select(LISTING_COLUMNS)
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
       if (cancelled) return

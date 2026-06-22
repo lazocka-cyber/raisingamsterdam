@@ -1,5 +1,31 @@
 // Shared listing helpers — used by Listings.jsx and ListingDetail.jsx.
 
+import { supabase } from './supabase'
+
+// Explicit list of listing columns the app reads — deliberately EXCLUDES `phone`.
+// The phone number is private and is fetched on demand via the get_listing_contact
+// RPC (members / the owner only), never sent in the public listing rows.
+export const LISTING_COLUMNS =
+  'id, user_id, title, description, category, price, location, contact_email, created_at, postcode, languages, experience_years, availability, age_groups, photo_url'
+
+// Fetch a listing's WhatsApp number securely and open the chat.
+// The database function returns the number only to a paying member (or the
+// listing's owner); everyone else gets an error and a friendly nudge.
+export async function openListingContact(listingId) {
+  const { data, error } = await supabase.rpc('get_listing_contact', {
+    p_listing_id: listingId,
+  })
+  if (error) {
+    alert('Unlocking contact is for members. Please activate your membership first.')
+    return
+  }
+  if (!data) {
+    alert('This listing has no contact number yet.')
+    return
+  }
+  window.open(`https://wa.me/${waNumber(data)}`, '_blank', 'noopener,noreferrer')
+}
+
 // Category badge colours (match the form's section accent colours).
 export const BADGE = {
   babysitter: { label: 'Babysitter', color: '#a78bfa' },

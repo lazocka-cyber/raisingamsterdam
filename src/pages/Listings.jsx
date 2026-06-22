@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
-import { BADGE, formatPrice, waNumber } from '../lib/listingUtils'
+import { BADGE, formatPrice, LISTING_COLUMNS, openListingContact } from '../lib/listingUtils'
 import { Stars } from '../components/Stars'
 
 const CATEGORIES = [
@@ -126,24 +126,26 @@ function ContactAction({ listing, user, isMember }) {
     )
   }
 
-  // Member, but the listing has no number.
-  if (!listing.phone) {
-    return (
-      <span style={{ ...pillStyle, color: 'rgba(255,255,255,0.4)' }}>No contact info</span>
-    )
-  }
-
-  // Member with a number → live WhatsApp link.
+  // Member → fetch the number securely on click, then open WhatsApp.
   return (
-    <a
-      href={`https://wa.me/${waNumber(listing.phone)}`}
-      target="_blank"
-      rel="noopener noreferrer"
-      onClick={stop}
-      style={{ color: '#34d399', fontWeight: 600, fontSize: 14 }}
+    <button
+      type="button"
+      onClick={(e) => {
+        stop(e)
+        openListingContact(listing.id)
+      }}
+      style={{
+        background: 'none',
+        border: 'none',
+        padding: 0,
+        cursor: 'pointer',
+        color: '#34d399',
+        fontWeight: 600,
+        fontSize: 14,
+      }}
     >
       💬 Contact via WhatsApp
-    </a>
+    </button>
   )
 }
 
@@ -239,7 +241,7 @@ export default function Listings() {
       setLoading(true)
       const { data, error: dbError } = await supabase
         .from('listings')
-        .select('*')
+        .select(LISTING_COLUMNS)
         .order('created_at', { ascending: false })
       if (cancelled) return
       if (dbError) {

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
+import { LISTING_COLUMNS } from '../lib/listingUtils'
 
 const GREEN = '#34d399'
 const PURPLE = '#a78bfa'
@@ -491,7 +492,7 @@ export default function Dashboard() {
     async function load() {
       const { data } = await supabase
         .from('listings')
-        .select('*')
+        .select(LISTING_COLUMNS)
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
       if (cancelled) return

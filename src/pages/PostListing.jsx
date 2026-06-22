@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
+import { LISTING_COLUMNS } from '../lib/listingUtils'
 import ParticleHeader from '../components/ParticleHeader'
 
 const DESC_MAX = 500
@@ -224,7 +225,7 @@ export default function PostListing() {
       setLoading(true)
       const { data, error: dbError } = await supabase
         .from('listings')
-        .select('*')
+        .select(LISTING_COLUMNS)
         .eq('id', id)
         .eq('user_id', user.id)
         .single()
@@ -246,8 +247,13 @@ export default function PostListing() {
       setAgeGroups(data.age_groups ?? [])
       setLanguages(data.languages ?? [])
       setAvailability(data.availability ?? [])
-      setPhone(data.phone ?? '')
       setPhotoUrl(data.photo_url ?? '')
+      // Phone is no longer part of the public listing row — fetch the owner's
+      // own number securely via the contact RPC (it returns it to the owner).
+      const { data: ownPhone } = await supabase.rpc('get_listing_contact', {
+        p_listing_id: id,
+      })
+      if (!cancelled) setPhone(ownPhone ?? '')
       setLoading(false)
     }
     load()
