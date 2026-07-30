@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext'
 import { BADGE, EXPERIENCE_LABELS, formatPrice, LISTING_COLUMNS, openListingContact } from '../lib/listingUtils'
 import { Stars } from '../components/Stars'
 import ReviewsSection from '../components/ReviewsSection'
+import LinkifiedText from '../components/LinkifiedText'
 
 function CategoryBadge({ category }) {
   const badge = BADGE[category] ?? { label: category, color: '#9ca3af' }
@@ -232,11 +233,12 @@ export default function ListingDetail() {
               </div>
             </div>
 
-            {/* Full description */}
+            {/* Full description — webové adresy jsou klikatelné */}
             {listing.description && (
-              <p className="text-white/70 mt-4 whitespace-pre-line leading-relaxed">
-                {listing.description}
-              </p>
+              <LinkifiedText
+                text={listing.description}
+                className="text-white/70 mt-4 whitespace-pre-line leading-relaxed"
+              />
             )}
 
             {/* Info grid */}

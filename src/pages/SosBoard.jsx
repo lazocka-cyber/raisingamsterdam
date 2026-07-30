@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
 import { waNumber } from '../lib/listingUtils'
 import NotifyButton from '../components/NotifyButton'
+import LinkifiedText from '../components/LinkifiedText'
 
 const RED = '#ef4444'
 
@@ -45,7 +46,7 @@ function SosCard({ sos, isOwner, onClose, onDelete, busy }) {
         {sos.child_age && <span>👶 {sos.child_age}</span>}
       </div>
 
-      {sos.note && <p className="text-white/75 text-sm mt-3 whitespace-pre-line">{sos.note}</p>}
+      {sos.note && <LinkifiedText text={sos.note} className="text-white/75 text-sm mt-3 whitespace-pre-line" />}
 
       <div className="mt-4 pt-3" style={{ borderTop: '1px solid rgba(255,255,255,0.12)' }}>
         {isOwner ? (

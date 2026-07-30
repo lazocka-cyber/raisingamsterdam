@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
 import { waNumber } from '../lib/listingUtils'
+import LinkifiedText from '../components/LinkifiedText'
 
 const PURPLE = '#a78bfa'
 const BLUE = '#60d0ff'
@@ -86,7 +87,7 @@ function MeetupCard({ item, isOwner, onDelete, busy }) {
       </div>
 
       {item.body && (
-        <p className="text-white/75 text-sm mt-3 whitespace-pre-line">{item.body}</p>
+        <LinkifiedText text={item.body} className="text-white/75 text-sm mt-3 whitespace-pre-line" />
       )}
 
       <div className="mt-4 pt-3" style={{ borderTop: '1px solid rgba(255,255,255,0.12)' }}>
