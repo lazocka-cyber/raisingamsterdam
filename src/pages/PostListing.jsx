@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
 import { LISTING_COLUMNS } from '../lib/listingUtils'
+import { trackLead, getAttribution } from '../lib/tracking.js'
 import ParticleHeader from '../components/ParticleHeader'
 
 const DESC_MAX = 500
@@ -349,7 +350,8 @@ export default function PostListing() {
         ? await supabase.from('listings').update(payload).eq('id', id)
         : await supabase
             .from('listings')
-            .insert({ ...payload, user_id: user?.id ?? null })
+            // source = odkud přišel (utm/fbclid/referrer) — jen u nového inzerátu
+            .insert({ ...payload, user_id: user?.id ?? null, source: getAttribution() })
 
       if (dbError) {
         setError(dbError.message)
@@ -358,6 +360,8 @@ export default function PostListing() {
       if (isEdit) {
         navigate('/my-listings', { state: { toast: 'Listing updated! ✅' } })
       } else {
+        // Meta Pixel konverze — až po potvrzeném úspěchu insertu
+        trackLead()
         navigate('/listings', { state: { toast: 'Your listing is live! 🎉' } })
       }
     } catch (err) {

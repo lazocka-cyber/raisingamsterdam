@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
   BrowserRouter,
   Routes,
@@ -7,7 +7,10 @@ import {
   Link,
   Navigate,
   useNavigate,
+  useLocation,
 } from 'react-router-dom'
+import { Analytics } from '@vercel/analytics/react'
+import { trackPageView } from './lib/tracking.js'
 import { AuthProvider, useAuth } from './context/AuthContext.jsx'
 import { supabase } from './lib/supabase'
 import Home from './pages/Home.jsx'
@@ -27,6 +30,22 @@ import DeleteAccount from './pages/DeleteAccount.jsx'
 import OnboardingCarousel from './components/OnboardingCarousel.jsx'
 
 const NAVY = '#042C53'
+
+// Meta Pixel: PageView při každé změně routy. Base kód v index.html pokryje
+// jen úplně první načtení — appka je SPA, další "stránky" se bez tohoto
+// nezměří. První render se přeskakuje, aby se PageView nepočítal dvakrát.
+function RouteTracker() {
+  const location = useLocation()
+  const isFirstRender = useRef(true)
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false
+      return
+    }
+    trackPageView()
+  }, [location.pathname])
+  return null
+}
 
 // Handles the Supabase magic-link redirect. Supabase appends #access_token
 // to the URL hash; once the session is established we send the user to the
@@ -213,6 +232,8 @@ export default function App() {
     <BrowserRouter>
       <AuthProvider>
         <AuthCallback />
+        <RouteTracker />
+        <Analytics />
         <OnboardingCarousel />
         <Layout>
           <Routes>

@@ -1,5 +1,11 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
+import {
+  shouldTrackRegistration,
+  trackRegistration,
+  isFreshAccount,
+  getAttribution,
+} from '../lib/tracking.js'
 
 // Set by the parent "Continue with Google" flow in Register.jsx. A new Google
 // account is created with the default 'sitter' role, so after the redirect we
@@ -86,11 +92,39 @@ export function AuthProvider({ children }) {
       return updated ?? { ...currentProfile, role: 'parent' }
     }
 
+    // Registrace jde přes Google OAuth / magic link (redirect), takže žádný
+    // signUp success handler neexistuje — konverzi měříme tady, když se nový
+    // uživatel poprvé objeví se session. shouldTrackRegistration hlídá, aby
+    // událost nechodila při každém přihlášení.
+    function maybeTrackRegistration(currentUser) {
+      if (!shouldTrackRegistration(currentUser)) return
+      trackRegistration()
+    }
+
+    // First-party zdroj (utm/fbclid/referrer z localStorage) → profiles.source.
+    // Zapisuje se jen jednou, jen u čerstvých účtů, a jen když řádek profilu
+    // už existuje (trigger ho vytváří server-side s malým zpožděním — pokud
+    // ještě není, zkusí se to při příštím načtení).
+    async function maybeSaveSource(currentUser, profileRow) {
+      if (!profileRow || profileRow.source) return
+      if (!isFreshAccount(currentUser)) return
+      const attribution = getAttribution()
+      if (!attribution) return
+      const { error: sourceError } = await supabase
+        .from('profiles')
+        .update({ source: attribution })
+        .eq('id', currentUser.id)
+      if (sourceError) {
+        console.warn('Could not save signup source:', sourceError.message)
+      }
+    }
+
     async function loadProfile(currentUser) {
       if (!currentUser) {
         if (active) setProfile(null)
         return
       }
+      maybeTrackRegistration(currentUser)
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
@@ -105,6 +139,8 @@ export function AuthProvider({ children }) {
       // New users may briefly have no profile row yet (trigger runs server
       // side). Treat a missing role as 'sitter' so the UI behaves sensibly.
       const baseProfile = data ?? { id: currentUser.id, role: 'sitter' }
+      // Fire-and-forget — zápis zdroje nesmí zdržet načtení profilu.
+      if (data) maybeSaveSource(currentUser, data)
       const finalProfile = await maybeUpgradeToParent(currentUser, baseProfile)
       if (!active) return
       setProfile(finalProfile)
