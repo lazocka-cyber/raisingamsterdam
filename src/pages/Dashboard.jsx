@@ -313,7 +313,7 @@ function AddToHomeScreen() {
       <>
         <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: 14, lineHeight: 1.5, marginBottom: 16 }}>
           You're on a computer right now. To add RaisingAmsterdam to your phone,
-          open <strong>raisingamsterdam.vercel.app</strong> on your phone and follow
+          open <strong>raisingamsterdam.com</strong> on your phone and follow
           the steps below.
         </p>
         <div className="grid gap-6 sm:grid-cols-2">

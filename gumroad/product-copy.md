@@ -83,4 +83,4 @@ No — it's a friendly starting point to help you find your way. Always confirm 
 ## Receipt / thank-you note (after purchase)
 Welcome to RaisingAmsterdam 💛 Here's your access key: **[Gumroad license key]**
 
-To unlock the app: open raisingamsterdam.vercel.app → Membership → paste your key. That's it — you're in for good, no subscription. See you in the community!
+To unlock the app: open raisingamsterdam.com → Membership → paste your key. That's it — you're in for good, no subscription. See you in the community!
