@@ -42,8 +42,9 @@ if [ "$#" -gt 0 ]; then
   echo "Posilam $# zadanych adres."
 else
   echo "Ctu adresy ze sitemap.xml ..."
+  # Pozn.: BSD sed na macOS nezna \? — proto dve samostatne substituce.
   # shellcheck disable=SC2207
-  URLS=($(grep -o '<loc>[^<]*</loc>' public/sitemap.xml | sed 's|</\?loc>||g'))
+  URLS=($(grep -o '<loc>[^<]*</loc>' public/sitemap.xml | sed 's|<loc>||g; s|</loc>||g'))
   echo "Nalezeno ${#URLS[@]} adres v sitemape."
 fi
 
