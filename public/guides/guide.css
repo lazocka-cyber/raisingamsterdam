@@ -1,0 +1,169 @@
+/* RaisingAmsterdam — staticke guide stranky.
+   Ladi s appkou: tmave pozadi #1a1a2e, fialova #a78bfa, zelena #34d399, modra #60d0ff. */
+
+:root {
+  --bg: #1a1a2e;
+  --bg-deep: #0b1220;
+  --card: rgba(255, 255, 255, 0.04);
+  --card-hover: rgba(255, 255, 255, 0.07);
+  --line: rgba(255, 255, 255, 0.11);
+  --ink: #e9e9f2;
+  --muted: #a3a3bd;
+  --purple: #a78bfa;
+  --green: #34d399;
+  --blue: #60d0ff;
+  --amber: #fbbf24;
+  --navy: #042c53;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+.wrap { max-width: 800px; margin: 0 auto; padding: 0 20px; }
+
+/* --- horni lista --- */
+.topbar {
+  border-bottom: 1px solid var(--line);
+  background: rgba(11, 18, 32, 0.6);
+  position: sticky;
+  top: 0;
+  backdrop-filter: blur(10px);
+  z-index: 10;
+}
+.topbar .wrap { display: flex; align-items: center; justify-content: space-between; height: 60px; gap: 16px; }
+.brand { font-weight: 700; font-size: 17px; color: var(--ink); text-decoration: none; letter-spacing: -0.2px; }
+.brand span { color: var(--purple); }
+.topbar nav { display: flex; gap: 18px; font-size: 14px; }
+.topbar nav a { color: var(--muted); text-decoration: none; }
+.topbar nav a:hover { color: var(--ink); }
+
+/* --- drobeckova navigace --- */
+.crumbs { font-size: 13px; color: var(--muted); padding: 22px 0 0; }
+.crumbs a { color: var(--muted); text-decoration: none; }
+.crumbs a:hover { color: var(--purple); text-decoration: underline; }
+
+/* --- hlavicka stranky --- */
+header.page { padding: 18px 0 34px; }
+header.page .kicker {
+  display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: 1.4px;
+  text-transform: uppercase; color: var(--purple);
+  background: rgba(167, 139, 250, 0.13); border: 1px solid rgba(167, 139, 250, 0.3);
+  padding: 5px 11px; border-radius: 999px; margin-bottom: 16px;
+}
+h1 { font-size: clamp(28px, 5vw, 42px); line-height: 1.15; letter-spacing: -0.9px; font-weight: 800; }
+header.page .lede { font-size: 18px; color: var(--muted); margin-top: 14px; max-width: 62ch; }
+
+/* --- obsah --- */
+main { padding-bottom: 40px; }
+
+section.block {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 26px 26px 22px;
+  margin-bottom: 20px;
+}
+section.block > h2 {
+  font-size: 23px; font-weight: 750; letter-spacing: -0.4px; line-height: 1.25;
+  margin-bottom: 10px; scroll-margin-top: 80px;
+}
+section.block > .intro { color: var(--muted); margin-bottom: 18px; }
+
+h3 {
+  font-size: 17px; font-weight: 700; margin: 24px 0 10px;
+  color: var(--blue); scroll-margin-top: 80px;
+}
+h3:first-of-type { margin-top: 6px; }
+
+ul { list-style: none; }
+ul li {
+  position: relative; padding-left: 22px; margin-bottom: 11px;
+}
+ul li::before {
+  content: ''; position: absolute; left: 4px; top: 11px;
+  width: 6px; height: 6px; border-radius: 50%; background: var(--purple);
+}
+ul li strong { color: var(--ink); font-weight: 650; }
+
+a { color: var(--blue); }
+a:hover { color: var(--purple); }
+
+/* --- zdroje --- */
+.sources {
+  margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line);
+}
+.sources p {
+  font-size: 12px; font-weight: 700; letter-spacing: 1.1px; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 10px;
+}
+.sources ul li { padding-left: 20px; margin-bottom: 7px; font-size: 14.5px; }
+.sources ul li::before {
+  content: '↗'; background: none; width: auto; height: auto;
+  left: 0; top: 0; color: var(--green); font-size: 12px;
+}
+.sources a { color: var(--muted); text-decoration: none; border-bottom: 1px solid var(--line); }
+.sources a:hover { color: var(--green); border-color: var(--green); }
+
+/* --- rozcestnik na hubu --- */
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 14px; margin: 6px 0 28px; }
+.card {
+  display: block; text-decoration: none; color: inherit;
+  background: var(--card); border: 1px solid var(--line); border-radius: 14px;
+  padding: 20px; transition: background 0.15s, border-color 0.15s, transform 0.15s;
+}
+.card:hover { background: var(--card-hover); border-color: rgba(167, 139, 250, 0.45); transform: translateY(-2px); }
+.card .ico { font-size: 24px; display: block; margin-bottom: 10px; }
+.card h3 {
+  font-size: 17px; font-weight: 700; margin: 0 0 6px;
+  letter-spacing: -0.2px; color: var(--ink);
+}
+.card:hover h3 { color: var(--purple); }
+.card p { font-size: 14px; color: var(--muted); line-height: 1.5; }
+
+/* --- vyzva k akci --- */
+.cta {
+  background: linear-gradient(135deg, rgba(167, 139, 250, 0.15), rgba(52, 211, 153, 0.1));
+  border: 1px solid rgba(167, 139, 250, 0.32);
+  border-radius: 16px; padding: 28px; text-align: center; margin: 30px 0;
+}
+.cta h2 { font-size: 21px; font-weight: 750; margin-bottom: 8px; letter-spacing: -0.3px; }
+.cta p { color: var(--muted); margin-bottom: 18px; max-width: 48ch; margin-left: auto; margin-right: auto; }
+.btn {
+  display: inline-block; background: var(--purple); color: #16162a;
+  font-weight: 700; font-size: 15px; text-decoration: none;
+  padding: 12px 26px; border-radius: 999px; transition: filter 0.15s;
+}
+.btn:hover { filter: brightness(1.1); color: #16162a; }
+
+/* --- upozorneni --- */
+.note {
+  font-size: 14px; color: var(--muted);
+  background: rgba(251, 191, 36, 0.07); border: 1px solid rgba(251, 191, 36, 0.25);
+  border-radius: 12px; padding: 15px 18px; margin: 24px 0;
+}
+.note strong { color: var(--amber); }
+
+/* --- paticka --- */
+footer {
+  border-top: 1px solid var(--line); margin-top: 20px; padding: 26px 0 44px;
+  font-size: 14px; color: var(--muted);
+}
+footer .links { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 14px; }
+footer a { color: var(--muted); text-decoration: none; }
+footer a:hover { color: var(--purple); }
+footer .fine { font-size: 13px; opacity: 0.75; line-height: 1.55; }
+
+@media (max-width: 560px) {
+  .topbar nav { display: none; }
+  section.block { padding: 22px 18px 18px; }
+  .cta { padding: 24px 18px; }
+}

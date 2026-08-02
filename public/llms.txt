@@ -1,0 +1,34 @@
+# RaisingAmsterdam
+
+> A community platform for expat parents raising children in Amsterdam and the wider Netherlands. It connects families with babysitters, nannies and local child-related services, hosts parent meetups, runs an urgent "SOS" board for last-minute childcare help, and publishes practical plain-English guides to the Dutch system for parents who did not grow up in it.
+
+RaisingAmsterdam is written for internationals — people who moved to the Netherlands and have to work out Dutch healthcare, childcare, allowances and schooling from scratch, usually without speaking Dutch. The guides explain the Dutch terms (huisarts, kraamzorg, consultatiebureau, kinderopvangtoeslag, basisschool, zwemdiploma) in everyday English and link to the official Dutch sources.
+
+The content is written by a childcare professional based in Amsterdam. It is practical orientation, not official or medical advice; rules change, so each guide links out to the authoritative source.
+
+## Guides
+
+- [Childcare & daycare](https://raisingamsterdam.com/guides/childcare-and-daycare.html): KDV full-day daycare, peuteropvang, VVE early education, what childcare costs, the kinderopvangtoeslag allowance, and how to judge a daycare using the GGD report and the LRK register.
+- [Your child's health](https://raisingamsterdam.com/guides/childrens-healthcare.html): Free health insurance for under-18s, registering with a huisarts (GP), the consultatiebureau, free dental care, and which complementary therapies (osteopathy, acupuncture, anthroposophic medicine, homeopathy) supplementary insurance reimburses for children.
+- [Midwife & kraamzorg](https://raisingamsterdam.com/guides/birth-and-kraamzorg.html): What a verloskundige does, what kraamzorg postnatal home care includes, how many hours you get, the 2026 own contribution of €5.70 per hour, and when to book.
+- [Primary school in Amsterdam](https://raisingamsterdam.com/guides/primary-school-amsterdam.html): Basisschool starting age and leerplicht, Amsterdam's joint registration system, openbaar versus bijzonder schools, and the Montessori, Dalton, Jenaplan, vrijeschool, Reggio Emilia and Freinet teaching styles.
+- [Paperwork & waiting lists](https://raisingamsterdam.com/guides/registration-and-waiting-lists.html): Registering a birth within 3 days, getting a BSN and DigiD as a newcomer, and when to join every Dutch waiting list.
+- [Child & baby first aid](https://raisingamsterdam.com/guides/child-first-aid.html): Kinder-EHBO — what the course involves, English-language providers in Amsterdam, Oranje Kruis certification, and insurance reimbursement.
+- [Swimming & the zwemdiploma](https://raisingamsterdam.com/guides/swimming-and-zwemdiploma.html): The Zwem-ABC diplomas A, B and C, why children take the exam in their clothes, which diploma is needed at which pool, and how long it takes.
+- [Childcare in the Netherlands (full guide)](https://raisingamsterdam.com/childcare-guide.html): Long-form printable guide to Dutch childcare from start to finish.
+- [Guides hub in the app](https://raisingamsterdam.com/guides): The same guides inside the RaisingAmsterdam web app.
+
+## Community
+
+- [Listings](https://raisingamsterdam.com/listings): Babysitters, nannies and child-related services in Amsterdam offered by and for the parent community.
+- [SOS board](https://raisingamsterdam.com/sos): Urgent, last-minute requests for childcare help from local parents.
+- [Meetups](https://raisingamsterdam.com/meetups): In-person gatherings for expat parents and their children in Amsterdam.
+
+## About
+
+- [Membership](https://raisingamsterdam.com/membership): What membership includes and how it works.
+- [Register](https://raisingamsterdam.com/register): Create an account and join the community.
+
+## Topics covered
+
+Dutch healthcare for children, free health insurance for under-18s, registering with a huisarts (GP), the consultatiebureau (JGZ) baby and toddler clinic, verloskundige (midwife) care, kraamzorg postnatal home care and its cost, aanvullende (supplementary) insurance and reimbursement for osteopathy, acupuncture, anthroposophic medicine and homeopathy, child and baby first aid (kinder-EHBO), full-day daycare (KDV), peuteropvang and peuterspeelzaal, VVE early education, childcare costs and the kinderopvangtoeslag allowance, choosing a daycare, Dutch primary school (basisschool), openbaar versus bijzonder schools, Montessori Dalton Jenaplan and other onderwijsconcepten, school registration in Amsterdam, registering a newborn, BSN and DigiD basics for newcomers, childcare waiting lists, swimming lessons and the Dutch zwemdiploma.
