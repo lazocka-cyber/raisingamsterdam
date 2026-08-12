@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
 import { LISTING_COLUMNS } from '../lib/listingUtils'
@@ -481,6 +481,7 @@ function MembershipBanner() {
 
 export default function Dashboard() {
   const { user, profile, signOut, isMember } = useAuth()
+  const navigate = useNavigate()
   const role = profile?.role ?? 'sitter'
 
   const [listings, setListings] = useState([])
@@ -490,12 +491,27 @@ export default function Dashboard() {
     if (!user) return
     let cancelled = false
     async function load() {
-      const { data } = await supabase
+      const { data, error: dbError } = await supabase
         .from('listings')
         .select(LISTING_COLUMNS)
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
       if (cancelled) return
+      // Sitters without a listing get sent straight to the form — most people
+      // register and never find the "post a listing" button on their own.
+      // Parents (paid members) are exempt; "I'll do this later" on that page
+      // sets the flag so sitters can come back too.
+      let skipNudge = false
+      try {
+        skipNudge = sessionStorage.getItem('ra-skip-listing-nudge') === '1'
+      } catch {
+        // Storage blocked (strict cookie settings / webview) — never loop them.
+        skipNudge = true
+      }
+      if (!dbError && role !== 'parent' && (data ?? []).length === 0 && !skipNudge) {
+        navigate('/post-listing?welcome=1', { replace: true })
+        return
+      }
       setListings(data ?? [])
       setLoading(false)
     }
@@ -503,7 +519,7 @@ export default function Dashboard() {
     return () => {
       cancelled = true
     }
-  }, [user])
+  }, [user, navigate, role])
 
   return (
     <section className="mx-auto max-w-2xl px-6 py-16">

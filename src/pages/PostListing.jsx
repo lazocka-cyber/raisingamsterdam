@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
 import { LISTING_COLUMNS } from '../lib/listingUtils'
@@ -196,7 +196,20 @@ export default function PostListing() {
   const { user } = useAuth()
   const navigate = useNavigate()
   const { id } = useParams()
+  const [searchParams] = useSearchParams()
   const isEdit = Boolean(id)
+  // Set when the dashboard forwarded a user who has no listing yet.
+  const isWelcome = !isEdit && searchParams.get('welcome') === '1'
+
+  function skipForNow() {
+    // Remember the choice for this session so the dashboard stops forwarding.
+    try {
+      sessionStorage.setItem('ra-skip-listing-nudge', '1')
+    } catch {
+      // Storage blocked — the dashboard treats that as "skip" anyway.
+    }
+    navigate('/dashboard')
+  }
 
   const [title, setTitle] = useState('')
   const [category, setCategory] = useState('babysitter')
@@ -390,6 +403,34 @@ export default function PostListing() {
           ? 'Update your listing details below.'
           : 'Share your profile with the RaisingAmsterdam community.'}
       </p>
+
+      {isWelcome && (
+        <div
+          style={{
+            marginTop: 20,
+            background: 'rgba(52,211,153,0.10)',
+            border: '1px solid rgba(52,211,153,0.4)',
+            borderRadius: 12,
+            padding: '16px 20px',
+          }}
+        >
+          <p className="text-white font-semibold">
+            🎉 You're in! One last step: finish your listing.
+          </p>
+          <p className="text-white/70 text-sm mt-1">
+            Fill in the form below so families can actually find you — it takes
+            just a few minutes. Without a listing, your profile stays invisible.
+          </p>
+          <button
+            type="button"
+            onClick={skipForNow}
+            className="text-white/50 text-sm underline mt-2"
+            style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+          >
+            I'll do this later — take me to my dashboard
+          </button>
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} style={{ marginTop: 24 }}>
         {/* 1. BASIC INFO */}
