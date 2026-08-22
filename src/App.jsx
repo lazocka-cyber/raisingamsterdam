@@ -221,6 +221,12 @@ function Layout({ children }) {
             </svg>
             Delete account
           </Link>
+          <div className="mt-2">
+            More from us:{' '}
+            <a href="https://www.raisingsmall.com" className="underline hover:text-white/70">RaisingSmall</a>
+            <span className="mx-2">·</span>
+            <a href="https://mysticapatyka.com/" className="underline hover:text-white/70">Mystická Apatyka</a>
+          </div>
         </div>
       </footer>
     </div>
