@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
 import { LISTING_COLUMNS } from '../lib/listingUtils'
@@ -481,7 +481,6 @@ function MembershipBanner() {
 
 export default function Dashboard() {
   const { user, profile, signOut, isMember } = useAuth()
-  const navigate = useNavigate()
   const role = profile?.role ?? 'sitter'
 
   const [listings, setListings] = useState([])
@@ -497,20 +496,10 @@ export default function Dashboard() {
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
       if (cancelled) return
-      // Sitters without a listing get sent straight to the form — most people
-      // register and never find the "post a listing" button on their own.
-      // Parents (paid members) are exempt; "I'll do this later" on that page
-      // sets the flag so sitters can come back too.
-      let skipNudge = false
-      try {
-        skipNudge = sessionStorage.getItem('ra-skip-listing-nudge') === '1'
-      } catch {
-        // Storage blocked (strict cookie settings / webview) — never loop them.
-        skipNudge = true
-      }
-      if (!dbError && role !== 'parent' && (data ?? []).length === 0 && !skipNudge) {
-        navigate('/post-listing?welcome=1', { replace: true })
-        return
+      // Forwarding users without a listing to the form now lives in
+      // ListingGate (App-level) — it covers every route, not just this one.
+      if (dbError) {
+        console.warn('Could not load listings:', dbError.message)
       }
       setListings(data ?? [])
       setLoading(false)
@@ -519,7 +508,7 @@ export default function Dashboard() {
     return () => {
       cancelled = true
     }
-  }, [user, navigate, role])
+  }, [user, role])
 
   return (
     <section className="mx-auto max-w-2xl px-6 py-16">
@@ -548,26 +537,51 @@ export default function Dashboard() {
         </button>
       </div>
 
-      {/* Model B: anyone can unlock contact (one-time). Members don't see this. */}
-      {!isMember && <MembershipBanner />}
+      {/* Sitters without a listing: the ONE thing to do here is publish it —
+          it goes first, pulsing, and the membership pitch waits its turn. */}
+      {!loading && role !== 'parent' && listings.length === 0 ? (
+        <div className="mb-6">
+          <Link
+            to="/post-listing?welcome=1"
+            className="listing-cta-pulse"
+            style={{
+              display: 'block',
+              background: 'linear-gradient(90deg, #34d399, #60d0ff)',
+              color: NAVY,
+              borderRadius: 12,
+              padding: '16px 20px',
+              fontWeight: 800,
+              fontSize: 16,
+              textAlign: 'center',
+            }}
+          >
+            ✍️ Your listing isn't live yet — publish it now (2 min)
+          </Link>
+        </div>
+      ) : (
+        <>
+          {/* Model B: anyone can unlock contact (one-time). Members don't see this. */}
+          {!isMember && <MembershipBanner />}
 
-      {/* Anyone can offer something — listing is free. */}
-      <div className="mb-6">
-        <Link
-          to="/post-listing"
-          style={{
-            display: 'inline-block',
-            background: 'rgba(255,255,255,0.08)',
-            color: 'white',
-            border: '1px solid rgba(255,255,255,0.18)',
-            borderRadius: 10,
-            padding: '10px 18px',
-            fontWeight: 600,
-          }}
-        >
-          ＋ Offer babysitting or a service — post a listing (free)
-        </Link>
-      </div>
+          {/* Anyone can offer something — listing is free. */}
+          <div className="mb-6">
+            <Link
+              to="/post-listing"
+              style={{
+                display: 'inline-block',
+                background: 'rgba(255,255,255,0.08)',
+                color: 'white',
+                border: '1px solid rgba(255,255,255,0.18)',
+                borderRadius: 10,
+                padding: '10px 18px',
+                fontWeight: 600,
+              }}
+            >
+              ＋ Offer babysitting or a service — post a listing (free)
+            </Link>
+          </div>
+        </>
+      )}
 
       {loading ? (
         <div style={{ background: '#1a1a2e', borderRadius: 16 }} className="p-10 text-center text-white/50">

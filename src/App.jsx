@@ -28,6 +28,7 @@ import SosBoard from './pages/SosBoard.jsx'
 import PostSos from './pages/PostSos.jsx'
 import DeleteAccount from './pages/DeleteAccount.jsx'
 import OnboardingCarousel from './components/OnboardingCarousel.jsx'
+import ListingGate from './components/ListingGate.jsx'
 
 const NAVY = '#042C53'
 
@@ -241,6 +242,7 @@ export default function App() {
         <RouteTracker />
         <Analytics />
         <OnboardingCarousel />
+        <ListingGate />
         <Layout>
           <Routes>
             <Route path="/" element={<Home />} />

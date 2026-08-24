@@ -38,6 +38,14 @@ const AuthContext = createContext({
   profile: null,
   loading: true,
   isMember: false,
+  // null = not known yet (query in flight), boolean once loaded.
+  hasListing: null,
+  markListingPosted: () => {},
+  // In-memory "leave me alone" flag for the listing gate. Deliberately NOT
+  // persisted: it must work in webviews with blocked storage, and resetting
+  // on refresh is desired — the gate should catch the user again next visit.
+  listingSnoozed: false,
+  snoozeListingGate: () => {},
   refreshProfile: async () => {},
   signOut: async () => {},
 })
@@ -46,6 +54,8 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
   const [profile, setProfile] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [hasListing, setHasListing] = useState(null)
+  const [listingSnoozed, setListingSnoozed] = useState(false)
 
   useEffect(() => {
     let active = true
@@ -119,6 +129,22 @@ export function AuthProvider({ children }) {
       }
     }
 
+    // Lightweight "does this user have any listing?" check — drives the
+    // listing gate. head:true means no rows travel over the wire.
+    async function loadHasListing(currentUser) {
+      if (!currentUser) {
+        if (active) setHasListing(null)
+        return
+      }
+      const { count, error } = await supabase
+        .from('listings')
+        .select('id', { count: 'exact', head: true })
+        .eq('user_id', currentUser.id)
+      if (!active) return
+      // On error stay at null — the gate treats "unknown" as "don't redirect".
+      setHasListing(error ? null : (count ?? 0) > 0)
+    }
+
     async function loadProfile(currentUser) {
       if (!currentUser) {
         if (active) setProfile(null)
@@ -157,7 +183,10 @@ export function AuthProvider({ children }) {
       const nextUser = session?.user ?? null
       setUser(nextUser)
       setTimeout(() => {
-        if (active) loadProfile(nextUser)
+        if (active) {
+          loadProfile(nextUser)
+          loadHasListing(nextUser)
+        }
       }, 0)
     })
 
@@ -165,7 +194,10 @@ export function AuthProvider({ children }) {
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (!active) return
       setUser(session?.user ?? null)
-      await loadProfile(session?.user ?? null)
+      await Promise.all([
+        loadProfile(session?.user ?? null),
+        loadHasListing(session?.user ?? null),
+      ])
       if (active) setLoading(false)
     })
 
@@ -190,13 +222,35 @@ export function AuthProvider({ children }) {
     await supabase.auth.signOut()
     setUser(null)
     setProfile(null)
+    setHasListing(null)
+    setListingSnoozed(false)
+  }
+
+  // Flip the flag instantly after a successful insert — no refetch needed.
+  function markListingPosted() {
+    setHasListing(true)
+  }
+
+  function snoozeListingGate() {
+    setListingSnoozed(true)
   }
 
   const isMember = Boolean(profile?.is_member)
 
   return (
     <AuthContext.Provider
-      value={{ user, profile, loading, isMember, refreshProfile, signOut }}
+      value={{
+        user,
+        profile,
+        loading,
+        isMember,
+        hasListing,
+        markListingPosted,
+        listingSnoozed,
+        snoozeListingGate,
+        refreshProfile,
+        signOut,
+      }}
     >
       {children}
     </AuthContext.Provider>

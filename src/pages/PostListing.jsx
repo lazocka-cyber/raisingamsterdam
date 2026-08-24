@@ -4,9 +4,16 @@ import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
 import { LISTING_COLUMNS } from '../lib/listingUtils'
 import { trackLead, getAttribution } from '../lib/tracking.js'
+import { buzz, playTada } from '../lib/attention.js'
 import ParticleHeader from '../components/ParticleHeader'
+import ConfettiBurst from '../components/ConfettiBurst'
 
 const DESC_MAX = 500
+
+// Remembers "I offer babysitting" across mounts for this browser session, so
+// coming back from the exit-warning modal doesn't re-ask the role question.
+// Module-level on purpose: survives SPA navigation, resets on full reload.
+let sitterRoleChosen = false
 
 // Section accent colours
 const ACCENT = {
@@ -193,23 +200,22 @@ function PillGroup({ options, selected, onToggle }) {
 }
 
 export default function PostListing() {
-  const { user } = useAuth()
+  const { user, markListingPosted, refreshProfile } = useAuth()
   const navigate = useNavigate()
   const { id } = useParams()
   const [searchParams] = useSearchParams()
   const isEdit = Boolean(id)
-  // Set when the dashboard forwarded a user who has no listing yet.
+  // Set when the listing gate forwarded a user who has no listing yet.
   const isWelcome = !isEdit && searchParams.get('welcome') === '1'
-
-  function skipForNow() {
-    // Remember the choice for this session so the dashboard stops forwarding.
-    try {
-      sessionStorage.setItem('ra-skip-listing-nudge', '1')
-    } catch {
-      // Storage blocked — the dashboard treats that as "skip" anyway.
-    }
-    navigate('/dashboard')
+  // Welcome flow starts with a role fork: sitters continue to the form,
+  // parents get their profile flipped and are sent to browse listings.
+  const [roleChosen, setRoleChosenState] = useState(() => sitterRoleChosen)
+  function setRoleChosen(v) {
+    sitterRoleChosen = v
+    setRoleChosenState(v)
   }
+  const [roleSaving, setRoleSaving] = useState(false)
+  const [celebrating, setCelebrating] = useState(false)
 
   const [title, setTitle] = useState('')
   const [category, setCategory] = useState('babysitter')
@@ -229,6 +235,52 @@ export default function PostListing() {
   const [loading, setLoading] = useState(isEdit)
   const [photoUploading, setPhotoUploading] = useState(false)
   const [photoError, setPhotoError] = useState('')
+
+  // A little phone buzz on arriving at the welcome step — "one more thing!".
+  useEffect(() => {
+    if (isWelcome) buzz()
+  }, [isWelcome])
+
+  // Native browser warning when closing/reloading the tab with an unsaved,
+  // unpublished form (create mode only).
+  const dirty =
+    !isEdit &&
+    !celebrating &&
+    Boolean(
+      title.trim() ||
+        description.trim() ||
+        postcode.trim() ||
+        price.trim() ||
+        phone.trim(),
+    )
+  useEffect(() => {
+    if (!dirty) return
+    function onBeforeUnload(e) {
+      e.preventDefault()
+      e.returnValue = ''
+    }
+    window.addEventListener('beforeunload', onBeforeUnload)
+    return () => window.removeEventListener('beforeunload', onBeforeUnload)
+  }, [dirty])
+
+  async function chooseParent() {
+    if (!user || roleSaving) return
+    setRoleSaving(true)
+    const { error: roleError } = await supabase
+      .from('profiles')
+      .update({ role: 'parent' })
+      .eq('id', user.id)
+    if (roleError) {
+      setRoleSaving(false)
+      setError("Couldn't save your choice — please try again.")
+      return
+    }
+    await refreshProfile()
+    navigate('/listings', {
+      state: { toast: 'Welcome! Browse sitters below 👋' },
+      replace: true,
+    })
+  }
 
   // In edit mode, load the existing listing (only if it belongs to the user)
   // and prefill the form.
@@ -375,7 +427,13 @@ export default function PostListing() {
       } else {
         // Meta Pixel konverze — až po potvrzeném úspěchu insertu
         trackLead()
-        navigate('/listings', { state: { toast: 'Your listing is live! 🎉' } })
+        // Tell the gate the listing exists so it stops redirecting instantly.
+        markListingPosted()
+        // Celebrate: sound (allowed — we're inside the submit gesture),
+        // vibration, confetti. Navigation happens when the confetti ends.
+        playTada()
+        buzz([60, 40, 60, 40, 160])
+        setCelebrating(true)
       }
     } catch (err) {
       setError(err.message || 'Something went wrong. Please try again.')
@@ -388,6 +446,79 @@ export default function PostListing() {
     return (
       <section className="mx-auto px-6 py-16 text-center text-white/60" style={{ maxWidth: 680 }}>
         Loading your listing…
+      </section>
+    )
+  }
+
+  // Welcome step 0: role fork. Every new account defaults to 'sitter', so
+  // parents who just signed up land here too — give them a way out instead
+  // of pushing them into a babysitter form they don't understand.
+  if (isWelcome && !roleChosen) {
+    return (
+      <section className="mx-auto px-6 py-12" style={{ maxWidth: 560 }}>
+        <p
+          className="text-center font-bold"
+          style={{ color: '#34d399', fontSize: 14, letterSpacing: '0.06em' }}
+        >
+          STEP 2 OF 2
+        </p>
+        <h1 className="text-white text-3xl font-bold text-center mt-2">
+          You're in! 🎉 One thing left…
+        </h1>
+        <p className="text-white/65 text-center mt-3">Which one are you?</p>
+
+        <button
+          type="button"
+          onClick={() => {
+            buzz()
+            setRoleChosen(true)
+          }}
+          className="listing-cta-pulse"
+          style={{
+            display: 'block',
+            width: '100%',
+            marginTop: 28,
+            background: 'linear-gradient(135deg, rgba(52,211,153,0.22), rgba(96,208,255,0.18))',
+            border: '2px solid rgba(52,211,153,0.65)',
+            borderRadius: 18,
+            padding: '22px 20px',
+            textAlign: 'left',
+            cursor: 'pointer',
+          }}
+        >
+          <span className="text-white font-bold" style={{ fontSize: 19 }}>
+            🍼 I offer babysitting or a service
+          </span>
+          <span className="block text-white/70 mt-1" style={{ fontSize: 14 }}>
+            Post your free listing so families can find you — takes 2 minutes.
+          </span>
+        </button>
+
+        <button
+          type="button"
+          onClick={chooseParent}
+          disabled={roleSaving}
+          style={{
+            display: 'block',
+            width: '100%',
+            marginTop: 14,
+            background: 'rgba(255,255,255,0.06)',
+            border: '1px solid rgba(255,255,255,0.2)',
+            borderRadius: 18,
+            padding: '18px 20px',
+            textAlign: 'left',
+            cursor: roleSaving ? 'wait' : 'pointer',
+          }}
+        >
+          <span className="text-white font-bold" style={{ fontSize: 17 }}>
+            👨‍👩‍👧 I'm a parent looking for help
+          </span>
+          <span className="block text-white/60 mt-1" style={{ fontSize: 14 }}>
+            {roleSaving ? 'One moment…' : 'Browse babysitters and local services.'}
+          </span>
+        </button>
+
+        {error && <p style={{ color: '#f87171', marginTop: 16, fontSize: 14 }}>{error}</p>}
       </section>
     )
   }
@@ -406,29 +537,25 @@ export default function PostListing() {
 
       {isWelcome && (
         <div
+          className="listing-cta-pulse"
           style={{
             marginTop: 20,
-            background: 'rgba(52,211,153,0.10)',
-            border: '1px solid rgba(52,211,153,0.4)',
-            borderRadius: 12,
+            background: 'rgba(52,211,153,0.14)',
+            border: '2px solid rgba(52,211,153,0.55)',
+            borderRadius: 14,
             padding: '16px 20px',
           }}
         >
-          <p className="text-white font-semibold">
-            🎉 You're in! One last step: finish your listing.
+          <p className="text-white font-bold" style={{ fontSize: 16 }}>
+            ✍️ Step 2 of 2: publish your listing
           </p>
-          <p className="text-white/70 text-sm mt-1">
+          <p className="text-white/75 text-sm mt-1">
             Fill in the form below so families can actually find you — it takes
-            just a few minutes. Without a listing, your profile stays invisible.
+            just 2 minutes.{' '}
+            <strong className="text-white">
+              Without a listing, your profile stays invisible.
+            </strong>
           </p>
-          <button
-            type="button"
-            onClick={skipForNow}
-            className="text-white/50 text-sm underline mt-2"
-            style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
-          >
-            I'll do this later — take me to my dashboard
-          </button>
         </div>
       )}
 
@@ -665,7 +792,11 @@ export default function PostListing() {
 
         {error && <p style={{ color: '#f87171', marginTop: 16, fontSize: 14 }}>{error}</p>}
 
-        <button type="submit" disabled={submitting} className="pl-submit">
+        <button
+          type="submit"
+          disabled={submitting || celebrating}
+          className={`pl-submit${isWelcome && !celebrating ? ' listing-cta-pulse' : ''}`}
+        >
           {submitting
             ? isEdit
               ? 'Saving…'
@@ -675,6 +806,39 @@ export default function PostListing() {
               : '🎉 Publish listing'}
         </button>
       </form>
+
+      {celebrating && (
+        <>
+          <ConfettiBurst
+            onDone={() =>
+              navigate('/listings', { state: { toast: 'Your listing is live! 🎉' } })
+            }
+          />
+          <div
+            style={{
+              position: 'fixed',
+              inset: 0,
+              zIndex: 79,
+              background: 'rgba(4, 20, 40, 0.72)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              textAlign: 'center',
+              padding: 24,
+            }}
+          >
+            <div>
+              <div style={{ fontSize: 64, lineHeight: 1 }}>🎉</div>
+              <h2 className="text-white font-bold" style={{ fontSize: 30, marginTop: 16 }}>
+                Your listing is LIVE!
+              </h2>
+              <p className="text-white/75 mt-2" style={{ fontSize: 16 }}>
+                Families in Amsterdam can now find you.
+              </p>
+            </div>
+          </div>
+        </>
+      )}
     </section>
   )
 }

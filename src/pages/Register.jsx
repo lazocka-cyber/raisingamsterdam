@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 
 const PURPLE = '#a78bfa'
-const SUCCESS_MSG = 'Check your email for a sign-in link! 🎉'
+const SUCCESS_MSG =
+  "Check your email! 📬 Click the link inside to finish step 2 — posting your listing. Takes 2 minutes, and without it parents can't find you."
 
 const inputStyle = {
   background: 'rgba(255,255,255,0.07)',
@@ -114,6 +115,12 @@ export default function Register() {
           It's free to join. Browse, post a listing, and meet other expat parents.
           Unlock contact whenever you're ready.
         </p>
+        <p
+          className="text-center text-sm mt-3"
+          style={{ color: '#34d399', fontWeight: 600 }}
+        >
+          Step 1 of 2: create your account · Step 2: post your listing
+        </p>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginTop: 24 }}>
           {/* Primary: one-click Google */}
@@ -145,7 +152,21 @@ export default function Register() {
           </form>
 
           {error && <p style={{ color: '#f87171', fontSize: 14 }}>{error}</p>}
-          {success && <p style={{ color: '#34d399', fontSize: 14 }}>{success}</p>}
+          {success && (
+            <p
+              style={{
+                color: '#34d399',
+                fontSize: 14,
+                background: 'rgba(52,211,153,0.1)',
+                border: '1px solid rgba(52,211,153,0.4)',
+                borderRadius: 10,
+                padding: '12px 14px',
+                fontWeight: 600,
+              }}
+            >
+              {success}
+            </p>
+          )}
 
           <p className="text-white/45 text-xs text-center" style={{ marginTop: 4 }}>
             Already bought access? Sign in, then add your key on the{' '}

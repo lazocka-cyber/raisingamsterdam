@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { useAuth } from '../context/AuthContext'
 
 // First-launch welcome carousel. Shows once, then remembers via localStorage.
 // Self-contained (emoji + text), English — matches the RaisingAmsterdam look.
@@ -42,9 +43,16 @@ const SLIDES = [
 ]
 
 export default function OnboardingCarousel() {
+  const { user, hasListing } = useAuth()
   const [show, setShow] = useState(false)
   const [i, setI] = useState(0)
   const touchX = useRef(null)
+
+  // A signed-in sitter who still has no listing must see the "post your
+  // listing" step, not this parent-oriented carousel (it used to cover the
+  // form for magic-link users opening the link in a fresh browser). Mark it
+  // seen so it doesn't pop up later either.
+  const suppress = Boolean(user) && hasListing === false
 
   useEffect(() => {
     try {
@@ -53,6 +61,17 @@ export default function OnboardingCarousel() {
       // localStorage blocked — just don't show it.
     }
   }, [])
+
+  useEffect(() => {
+    if (suppress && show) {
+      try {
+        localStorage.setItem(SEEN_KEY, '1')
+      } catch {
+        /* ignore */
+      }
+      setShow(false)
+    }
+  }, [suppress, show])
 
   const close = useCallback(() => {
     try {
@@ -68,7 +87,7 @@ export default function OnboardingCarousel() {
   }, [])
   const prev = useCallback(() => setI((c) => Math.max(0, c - 1)), [])
 
-  if (!show) return null
+  if (!show || suppress) return null
 
   const slide = SLIDES[i]
   const last = i === SLIDES.length - 1

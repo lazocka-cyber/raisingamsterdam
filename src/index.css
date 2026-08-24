@@ -232,6 +232,29 @@ body {
   }
 }
 
+/* --- Listing nudge: pulsing ring on "publish your listing" CTAs --- */
+@keyframes listing-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.55);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(52, 211, 153, 0);
+  }
+}
+
+.listing-cta-pulse {
+  animation: listing-pulse 1.8s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .listing-cta-pulse {
+    animation: none;
+    /* Static ring so the CTA still stands out without motion. */
+    box-shadow: 0 0 0 4px rgba(52, 211, 153, 0.35);
+  }
+}
+
 /* --- SOS (urgent babysitter) --- */
 @keyframes sos-pulse {
   0%,
