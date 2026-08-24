@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
@@ -14,6 +14,11 @@ const DESC_MAX = 500
 // coming back from the exit-warning modal doesn't re-ask the role question.
 // Module-level on purpose: survives SPA navigation, resets on full reload.
 let sitterRoleChosen = false
+
+// Unfinished new-listing answers survive tab closes and the exit modal.
+const DRAFT_KEY = 'ra_listing_draft_v1'
+
+const NEGOTIABLE_PRICE = 'To be agreed with the parents'
 
 // Section accent colours
 const ACCENT = {
@@ -199,6 +204,50 @@ function PillGroup({ options, selected, onToggle }) {
   )
 }
 
+// "Part X of 3" progress bar for the create wizard.
+function WizardProgress({ step }) {
+  const LABELS = ['What you offer', 'Contact & area', 'Finishing touches']
+  return (
+    <div style={{ marginTop: 24 }}>
+      <div style={{ display: 'flex', gap: 6 }}>
+        {[1, 2, 3].map((n) => (
+          <div
+            key={n}
+            style={{
+              flex: 1,
+              height: 6,
+              borderRadius: 999,
+              background:
+                n <= step ? 'linear-gradient(90deg, #34d399, #60d0ff)' : 'rgba(255,255,255,0.12)',
+              transition: 'background 0.3s ease',
+            }}
+          />
+        ))}
+      </div>
+      <p className="text-white/60 text-sm mt-2" style={{ fontWeight: 600 }}>
+        Part {step} of 3 — {LABELS[step - 1]}
+        {step === 3 && <span className="text-white/40"> (optional)</span>}
+      </p>
+    </div>
+  )
+}
+
+function readDraft() {
+  try {
+    return JSON.parse(localStorage.getItem(DRAFT_KEY) || 'null')
+  } catch {
+    return null
+  }
+}
+
+function clearDraft() {
+  try {
+    localStorage.removeItem(DRAFT_KEY)
+  } catch {
+    /* ignore */
+  }
+}
+
 export default function PostListing() {
   const { user, markListingPosted, refreshProfile } = useAuth()
   const navigate = useNavigate()
@@ -207,9 +256,17 @@ export default function PostListing() {
   const isEdit = Boolean(id)
   // Set when the listing gate forwarded a user who has no listing yet.
   const isWelcome = !isEdit && searchParams.get('welcome') === '1'
+  // Draft is read once per mount (create mode only) and seeds the fields, so
+  // closing the tab or wandering off never loses the answers.
+  const [draft] = useState(() => (isEdit ? null : readDraft()))
+  const draftRestored = Boolean(
+    draft && (draft.title || draft.description || draft.phone || draft.postcode),
+  )
+
   // Welcome flow starts with a role fork: sitters continue to the form,
   // parents get their profile flipped and are sent to browse listings.
-  const [roleChosen, setRoleChosenState] = useState(() => sitterRoleChosen)
+  // A saved draft counts as "already chose sitter" — don't ask again.
+  const [roleChosen, setRoleChosenState] = useState(() => sitterRoleChosen || draftRestored)
   function setRoleChosen(v) {
     sitterRoleChosen = v
     setRoleChosenState(v)
@@ -217,35 +274,96 @@ export default function PostListing() {
   const [roleSaving, setRoleSaving] = useState(false)
   const [celebrating, setCelebrating] = useState(false)
 
-  const [title, setTitle] = useState('')
-  const [category, setCategory] = useState('babysitter')
-  const [description, setDescription] = useState('')
-  const [postcode, setPostcode] = useState('')
-  const [neighbourhood, setNeighbourhood] = useState('')
-  const [price, setPrice] = useState('')
-  const [experienceYears, setExperienceYears] = useState('')
-  const [ageGroups, setAgeGroups] = useState([])
-  const [languages, setLanguages] = useState([])
-  const [availability, setAvailability] = useState([])
-  const [phone, setPhone] = useState('')
+  const [step, setStep] = useState(() => (draft?.step === 2 ? 2 : 1))
+  const [createdId, setCreatedId] = useState(null)
+  const published = Boolean(createdId)
+
+  const [title, setTitle] = useState(draft?.title ?? '')
+  const [category, setCategory] = useState(draft?.category ?? 'babysitter')
+  const [description, setDescription] = useState(draft?.description ?? '')
+  const [postcode, setPostcode] = useState(draft?.postcode ?? '')
+  const [neighbourhood, setNeighbourhood] = useState(draft?.neighbourhood ?? '')
+  const [price, setPrice] = useState(draft?.price ?? '')
+  const [priceNegotiable, setPriceNegotiable] = useState(draft?.priceNegotiable ?? false)
+  const [experienceYears, setExperienceYears] = useState(draft?.experienceYears ?? '')
+  const [ageGroups, setAgeGroups] = useState(draft?.ageGroups ?? [])
+  const [languages, setLanguages] = useState(draft?.languages ?? [])
+  const [availability, setAvailability] = useState(draft?.availability ?? [])
+  const [phone, setPhone] = useState(draft?.phone ?? '')
   const [photoUrl, setPhotoUrl] = useState('')
 
   const [error, setError] = useState('')
+  const [errorField, setErrorField] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [loading, setLoading] = useState(isEdit)
   const [photoUploading, setPhotoUploading] = useState(false)
   const [photoError, setPhotoError] = useState('')
+
+  // Refs so a failed validation can scroll straight to the guilty field.
+  const titleRef = useRef(null)
+  const descriptionRef = useRef(null)
+  const ageGroupsRef = useRef(null)
+  const phoneRef = useRef(null)
+  const postcodeRef = useRef(null)
 
   // A little phone buzz on arriving at the welcome step — "one more thing!".
   useEffect(() => {
     if (isWelcome) buzz()
   }, [isWelcome])
 
+  // Autosave the draft (debounced) while the new listing isn't published yet.
+  useEffect(() => {
+    if (isEdit || published) return
+    const t = setTimeout(() => {
+      try {
+        localStorage.setItem(
+          DRAFT_KEY,
+          JSON.stringify({
+            step: step === 3 ? 2 : step,
+            title,
+            category,
+            description,
+            postcode,
+            neighbourhood,
+            price,
+            priceNegotiable,
+            experienceYears,
+            ageGroups,
+            languages,
+            availability,
+            phone,
+          }),
+        )
+      } catch {
+        // Storage blocked — the form still works, the draft just won't survive.
+      }
+    }, 500)
+    return () => clearTimeout(t)
+  }, [
+    isEdit,
+    published,
+    step,
+    title,
+    category,
+    description,
+    postcode,
+    neighbourhood,
+    price,
+    priceNegotiable,
+    experienceYears,
+    ageGroups,
+    languages,
+    availability,
+    phone,
+  ])
+
   // Native browser warning when closing/reloading the tab with an unsaved,
-  // unpublished form (create mode only).
+  // unpublished form (create mode only). The draft catches most of it, but
+  // storage-blocked webviews still benefit.
   const dirty =
     !isEdit &&
     !celebrating &&
+    !published &&
     Boolean(
       title.trim() ||
         description.trim() ||
@@ -307,6 +425,7 @@ export default function PostListing() {
       setPostcode(data.postcode ?? '')
       setNeighbourhood(data.location ?? '')
       setPrice(data.price ?? '')
+      setPriceNegotiable(data.price === NEGOTIABLE_PRICE)
       setExperienceYears(
         data.experience_years == null ? '' : String(data.experience_years),
       )
@@ -375,15 +494,164 @@ export default function PostListing() {
     }
   }
 
-  async function handleSubmit(e) {
+  function fail(field, ref, message) {
+    setError(message)
+    setErrorField(field)
+    ref?.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    ref?.current?.focus?.()
+  }
+
+  function clearFail() {
+    setError('')
+    setErrorField('')
+  }
+
+  function validateStep1() {
+    if (!title.trim()) {
+      fail('title', titleRef, 'Please add a short title, e.g. "Experienced babysitter in De Pijp".')
+      return false
+    }
+    if (!description.trim()) {
+      fail(
+        'description',
+        descriptionRef,
+        'Please describe what you offer — parents read this first.',
+      )
+      return false
+    }
+    if (category === 'babysitter' && ageGroups.length === 0) {
+      fail('ageGroups', ageGroupsRef, 'Please pick at least one age group you work with.')
+      return false
+    }
+    return true
+  }
+
+  function validateStep2() {
+    const normalizedPhone = phone.replace(/[\s-]/g, '')
+    if (!normalizedPhone) {
+      fail('phone', phoneRef, 'Please enter a WhatsApp number so parents can contact you.')
+      return false
+    }
+    if (!/^(\+\d{8,15}|0\d{8,12})$/.test(normalizedPhone)) {
+      fail(
+        'phone',
+        phoneRef,
+        'Enter a valid WhatsApp number, e.g. +31612345678 or 0612345678.',
+      )
+      return false
+    }
+    if (!postcode.trim()) {
+      fail(
+        'postcode',
+        postcodeRef,
+        "Please fill in a postcode — not sure? Just type 0000.",
+      )
+      return false
+    }
+    return true
+  }
+
+  function handleNext(e) {
+    e.preventDefault()
+    if (!validateStep1()) return
+    clearFail()
+    setStep(2)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  async function handlePublish(e) {
+    e.preventDefault()
+    if (!validateStep2()) return
+    clearFail()
+
+    const normalizedPhone = phone.replace(/[\s-]/g, '')
+    const finalPrice = priceNegotiable ? NEGOTIABLE_PRICE : price.trim() || null
+
+    setSubmitting(true)
+    try {
+      const payload = {
+        title: title.trim(),
+        category,
+        description: description.trim() || null,
+        postcode: postcode.trim(),
+        location: neighbourhood.trim() || null,
+        price: finalPrice,
+        experience_years: experienceYears === '' ? null : Number(experienceYears),
+        age_groups: ageGroups.length ? ageGroups : null,
+        languages: languages.length ? languages : null,
+        availability: availability.length ? availability : null,
+        phone: normalizedPhone,
+        photo_url: photoUrl || null,
+      }
+
+      const { data: inserted, error: dbError } = await supabase
+        .from('listings')
+        // source = odkud přišel (utm/fbclid/referrer) — jen u nového inzerátu
+        .insert({ ...payload, user_id: user?.id ?? null, source: getAttribution() })
+        .select('id')
+        .single()
+
+      if (dbError) {
+        setError(dbError.message)
+        return
+      }
+      // Meta Pixel konverze — až po potvrzeném úspěchu insertu
+      trackLead()
+      // Tell the gate the listing exists so it stops redirecting instantly.
+      markListingPosted()
+      clearDraft()
+      setCreatedId(inserted?.id ?? null)
+      // Celebrate: sound (allowed — we're inside the submit gesture),
+      // vibration, confetti. Step 3 opens when the confetti ends.
+      playTada()
+      buzz([60, 40, 60, 40, 160])
+      setCelebrating(true)
+    } catch (err) {
+      setError(err.message || 'Something went wrong. Please try again.')
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  // Step 3 saves the optional extras onto the already-published row.
+  async function handleSaveExtras(e) {
+    e.preventDefault()
+    if (!createdId) {
+      navigate('/listings', { state: { toast: 'Your listing is live! 🎉' } })
+      return
+    }
+    setSubmitting(true)
+    try {
+      const { error: dbError } = await supabase
+        .from('listings')
+        .update({
+          photo_url: photoUrl || null,
+          location: neighbourhood.trim() || null,
+          experience_years: experienceYears === '' ? null : Number(experienceYears),
+          languages: languages.length ? languages : null,
+          availability: availability.length ? availability : null,
+        })
+        .eq('id', createdId)
+      if (dbError) {
+        setError(dbError.message)
+        return
+      }
+      navigate('/listings', { state: { toast: 'Your listing is live! 🎉' } })
+    } catch (err) {
+      setError(err.message || 'Something went wrong. Please try again.')
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  async function handleEditSubmit(e) {
     e.preventDefault()
     setError('')
 
-    if (!title.trim() || !category || !postcode.trim() || !price.trim()) {
-      setError('Please fill in title, category, postcode and price.')
+    if (!title.trim() || !category || !postcode.trim()) {
+      setError('Please fill in title, category and postcode.')
       return
     }
-
     const normalizedPhone = phone.replace(/[\s-]/g, '')
     if (!normalizedPhone) {
       setError('Please enter a WhatsApp number so members can contact you.')
@@ -402,7 +670,7 @@ export default function PostListing() {
         description: description.trim() || null,
         postcode: postcode.trim(),
         location: neighbourhood.trim() || null,
-        price: price.trim(),
+        price: priceNegotiable ? NEGOTIABLE_PRICE : price.trim() || null,
         experience_years: experienceYears === '' ? null : Number(experienceYears),
         age_groups: ageGroups.length ? ageGroups : null,
         languages: languages.length ? languages : null,
@@ -410,37 +678,198 @@ export default function PostListing() {
         phone: normalizedPhone,
         photo_url: photoUrl || null,
       }
-
-      const { error: dbError } = isEdit
-        ? await supabase.from('listings').update(payload).eq('id', id)
-        : await supabase
-            .from('listings')
-            // source = odkud přišel (utm/fbclid/referrer) — jen u nového inzerátu
-            .insert({ ...payload, user_id: user?.id ?? null, source: getAttribution() })
-
+      const { error: dbError } = await supabase.from('listings').update(payload).eq('id', id)
       if (dbError) {
         setError(dbError.message)
         return
       }
-      if (isEdit) {
-        navigate('/my-listings', { state: { toast: 'Listing updated! ✅' } })
-      } else {
-        // Meta Pixel konverze — až po potvrzeném úspěchu insertu
-        trackLead()
-        // Tell the gate the listing exists so it stops redirecting instantly.
-        markListingPosted()
-        // Celebrate: sound (allowed — we're inside the submit gesture),
-        // vibration, confetti. Navigation happens when the confetti ends.
-        playTada()
-        buzz([60, 40, 60, 40, 160])
-        setCelebrating(true)
-      }
+      navigate('/my-listings', { state: { toast: 'Listing updated! ✅' } })
     } catch (err) {
       setError(err.message || 'Something went wrong. Please try again.')
     } finally {
       setSubmitting(false)
     }
   }
+
+  function inputClass(field) {
+    return `pl-input${errorField === field ? ' pl-input--error' : ''}`
+  }
+
+  // ─── Shared field blocks (used by both the wizard and edit mode) ───
+
+  const photoField = (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+      <Label>Photo</Label>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+        <div
+          style={{
+            width: 84,
+            height: 84,
+            borderRadius: '50%',
+            flexShrink: 0,
+            overflow: 'hidden',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: 32,
+            background: 'rgba(255,255,255,0.07)',
+            border: `2px solid ${ACCENT.basic}55`,
+          }}
+        >
+          {photoUrl ? (
+            <img
+              src={photoUrl}
+              alt="Your listing"
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            />
+          ) : (
+            <span>🍼</span>
+          )}
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <label
+            style={{
+              background: 'rgba(167,139,250,0.15)',
+              color: ACCENT.basic,
+              border: `1px solid ${ACCENT.basic}55`,
+              borderRadius: 8,
+              padding: '8px 16px',
+              fontSize: 13,
+              fontWeight: 600,
+              cursor: photoUploading ? 'wait' : 'pointer',
+              width: 'fit-content',
+            }}
+          >
+            {photoUploading
+              ? 'Uploading…'
+              : photoUrl
+                ? 'Change photo'
+                : '📷 Upload photo'}
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handlePhotoChange}
+              disabled={photoUploading}
+              style={{ display: 'none' }}
+            />
+          </label>
+          {photoUrl && !photoUploading && (
+            <button
+              type="button"
+              onClick={() => setPhotoUrl('')}
+              style={{
+                background: 'none',
+                border: 'none',
+                color: 'rgba(255,255,255,0.5)',
+                fontSize: 12,
+                cursor: 'pointer',
+                textAlign: 'left',
+                padding: 0,
+              }}
+            >
+              Remove
+            </button>
+          )}
+        </div>
+      </div>
+      <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: 12 }}>
+        A friendly face helps parents choose you. Any photo works — we'll resize it for you.
+      </span>
+      {photoError && (
+        <span style={{ color: '#f87171', fontSize: 12 }}>{photoError}</span>
+      )}
+    </div>
+  )
+
+  const priceField = (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+      <Label>
+        Price{' '}
+        <span style={{ color: 'rgba(52,211,153,0.9)', fontWeight: 600 }}>(recommended)</span>
+      </Label>
+      <input
+        type="text"
+        value={priceNegotiable ? '' : price}
+        disabled={priceNegotiable}
+        onChange={(e) => setPrice(e.target.value)}
+        placeholder={priceNegotiable ? NEGOTIABLE_PRICE : '€12/hour'}
+        className="pl-input"
+        style={priceNegotiable ? { opacity: 0.55 } : undefined}
+      />
+      <label
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 8,
+          color: 'rgba(255,255,255,0.55)',
+          fontSize: 12,
+          cursor: 'pointer',
+        }}
+      >
+        <input
+          type="checkbox"
+          checked={priceNegotiable}
+          onChange={(e) => setPriceNegotiable(e.target.checked)}
+          style={{ accentColor: '#34d399', width: 15, height: 15 }}
+        />
+        To be agreed with the parents
+      </label>
+    </div>
+  )
+
+  const areasField = (
+    <label style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+      <Label>Area(s)</Label>
+      <input
+        type="text"
+        value={neighbourhood}
+        onChange={(e) => setNeighbourhood(e.target.value)}
+        placeholder="De Pijp, Oud-West…"
+        className="pl-input"
+      />
+      <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: 12 }}>
+        Where you work / where you're based
+      </span>
+    </label>
+  )
+
+  const experienceField = (
+    <label style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+      <Label>Years of experience</Label>
+      <select
+        value={experienceYears}
+        onChange={(e) => setExperienceYears(e.target.value)}
+        className="pl-input"
+      >
+        <option value="" style={{ color: 'black' }}>
+          Select…
+        </option>
+        {EXPERIENCE.map((x) => (
+          <option key={x.value} value={x.value} style={{ color: 'black' }}>
+            {x.label}
+          </option>
+        ))}
+      </select>
+    </label>
+  )
+
+  const languagesField = (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+      <Label>Languages spoken</Label>
+      <PillGroup options={LANGUAGES} selected={languages} onToggle={toggle(setLanguages)} />
+    </div>
+  )
+
+  const availabilityField = (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+      <Label>Availability</Label>
+      <PillGroup
+        options={AVAILABILITY}
+        selected={availability}
+        onToggle={toggle(setAvailability)}
+      />
+    </div>
+  )
 
   if (isEdit && loading) {
     return (
@@ -523,19 +952,126 @@ export default function PostListing() {
     )
   }
 
+  // ─── Edit mode: the classic single-page form ───
+  if (isEdit) {
+    return (
+      <section className="mx-auto px-6 py-12" style={{ maxWidth: 680 }}>
+        <ParticleHeader>
+          <h1 className="pl-title">Edit listing</h1>
+        </ParticleHeader>
+        <p className="mt-3 text-white/60">Update your listing details below.</p>
+
+        <form onSubmit={handleEditSubmit} style={{ marginTop: 24 }}>
+          <Card accent={ACCENT.basic} icon={<PencilIcon color={ACCENT.basic} />} title="Basic info">
+            {photoField}
+            <label style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <Label>Title</Label>
+              <input
+                type="text"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="Experienced babysitter in De Pijp"
+                className="pl-input"
+              />
+            </label>
+            <label style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <Label>Category</Label>
+              <select
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="pl-input"
+              >
+                {CATEGORIES.map((c) => (
+                  <option key={c.value} value={c.value} style={{ color: 'black' }}>
+                    {c.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <Label>Description</Label>
+              <textarea
+                value={description}
+                maxLength={DESC_MAX}
+                onChange={(e) => setDescription(e.target.value)}
+                rows={4}
+                placeholder="Tell families about yourself…"
+                className="pl-input"
+                style={{ resize: 'vertical' }}
+              />
+              <span style={{ color: '#9ca3af', fontSize: 12, textAlign: 'right' }}>
+                {description.length}/{DESC_MAX}
+              </span>
+            </label>
+          </Card>
+
+          <Card
+            accent={ACCENT.location}
+            icon={<PinIcon color={ACCENT.location} />}
+            title="Location & rate"
+          >
+            <label style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <Label>Postcode</Label>
+              <input
+                type="text"
+                value={postcode}
+                onChange={(e) => setPostcode(e.target.value)}
+                placeholder="1234 AB"
+                className="pl-input"
+              />
+            </label>
+            {areasField}
+            {priceField}
+          </Card>
+
+          <Card
+            accent={ACCENT.experience}
+            icon={<StarIcon color={ACCENT.experience} />}
+            title="Experience & availability"
+          >
+            {experienceField}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              <Label>Age groups you work with</Label>
+              <PillGroup options={AGE_GROUPS} selected={ageGroups} onToggle={toggle(setAgeGroups)} />
+            </div>
+            {languagesField}
+            {availabilityField}
+          </Card>
+
+          <Card accent={ACCENT.contact} icon={<ChatIcon color={ACCENT.contact} />} title="Contact">
+            <label style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <Label>WhatsApp number</Label>
+              <input
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="+31612345678 or 0612345678"
+                className="pl-input"
+              />
+              <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: 12 }}>
+                Members will contact you via WhatsApp
+              </span>
+            </label>
+          </Card>
+
+          {error && <p style={{ color: '#f87171', marginTop: 16, fontSize: 14 }}>{error}</p>}
+
+          <button type="submit" disabled={submitting} className="pl-submit">
+            {submitting ? 'Saving…' : '✅ Save changes'}
+          </button>
+        </form>
+      </section>
+    )
+  }
+
+  // ─── Create mode: 3-part wizard ───
   return (
     <section className="mx-auto px-6 py-12" style={{ maxWidth: 680 }}>
       <ParticleHeader>
-        <h1 className="pl-title">{isEdit ? 'Edit listing' : 'Post a listing'}</h1>
+        <h1 className="pl-title">Post a listing</h1>
       </ParticleHeader>
 
-      <p className="mt-3 text-white/60">
-        {isEdit
-          ? 'Update your listing details below.'
-          : 'Share your profile with the RaisingAmsterdam community.'}
-      </p>
-
-      {isWelcome && (
+      {isWelcome && step < 3 && (
         <div
           className="listing-cta-pulse"
           style={{
@@ -550,8 +1086,7 @@ export default function PostListing() {
             ✍️ Step 2 of 2: publish your listing
           </p>
           <p className="text-white/75 text-sm mt-1">
-            Fill in the form below so families can actually find you — it takes
-            just 2 minutes.{' '}
+            Just a few questions — takes 2 minutes.{' '}
             <strong className="text-white">
               Without a listing, your profile stays invisible.
             </strong>
@@ -559,260 +1094,238 @@ export default function PostListing() {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} style={{ marginTop: 24 }}>
-        {/* 1. BASIC INFO */}
-        <Card accent={ACCENT.basic} icon={<PencilIcon color={ACCENT.basic} />} title="Basic info">
-          {/* Photo */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            <Label>Photo</Label>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-              <div
-                style={{
-                  width: 84,
-                  height: 84,
-                  borderRadius: '50%',
-                  flexShrink: 0,
-                  overflow: 'hidden',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: 32,
-                  background: 'rgba(255,255,255,0.07)',
-                  border: `2px solid ${ACCENT.basic}55`,
-                }}
-              >
-                {photoUrl ? (
-                  <img
-                    src={photoUrl}
-                    alt="Your listing"
-                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                  />
-                ) : (
-                  <span>🍼</span>
-                )}
-              </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                <label
-                  style={{
-                    background: 'rgba(167,139,250,0.15)',
-                    color: ACCENT.basic,
-                    border: `1px solid ${ACCENT.basic}55`,
-                    borderRadius: 8,
-                    padding: '8px 16px',
-                    fontSize: 13,
-                    fontWeight: 600,
-                    cursor: photoUploading ? 'wait' : 'pointer',
-                    width: 'fit-content',
-                  }}
-                >
-                  {photoUploading
-                    ? 'Uploading…'
-                    : photoUrl
-                      ? 'Change photo'
-                      : '📷 Upload photo'}
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handlePhotoChange}
-                    disabled={photoUploading}
-                    style={{ display: 'none' }}
-                  />
-                </label>
-                {photoUrl && !photoUploading && (
-                  <button
-                    type="button"
-                    onClick={() => setPhotoUrl('')}
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      color: 'rgba(255,255,255,0.5)',
-                      fontSize: 12,
-                      cursor: 'pointer',
-                      textAlign: 'left',
-                      padding: 0,
-                    }}
+      {draftRestored && !published && (
+        <p
+          className="text-white/70 text-sm"
+          style={{
+            marginTop: 14,
+            background: 'rgba(96,208,255,0.1)',
+            border: '1px solid rgba(96,208,255,0.35)',
+            borderRadius: 10,
+            padding: '10px 14px',
+          }}
+        >
+          ✍️ Picked up where you left off — your answers were saved.
+        </p>
+      )}
+
+      <WizardProgress step={step} />
+
+      {step === 1 && (
+        <form onSubmit={handleNext} style={{ marginTop: 20 }}>
+          <Card
+            accent={ACCENT.basic}
+            icon={<PencilIcon color={ACCENT.basic} />}
+            title="What do you offer?"
+          >
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              <Label>I offer…</Label>
+              <div className="flex flex-wrap gap-2">
+                {CATEGORIES.map((c) => (
+                  <Pill
+                    key={c.value}
+                    selected={category === c.value}
+                    onClick={() => setCategory(c.value)}
                   >
-                    Remove
-                  </button>
-                )}
+                    {c.label}
+                  </Pill>
+                ))}
               </div>
             </div>
-            <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: 12 }}>
-              A friendly face helps parents choose you. Any photo works — we'll resize it for you.
-            </span>
-            {photoError && (
-              <span style={{ color: '#f87171', fontSize: 12 }}>{photoError}</span>
+
+            <label style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <Label>Title</Label>
+              <input
+                ref={titleRef}
+                type="text"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="Experienced babysitter in De Pijp"
+                className={inputClass('title')}
+              />
+            </label>
+
+            <label style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <Label>What you offer — tell the families about yourself</Label>
+              <textarea
+                ref={descriptionRef}
+                value={description}
+                maxLength={DESC_MAX}
+                onChange={(e) => setDescription(e.target.value)}
+                rows={4}
+                placeholder="I'm a warm, reliable sitter with 5 years of experience…"
+                className={inputClass('description')}
+                style={{ resize: 'vertical' }}
+              />
+              <span style={{ color: '#9ca3af', fontSize: 12, textAlign: 'right' }}>
+                {description.length}/{DESC_MAX}
+              </span>
+            </label>
+
+            {category === 'babysitter' && (
+              <div
+                ref={ageGroupsRef}
+                tabIndex={-1}
+                style={{ display: 'flex', flexDirection: 'column', gap: 8, outline: 'none' }}
+              >
+                <Label>Age groups you work with</Label>
+                <PillGroup
+                  options={AGE_GROUPS}
+                  selected={ageGroups}
+                  onToggle={toggle(setAgeGroups)}
+                />
+              </div>
             )}
+
+            {priceField}
+          </Card>
+
+          {error && <p style={{ color: '#f87171', marginTop: 16, fontSize: 14 }}>{error}</p>}
+
+          <button type="submit" className={`pl-submit${isWelcome ? ' listing-cta-pulse' : ''}`}>
+            Next → contact details
+          </button>
+        </form>
+      )}
+
+      {step === 2 && (
+        <form onSubmit={handlePublish} style={{ marginTop: 20 }}>
+          <Card
+            accent={ACCENT.contact}
+            icon={<ChatIcon color={ACCENT.contact} />}
+            title="How can parents reach you?"
+          >
+            <label style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <Label>WhatsApp number</Label>
+              <input
+                ref={phoneRef}
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="+31612345678 or 0612345678"
+                className={inputClass('phone')}
+                style={{ fontSize: 17, padding: '14px 16px' }}
+              />
+              <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: 12 }}>
+                Parents will contact you via WhatsApp — this is how you get jobs.
+              </span>
+            </label>
+
+            <label style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <Label>Postcode</Label>
+              <input
+                ref={postcodeRef}
+                type="text"
+                value={postcode}
+                onChange={(e) => setPostcode(e.target.value)}
+                placeholder="1234 AB"
+                className={inputClass('postcode')}
+              />
+              <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: 12 }}>
+                Not from Amsterdam or not sure? Just type <strong>0000</strong>.
+              </span>
+            </label>
+          </Card>
+
+          {error && <p style={{ color: '#f87171', marginTop: 16, fontSize: 14 }}>{error}</p>}
+
+          <button
+            type="submit"
+            disabled={submitting || celebrating}
+            className={`pl-submit${isWelcome && !celebrating ? ' listing-cta-pulse' : ''}`}
+          >
+            {submitting ? 'Publishing…' : '🎉 Publish my listing'}
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              clearFail()
+              setStep(1)
+              window.scrollTo({ top: 0, behavior: 'smooth' })
+            }}
+            style={{
+              display: 'block',
+              margin: '14px auto 0',
+              background: 'none',
+              border: 'none',
+              color: 'rgba(255,255,255,0.5)',
+              fontSize: 13,
+              textDecoration: 'underline',
+              cursor: 'pointer',
+            }}
+          >
+            ← Back
+          </button>
+        </form>
+      )}
+
+      {step === 3 && (
+        <form onSubmit={handleSaveExtras} style={{ marginTop: 20 }}>
+          <div
+            style={{
+              background: 'rgba(52,211,153,0.14)',
+              border: '2px solid rgba(52,211,153,0.55)',
+              borderRadius: 14,
+              padding: '16px 20px',
+              marginBottom: 20,
+            }}
+          >
+            <p className="text-white font-bold" style={{ fontSize: 16 }}>
+              🎉 Your listing is live!
+            </p>
+            <p className="text-white/75 text-sm mt-1">
+              A photo and a few details get you far more replies — add them now while
+              you're here, or skip and do it later.
+            </p>
           </div>
 
-          <label style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-            <Label>Title</Label>
-            <input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="Experienced babysitter in De Pijp"
-              className="pl-input"
-            />
-          </label>
+          <Card
+            accent={ACCENT.experience}
+            icon={<StarIcon color={ACCENT.experience} />}
+            title="Stand out (optional)"
+          >
+            {photoField}
+            {areasField}
+            {experienceField}
+            {languagesField}
+            {availabilityField}
+          </Card>
 
-          <label style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-            <Label>Category</Label>
-            <select
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              className="pl-input"
-            >
-              {CATEGORIES.map((c) => (
-                <option key={c.value} value={c.value} style={{ color: 'black' }}>
-                  {c.label}
-                </option>
-              ))}
-            </select>
-          </label>
+          {error && <p style={{ color: '#f87171', marginTop: 16, fontSize: 14 }}>{error}</p>}
 
-          <label style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-            <Label>Description</Label>
-            <textarea
-              value={description}
-              maxLength={DESC_MAX}
-              onChange={(e) => setDescription(e.target.value)}
-              rows={4}
-              placeholder="Tell families about yourself…"
-              className="pl-input"
-              style={{ resize: 'vertical' }}
-            />
-            <span style={{ color: '#9ca3af', fontSize: 12, textAlign: 'right' }}>
-              {description.length}/{DESC_MAX}
-            </span>
-          </label>
-        </Card>
-
-        {/* 2. LOCATION & RATE */}
-        <Card
-          accent={ACCENT.location}
-          icon={<PinIcon color={ACCENT.location} />}
-          title="Location & rate"
-        >
-          <label style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-            <Label>Postcode</Label>
-            <input
-              type="text"
-              value={postcode}
-              onChange={(e) => setPostcode(e.target.value)}
-              placeholder="1234 AB"
-              className="pl-input"
-            />
-          </label>
-          <label style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-            <Label>Area(s)</Label>
-            <input
-              type="text"
-              value={neighbourhood}
-              onChange={(e) => setNeighbourhood(e.target.value)}
-              placeholder="De Pijp, Oud-West…"
-              className="pl-input"
-            />
-            <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: 12 }}>
-              Where you work / where you're based
-            </span>
-          </label>
-          <label style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-            <Label>Price</Label>
-            <input
-              type="text"
-              value={price}
-              onChange={(e) => setPrice(e.target.value)}
-              placeholder="€12/hour or Free or negotiable"
-              className="pl-input"
-            />
-          </label>
-        </Card>
-
-        {/* 3. EXPERIENCE + AVAILABILITY */}
-        <Card
-          accent={ACCENT.experience}
-          icon={<StarIcon color={ACCENT.experience} />}
-          title="Experience & availability"
-        >
-          <label style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-            <Label>Years of experience</Label>
-            <select
-              value={experienceYears}
-              onChange={(e) => setExperienceYears(e.target.value)}
-              className="pl-input"
-            >
-              <option value="" style={{ color: 'black' }}>
-                Select…
-              </option>
-              {EXPERIENCE.map((x) => (
-                <option key={x.value} value={x.value} style={{ color: 'black' }}>
-                  {x.label}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            <Label>Age groups you work with</Label>
-            <PillGroup options={AGE_GROUPS} selected={ageGroups} onToggle={toggle(setAgeGroups)} />
-          </div>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            <Label>Languages spoken</Label>
-            <PillGroup options={LANGUAGES} selected={languages} onToggle={toggle(setLanguages)} />
-          </div>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            <Label>Availability</Label>
-            <PillGroup
-              options={AVAILABILITY}
-              selected={availability}
-              onToggle={toggle(setAvailability)}
-            />
-          </div>
-        </Card>
-
-        {/* 4. CONTACT */}
-        <Card accent={ACCENT.contact} icon={<ChatIcon color={ACCENT.contact} />} title="Contact">
-          <label style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-            <Label>WhatsApp number</Label>
-            <input
-              type="tel"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              placeholder="+31612345678 or 0612345678"
-              className="pl-input"
-            />
-            <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: 12 }}>
-              Members will contact you via WhatsApp
-            </span>
-          </label>
-        </Card>
-
-        {error && <p style={{ color: '#f87171', marginTop: 16, fontSize: 14 }}>{error}</p>}
-
-        <button
-          type="submit"
-          disabled={submitting || celebrating}
-          className={`pl-submit${isWelcome && !celebrating ? ' listing-cta-pulse' : ''}`}
-        >
-          {submitting
-            ? isEdit
-              ? 'Saving…'
-              : 'Publishing…'
-            : isEdit
-              ? '✅ Save changes'
-              : '🎉 Publish listing'}
-        </button>
-      </form>
+          <button type="submit" disabled={submitting} className="pl-submit">
+            {submitting ? 'Saving…' : '💾 Save details'}
+          </button>
+          <button
+            type="button"
+            onClick={() =>
+              navigate('/listings', { state: { toast: 'Your listing is live! 🎉' } })
+            }
+            style={{
+              display: 'block',
+              margin: '14px auto 0',
+              background: 'none',
+              border: 'none',
+              color: 'rgba(255,255,255,0.5)',
+              fontSize: 13,
+              textDecoration: 'underline',
+              cursor: 'pointer',
+            }}
+          >
+            Skip — I'm done
+          </button>
+        </form>
+      )}
 
       {celebrating && (
         <>
           <ConfettiBurst
-            onDone={() =>
-              navigate('/listings', { state: { toast: 'Your listing is live! 🎉' } })
-            }
+            onDone={() => {
+              setCelebrating(false)
+              setStep(3)
+              window.scrollTo({ top: 0 })
+            }}
           />
           <div
             style={{
