@@ -1,0 +1,265 @@
+# RaisingAmsterdam
+
+> A community platform for expat parents raising children in Amsterdam and the wider Netherlands. It connects families with babysitters, nannies and local child-related services, hosts parent meetups, runs an urgent "SOS" board for last-minute childcare help, and publishes practical plain-English guides to the Dutch system for parents who did not grow up in it.
+
+RaisingAmsterdam is written for internationals — people who moved to the Netherlands and have to work out Dutch healthcare, childcare, allowances and schooling from scratch, usually without speaking Dutch. The guides explain the Dutch terms (huisarts, kraamzorg, consultatiebureau, kinderopvangtoeslag, basisschool, zwemdiploma) in everyday English and link to the official Dutch sources.
+
+The content is written by a childcare professional based in Amsterdam. It is practical orientation, not official or medical advice; rules change, so each guide links out to the authoritative source.
+
+## Guides
+
+- [Childcare & daycare](https://raisingamsterdam.com/guides/childcare-and-daycare.html): KDV full-day daycare, peuteropvang, VVE early education, what childcare costs, the kinderopvangtoeslag allowance, and how to judge a daycare using the GGD report and the LRK register.
+- [Your child's health](https://raisingamsterdam.com/guides/childrens-healthcare.html): Free health insurance for under-18s, registering with a huisarts (GP), the consultatiebureau, free dental care, and which complementary therapies (osteopathy, acupuncture, anthroposophic medicine, homeopathy) supplementary insurance reimburses for children.
+- [Midwife & kraamzorg](https://raisingamsterdam.com/guides/birth-and-kraamzorg.html): What a verloskundige does, what kraamzorg postnatal home care includes, how many hours you get, the 2026 own contribution of €5.70 per hour, and when to book.
+- [Primary school in Amsterdam](https://raisingamsterdam.com/guides/primary-school-amsterdam.html): Basisschool starting age and leerplicht, Amsterdam's joint registration system, openbaar versus bijzonder schools, and the Montessori, Dalton, Jenaplan, vrijeschool, Reggio Emilia and Freinet teaching styles.
+- [Paperwork & waiting lists](https://raisingamsterdam.com/guides/registration-and-waiting-lists.html): Registering a birth within 3 days, getting a BSN and DigiD as a newcomer, and when to join every Dutch waiting list.
+- [Child & baby first aid](https://raisingamsterdam.com/guides/child-first-aid.html): Kinder-EHBO — what the course involves, English-language providers in Amsterdam, Oranje Kruis certification, and insurance reimbursement.
+- [Swimming & the zwemdiploma](https://raisingamsterdam.com/guides/swimming-and-zwemdiploma.html): The Zwem-ABC diplomas A, B and C, why children take the exam in their clothes, which diploma is needed at which pool, and how long it takes.
+- [Childcare in the Netherlands (full guide)](https://raisingamsterdam.com/childcare-guide.html): Long-form printable guide to Dutch childcare from start to finish.
+- [Guides hub in the app](https://raisingamsterdam.com/guides): The same guides inside the RaisingAmsterdam web app.
+
+## Community
+
+- [Listings](https://raisingamsterdam.com/listings): Babysitters, nannies and child-related services in Amsterdam offered by and for the parent community.
+- [SOS board](https://raisingamsterdam.com/sos): Urgent, last-minute requests for childcare help from local parents.
+- [Meetups](https://raisingamsterdam.com/meetups): In-person gatherings for expat parents and their children in Amsterdam.
+
+## About
+
+- [Membership](https://raisingamsterdam.com/membership): What membership includes and how it works.
+- [Register](https://raisingamsterdam.com/register): Create an account and join the community.
+
+## Topics covered
+
+Dutch healthcare for children, free health insurance for under-18s, registering with a huisarts (GP), the consultatiebureau (JGZ) baby and toddler clinic, verloskundige (midwife) care, kraamzorg postnatal home care and its cost, aanvullende (supplementary) insurance and reimbursement for osteopathy, acupuncture, anthroposophic medicine and homeopathy, child and baby first aid (kinder-EHBO), full-day daycare (KDV), peuteropvang and peuterspeelzaal, VVE early education, childcare costs and the kinderopvangtoeslag allowance, choosing a daycare, Dutch primary school (basisschool), openbaar versus bijzonder schools, Montessori Dalton Jenaplan and other onderwijsconcepten, school registration in Amsterdam, registering a newborn, BSN and DigiD basics for newcomers, childcare waiting lists, swimming lessons and the Dutch zwemdiploma.
+
+
+---
+
+# Full text of the guides
+
+Everything below is the complete text of the guide pages listed above,
+in the same order. Each guide links to the authoritative Dutch source;
+this is practical orientation, not official or medical advice.
+
+
+
+---
+
+<!-- Childcare & daycare -->
+Source: https://raisingamsterdam.com/guides/childcare-and-daycare.html
+
+# Childcare & daycare in the Netherlands
+The Dutch childcare world decoded — KDV, peuteropvang and VVE — what it costs, how the allowance works, and how to pick a place that feels right.
+
+## 🍼 KDV — full-day daycare (0–4)
+- A kinderdagverblijf (KDV) is full-day care for children from about 6 weeks up to 4 years, made for working or studying parents.
+- Open on weekdays, usually around 7:30–18:30; you can book whole or half days.
+- Children are in age-based groups (separate baby and toddler groups) with trained pedagogical staff who follow each child's own rhythm of sleeping, eating and playing — focusing on feeling safe, developing and learning to be with other children.
+
+## 🎨 Peuteropvang / peuterspeelzaal (2–4)
+- Peuteropvang (the former peuterspeelzaal) is for toddlers 2–4, in half-day parts (a morning or an afternoon) rather than full days.
+- It runs a playful, structured programme (like Piramide or Uk & Puk) that gently prepares children for primary school.
+- A lovely lighter option if you don't need full-day care but want your toddler to play, socialise and get school-ready.
+
+## 📚 VVE — a little extra early education
+- VVE (voor- en vroegschoolse educatie) is extra early-learning support — mainly around language — for children who could use a boost, continuing into the first years of primary school.
+- The consultatiebureau decides whether your child gets a VVE indication (indicatie): a first look around 11 months, confirmed around 14 months, looking at things like the language spoken at home.
+- In Amsterdam a child with a VVE indication gets 16 hours a week of voorschool, and around 300 centres run a VVE programme. The voorschool is open to all Amsterdam toddlers but especially helps those at risk of a language gap — a real plus for many expat families.
+Official sources
+- Voorschool & VVE — Gemeente Amsterdam
+
+## 💶 Costs & the kinderopvangtoeslag allowance
+- Working or studying? You get kinderopvangtoeslag from the tax office for KDV, BSO and registered childminders — in 2026 up to ~96% for lower incomes, on up to 230 hours per child per month. The provider must be in the national register (LRK).
+- Not working? No toeslag, but the gemeente helps — in Amsterdam up to 16 hours a week of subsidised peuteropvang.
+Official sources
+- Apply for toeslagen — Belastingdienst
+
+## 💛 How to choose a good one
+- Read the free GGD inspection report — every registered location has one in the national register (LRK). In plain language it tells you whether the place meets the rules.
+- Then trust your eyes on a visit: are the children relaxed and happy? Are the carers warm, down on the floor and really with the kids?
+- Ask what matters for little ones: do the same faces come back each day (a stable stamgroep)? how often do staff change? how does settling-in (wennen) work? how many children per carer? how much time outdoors?
+- ⏳ Register early — around 70% of daycares have waiting lists, and many parents sign up during pregnancy.
+Official sources
+- Check a daycare — Landelijk Register Kinderopvang
+Good to know: this is friendly orientation, not official or medical advice. Dutch rules and amounts change, so always check the official source linked in each section before you act on it.
+
+
+---
+
+<!-- Your child's health -->
+Source: https://raisingamsterdam.com/guides/childrens-healthcare.html
+
+# Your child's health in the Netherlands
+Healthcare for kids here is well organised — and for children it's largely free. Here's how it works, and the Dutch perk most expat parents don't know about.
+
+## 🩺 The basics
+- Children under 18 are insured for free: they're covered under a parent's health insurance (zorgverzekering) with no premium and no own-risk. Register a newborn with an insurer within 4 months.
+- The huisarts (GP) is your first stop for anything medical and the gateway to specialists — you need one before you can see most other doctors.
+- To register, pick a practice near home (most only take you if you live within ~15 minutes) and sign up with your BSN, Dutch insurance and ID. Some have waiting lists, so do it as soon as you have an address — several Amsterdam practices are English- and expat-friendly.
+- The consultatiebureau (JGZ) gives free check-ups, growth and development monitoring and vaccinations for children 0–4. Once you're registered in the city, they invite you automatically.
+- Dentist (tandarts): free basic dental care for under-18s — check-ups, fillings, fluoride. Braces are not covered, so arrange supplementary insurance well in advance (ideally ~2 years ahead).
+- Worried about your child's wellbeing? Youth mental-health support (Jeugd-GGZ) is free.
+Official sources
+- Health insurance — I amsterdam
+- Children's healthcare — Expatica
+
+## 🌿 Complementary care & extra insurance (a Dutch perk)
+One thing expat parents love here: with an aanvullende (supplementary) policy, many therapies that are rarely reimbursed elsewhere in Europe are partly covered for your child.
+- These extras aren't in the basic package — you add a separate aanvullende policy on top of your child's free basic cover. The upside: supplementary reimbursements have no own-risk (eigen risico). When choosing a policy, check it also covers children under 18.
+- Osteopath (osteopaat): popular for babies and young children, and reimbursed by almost every supplementary policy — often around €200–€1,000 per year (varies by policy). The osteopath must be registered with the NRO or NOF.
+- Acupuncture & Chinese medicine: covered by many supplementary policies. The practitioner must belong to a recognised association such as the NVA or Zhong.
+- Anthroposophic medicine: fully-qualified doctors who add a holistic layer (body, soul and spirit, and strengthening the body's own healing) on top of regular medicine. There are around 135 anthroposophic GPs and specialists in the Netherlands — you can find one for your child via the NVAA. Consults and anthroposophic medicines are reimbursed when the doctor or therapist is affiliated with the NVAA and the medicine is officially registered.
+- Homeopathy: also reimbursable through supplementary insurance, as long as the practitioner is a member of a recognised professional association.
+- Golden rule: reimbursement only works if the practitioner has the right "stamp" — membership of a recognised professional association (usually with an AGB-code / RBCZ registration). Always check this and your policy's yearly maximum before you book.
+Official sources
+- Alternative therapies — Zorgwijzer
+- Osteopathy reimbursement — Zorgwijzer
+- Chinese medicine — Zorgwijzer
+- Anthroposophic medicine — Zorgwijzer
+- Find an anthroposophic doctor — NVAA
+Good to know: this is friendly orientation, not official or medical advice. Dutch rules and amounts change, so always check the official source linked in each section before you act on it.
+
+
+---
+
+<!-- Midwife & kraamzorg -->
+Source: https://raisingamsterdam.com/guides/birth-and-kraamzorg.html
+
+# New baby? Midwife & kraamzorg
+One of the most-loved parts of the Dutch system — and it comes to your home.
+
+## 🤱 Midwife, kraamzorg and what it costs
+- A verloskundige (midwife) guides you through a healthy pregnancy and the birth. Midwife care and maternity hours carry no own-risk (eigen risico), so there's nothing to pay from your excess.
+- Kraamzorg is postnatal home care: in the first days after the birth a maternity nurse comes to your house to help with the baby, feeding and your recovery, run basic checks, and lend a hand around the home.
+- It's covered by basic insurance — roughly 24–80 hours spread over the first 8–10 days (about 49 hours is typical for a straightforward birth).
+- In 2026 you pay a small own contribution of €5.70 per hour at home (nothing if it's in hospital) — so an average ~49 hours works out around €275.
+Official sources
+- Kraamzorg costs — ACCESS NL
+- Kraamzorg — Zorginstituut Nederland
+
+## ⏳ When to book
+- Midwife (verloskundige): book your first appointment as soon as your test is positive — usually around weeks 8–10.
+- Kraamzorg: sign up early because of waiting lists — ideally within the first 12 weeks, and in big cities like Amsterdam before week 8.
+- After the birth, register it at the municipality where your baby was born within 3 days, and register your baby with a health insurer within 4 months.
+Read next
+- Paperwork & waiting lists — registering your baby
+- Your child's health & insurance
+Good to know: this is friendly orientation, not official or medical advice. Dutch rules and amounts change, so always check the official source linked in each section before you act on it.
+
+
+---
+
+<!-- Primary school in Amsterdam -->
+Source: https://raisingamsterdam.com/guides/primary-school-amsterdam.html
+
+# Primary school (basisschool) in Amsterdam
+Choosing a school in Amsterdam, made simpler — how it works, the different styles, and an honest tip on what really matters.
+
+## 🗓️ How it works (Amsterdam)
+- Children start basisschool at age 4; school becomes compulsory (leerplicht) at 5.
+- Amsterdam uses one joint registration system. Around your child's 3rd birthday the city sends you a registration form and a brochure — that's your cue to pick a school and apply.
+- A handful of schools (~10) register separately from the central system, so always check the individual school too.
+Official sources
+- Amsterdam School Finder — schoolwijzer
+- Primary school — I amsterdam
+
+## 🧭 Public or faith-based? (openbaar vs bijzonder)
+- Openbaar (public) schools welcome every child and aren't based on a religion or worldview.
+- Bijzonder schools teach from a particular conviction or vision — religious (Catholic, Protestant, Islamic, Jewish…) or a special idea about education. "Oecumenical" boards like AMOS (29 schools across Amsterdam) are Christian in roots but open to all beliefs.
+- A lovely Dutch quirk: both public and bijzonder schools are fully funded by the government — there's no tuition, just a small voluntary contribution (vrijwillige ouderbijdrage). "Special" here doesn't mean paying.
+Official sources
+- Openbaar vs bijzonder — OCO
+- AMOS schools — amosonderwijs.nl
+
+## 🎨 Teaching styles (onderwijsconcepten)
+Many schools follow a "regular" (klassikaal) programme; others follow a renewing concept built around the individual child, independence and working together. The best-known ones:
+- Montessori — "help me to do it myself": children follow their natural curiosity and learn by choosing their own work with special materials, at their own pace.
+- Dalton — independence and cooperation: children work through day- or week-tasks and learn to plan their own time.
+- Jenaplan — learning to live together: a strong focus on social skills, often in mixed-age groups.
+- Vrijeschool (Steiner/Waldorf) — head, heart and hands: the rhythm of the year, lots of art, music, movement and storytelling (an anthroposophic approach).
+- Reggio Emilia — the "competent child" who discovers through long, curious projects; the space and materials are part of the learning.
+- Freinet — children bring their own topics in a democratic classroom, with lots of expression, stories and crafts.
+Official sources
+- School styles explained — Ouders.nl
+
+## 💛 How to choose (the honest tip)
+- Closeness to home matters more than you'd expect. With the Dutch weather you'll bike and walk in the rain a lot — a school around the corner makes every single day easier. ☔🚲
+- Friendships live in the neighbourhood, too: after school, kids pop over to each other's houses to play, so a local school usually means local friends and easy playdates.
+- Go to an open day (open dag), trust the feeling in the building, and don't overthink the "perfect method" — a warm, nearby school your child loves usually beats a famous one across town.
+- Apply early, around your child's 3rd birthday — popular schools fill up.
+Good to know: this is friendly orientation, not official advice. Dutch rules change, so always check the official source linked in each section before you act on it.
+
+
+---
+
+<!-- Paperwork & waiting lists -->
+Source: https://raisingamsterdam.com/guides/registration-and-waiting-lists.html
+
+# Getting set up: paperwork & waiting lists
+The little admin jobs around a child — and the very Dutch art of signing up early.
+
+## 🍼 Registering your baby
+- Register the birth at the municipality where your baby was born within 3 days (the birth day itself doesn't count, and a weekend or holiday gives you an extra working day). Your baby is then added to the records and gets a BSN by post.
+- Register your baby with a health insurer within 4 months — children are insured for free, but they still need their own sign-up.
+Official sources
+- Birth registration — Rijksoverheid
+
+## 🪪 Your own basics (newcomers)
+- Just arrived? Register at your gemeente within 5 days to get your BSN. In Amsterdam, book the appointment early — waits can be 6–8 weeks.
+- Bring your passport/ID, proof of your Dutch address, and an employment contract if you have one. Then set up a DigiD online — your login for insurance, school, toeslag and more.
+Official sources
+- BSN & registration — I amsterdam
+
+## ⏳ Register early — the waiting-list game
+- Midwife (verloskundige): book your first appointment as soon as your test is positive — usually around weeks 8–10.
+- Kraamzorg: sign up early because of waiting lists — ideally within the first 12 weeks, and in big cities like Amsterdam before week 8.
+- Daycare (KDV): around 70% have waiting lists, so many parents register during pregnancy.
+- Primary school: in Amsterdam you apply around your child's 3rd birthday — popular schools fill up.
+- Swimming lessons: spots fill up too, so put your child on the list in good time.
+Read next
+- Childcare & daycare — KDV, peuteropvang and costs
+- Primary school in Amsterdam
+- Swimming & the zwemdiploma
+Good to know: this is friendly orientation, not official advice. Dutch rules and deadlines change, so always check the official source linked in each section before you act on it.
+
+
+---
+
+<!-- Child & baby first aid -->
+Source: https://raisingamsterdam.com/guides/child-first-aid.html
+
+# Child & baby first aid (kinder-EHBO)
+A short, friendly course that teaches you what to do in the first minutes of a choke, fall or burn — and a smart thing to ask any babysitter about.
+
+## 🚑 What it is and why it matters
+- On average more than 100 children a day in the Netherlands end up in A&E after an accident — most of them in and around the home. Knowing how to react in those first minutes (choking, a hard fall, a burn, a febrile seizure) really does change everything.
+- What it's like: usually a few hours of online theory at home, plus one practical afternoon where you actually practise — CPR on a baby dummy, the choking grip, the recovery position. You leave with a recognised certificate (the Oranje Kruis "Eerste Hulp aan Kinderen" certificate is valid for 2 years, then topped up with a short refresher). Honestly one of the most useful — and surprisingly fun — afternoons you'll spend as a parent.
+- 💰 Good to know: because it's a certified course, it's often reimbursed through your aanvullende (supplementary) health insurance. It varies per insurer and package, so check your own policy first — but for many families the course effectively pays for itself.
+- 🧑‍🍼 Choosing a babysitter? Ask whether she has a child first-aid certificate — it's a real green flag. And if she doesn't, suggest she takes the course: it's affordable, often reimbursed, and makes her more bookable. A lovely win-win for both sides.
+- In and around Amsterdam several providers run the course in English (great for expat families) — see the links below. Het Oranje Kruis and the Rode Kruis are the two national standards, so look for a course that certifies through one of them.
+Where to take it
+- Kinder-EHBO in English — Geboortecentrum Amsterdam
+- Baby & child first aid — Midwives 101
+- First aid workshop — Femme Amsterdam
+- Eerste Hulp aan Kinderen — Het Oranje Kruis
+- EHBO voor kinderen — Rode Kruis
+Good to know: this is friendly orientation, not official or medical advice. Always check the course provider and your own insurance policy before you book.
+
+
+---
+
+<!-- Swimming & the zwemdiploma -->
+Source: https://raisingamsterdam.com/guides/swimming-and-zwemdiploma.html
+
+# Swimming & the zwemdiploma (very Dutch!)
+In a country full of canals, learning to swim is a rite of passage — and it works differently here.
+
+## 🏊 How the Zwem-ABC works
+- Most Dutch children earn the Zwem-ABC: three national diplomas from the Nationale Raad Zwemveiligheid — A (aanleren / learning), B (beter maken / improving) and C (compleet maken / complete). After C, your child meets the national swimming-safety norm.
+- The famous twist: at the exam (afzwemmen) children swim in their clothes and shoes! Diploma A is in summer clothing; higher diplomas add long sleeves and trousers. It sounds funny, but it prepares children for a real, unexpected fall into cold water — very relevant in a city of canals. 🤿
+- Diplomas open doors at the pool: without one, a child needs armbands and an adult (often just one no-diploma child per grown-up). You usually need at least diploma A to swim on your own, B for pools with slides and waves (attractiebad), and C is the recommended minimum for the sea, a lake or holidays.
+- It's a journey — on average 18–28 months for all three — and lessons can have waiting lists, so sign up in good time. School swimming is no longer standard, so most families arrange lessons themselves.
+Official sources
+- Zwem-ABC — Nationale Raad Zwemveiligheid
+Good to know: this is friendly orientation, not official advice. Rules at individual pools vary, so check with your local zwembad before you go.
