@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 
 const PURPLE = '#a78bfa'
+// Tutoriál pro chůvy na YouTube — když je ID prázdné, sekce s videem se nevykreslí
+const YOUTUBE_VIDEO_ID = 'GcOP2vPfZio'
 const SUCCESS_MSG =
   "Check your email! 📬 Click the link inside to finish step 2 — posting your listing. Takes 2 minutes, and without it parents can't find you."
 
@@ -98,7 +100,7 @@ export default function Register() {
   }
 
   return (
-    <section style={{ minHeight: '100%' }} className="w-full px-6 py-16 flex justify-center">
+    <section style={{ minHeight: '100%' }} className="w-full px-6 py-16 flex flex-col items-center">
       <div
         style={{
           background: '#1a1a2e',
@@ -174,6 +176,28 @@ export default function Register() {
           </p>
         </div>
       </div>
+
+      {/* Tutoriálové video pro chůvy — pod registrační kartou */}
+      {YOUTUBE_VIDEO_ID && (
+        <div className="w-full mt-10" style={{ maxWidth: 460 }}>
+          <h2 className="text-white text-lg font-semibold text-center">
+            See how to post your listing
+          </h2>
+          <p className="text-white/60 text-sm text-center mt-1">
+            2 minutes, start to finish
+          </p>
+          <div className="aspect-video mt-4 rounded-xl overflow-hidden">
+            <iframe
+              className="w-full h-full"
+              src={`https://www.youtube-nocookie.com/embed/${YOUTUBE_VIDEO_ID}`}
+              title="How to post your listing on RaisingAmsterdam"
+              loading="lazy"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          </div>
+        </div>
+      )}
     </section>
   )
 }

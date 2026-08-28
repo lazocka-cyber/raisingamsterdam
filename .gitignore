@@ -33,3 +33,15 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
 .vercel
+
+# Natáčení tutoriálu — přihlášené profily prohlížeče a výstupy (NIKDY do gitu)
+VIDEO-TUTORIAL/profil-prihlaseny/
+VIDEO-TUTORIAL/profil-odhlaseny/
+VIDEO-TUTORIAL/.session.json
+VIDEO-TUTORIAL/zabery/
+VIDEO-TUTORIAL/zabery-mp4/
+VIDEO-TUTORIAL/screenshoty/
+VIDEO-TUTORIAL/.video-tmp/
+VIDEO-TUTORIAL/final/
+VIDEO-TUTORIAL/voiceover/*.mp3
+VIDEO-TUTORIAL/foto-inzerat.jpg
