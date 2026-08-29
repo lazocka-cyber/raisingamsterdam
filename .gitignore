@@ -45,3 +45,6 @@ VIDEO-TUTORIAL/.video-tmp/
 VIDEO-TUTORIAL/final/
 VIDEO-TUTORIAL/voiceover/*.mp3
 VIDEO-TUTORIAL/foto-inzerat.jpg
+
+# Natáčení tutoriálu — 134 MB, do repozitáře nepatří (dřív se ignorovaly jen podsložky)
+VIDEO-TUTORIAL/

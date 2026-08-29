@@ -61,6 +61,7 @@ function GoogleButton({ onClick }) {
 }
 
 export default function Register() {
+  const [videoOpen, setVideoOpen] = useState(false)
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -101,6 +102,85 @@ export default function Register() {
 
   return (
     <section style={{ minHeight: '100%' }} className="w-full px-6 py-16 flex flex-col items-center">
+
+      {/* Tutoriálové video pro chůvy — NAD registrační kartou, ať ho vidí každý,
+          kdo přijde z e-mailu. Dřív bylo pod kartou na ~2000 px a nikdo ho nenašel
+          (změřeno 29. 8. 2026: 2 prokliky z 27 e-mailů, ani jeden na video). */}
+      {YOUTUBE_VIDEO_ID && (
+        <div className="w-full mb-8" style={{ maxWidth: 460 }}>
+          <h2 className="text-white text-lg font-semibold text-center">
+            See how to post your listing
+          </h2>
+          <p className="text-white/60 text-sm text-center mt-1">
+            2 minutes, start to finish
+          </p>
+          <div
+            className="aspect-video mt-4 rounded-xl overflow-hidden"
+            style={{ position: 'relative', background: '#000' }}
+          >
+            {videoOpen ? (
+              <iframe
+                className="w-full h-full"
+                src={`https://www.youtube-nocookie.com/embed/${YOUTUBE_VIDEO_ID}?autoplay=1`}
+                title="How to post your listing on RaisingAmsterdam"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            ) : (
+              /* Náhled s pulzujícím tlačítkem — YouTube se načte až po kliknutí.
+                 Stránka je tím rychlejší a hlavně: pulzování oko zastaví. */
+              <button
+                type="button"
+                onClick={() => setVideoOpen(true)}
+                aria-label="Play the 2-minute video on how to post your listing"
+                style={{
+                  position: 'relative',
+                  display: 'block',
+                  width: '100%',
+                  height: '100%',
+                  padding: 0,
+                  border: 0,
+                  background: 'none',
+                  cursor: 'pointer',
+                }}
+              >
+                <img
+                  src={`https://img.youtube.com/vi/${YOUTUBE_VIDEO_ID}/maxresdefault.jpg`}
+                  alt=""
+                  style={{
+                    display: 'block',
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                  }}
+                />
+                <span
+                  className="listing-cta-pulse"
+                  style={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    width: 68,
+                    height: 68,
+                    borderRadius: '50%',
+                    background: '#34d399',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: '#0b1f17',
+                    fontSize: 26,
+                    paddingLeft: 4,
+                  }}
+                >
+                  &#9654;
+                </span>
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+
       <div
         style={{
           background: '#1a1a2e',
@@ -177,27 +257,6 @@ export default function Register() {
         </div>
       </div>
 
-      {/* Tutoriálové video pro chůvy — pod registrační kartou */}
-      {YOUTUBE_VIDEO_ID && (
-        <div className="w-full mt-10" style={{ maxWidth: 460 }}>
-          <h2 className="text-white text-lg font-semibold text-center">
-            See how to post your listing
-          </h2>
-          <p className="text-white/60 text-sm text-center mt-1">
-            2 minutes, start to finish
-          </p>
-          <div className="aspect-video mt-4 rounded-xl overflow-hidden">
-            <iframe
-              className="w-full h-full"
-              src={`https://www.youtube-nocookie.com/embed/${YOUTUBE_VIDEO_ID}`}
-              title="How to post your listing on RaisingAmsterdam"
-              loading="lazy"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
-          </div>
-        </div>
-      )}
     </section>
   )
 }
