@@ -101,6 +101,10 @@ const SECTIONS = [
           'Peuteropvang (the former peuterspeelzaal) is for toddlers 2–4, in half-day parts (a morning or an afternoon) rather than full days.',
           'It runs a playful, structured programme (like Piramide or Uk & Puk) that gently prepares children for primary school.',
           'A lovely lighter option if you don’t need full-day care but want your toddler to play, socialise and get school-ready.',
+          'In Amsterdam it is called the voorschool: every 2 to 4 year old may go 16 hours a week, you register from age 1, and the 2026 costs depend on your income. Our full guide has the table and the comparison with KDV.',
+        ],
+        links: [
+          { label: 'Peuterspeelzaal & voorschool in Amsterdam — our guide', url: '/guides/peuterspeelzaal-voorschool-amsterdam.html' },
         ],
       },
       {

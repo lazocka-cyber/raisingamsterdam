@@ -25,6 +25,7 @@ PAGES = [
     ("guides/primary-school-amsterdam.html", "Primary school in Amsterdam"),
     ("guides/registration-and-waiting-lists.html", "Paperwork & waiting lists"),
     ("guides/child-first-aid.html", "Child & baby first aid"),
+    ("guides/peuterspeelzaal-voorschool-amsterdam.html", "Peuterspeelzaal & voorschool in Amsterdam"),
     ("guides/swimming-and-zwemdiploma.html", "Swimming & the zwemdiploma"),
 ]
 

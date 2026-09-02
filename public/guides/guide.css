@@ -167,3 +167,10 @@ footer .fine { font-size: 13px; opacity: 0.75; line-height: 1.55; }
   section.block { padding: 22px 18px 18px; }
   .cta { padding: 24px 18px; }
 }
+
+/* comparison tables (peuterspeelzaal guide, 2026-09-02) */
+.compare{width:100%;border-collapse:collapse;margin:14px 0 18px;font-size:.95rem}
+.compare th,.compare td{padding:9px 10px;text-align:left;vertical-align:top;border-bottom:1px solid rgba(255,255,255,.12)}
+.compare th{font-weight:600;color:rgba(255,255,255,.7);font-size:.85rem}
+.compare td:first-child{color:rgba(255,255,255,.8)}
+@media (max-width:560px){.compare{display:block;overflow-x:auto;white-space:nowrap}}

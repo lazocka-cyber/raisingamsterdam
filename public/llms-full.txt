@@ -14,7 +14,8 @@ The content is written by a childcare professional based in Amsterdam. It is pra
 - [Primary school in Amsterdam](https://raisingamsterdam.com/guides/primary-school-amsterdam.html): Basisschool starting age and leerplicht, Amsterdam's joint registration system, openbaar versus bijzonder schools, and the Montessori, Dalton, Jenaplan, vrijeschool, Reggio Emilia and Freinet teaching styles.
 - [Paperwork & waiting lists](https://raisingamsterdam.com/guides/registration-and-waiting-lists.html): Registering a birth within 3 days, getting a BSN and DigiD as a newcomer, and when to join every Dutch waiting list.
 - [Child & baby first aid](https://raisingamsterdam.com/guides/child-first-aid.html): Kinder-EHBO — what the course involves, English-language providers in Amsterdam, Oranje Kruis certification, and insurance reimbursement.
-- [Swimming & the zwemdiploma](https://raisingamsterdam.com/guides/swimming-and-zwemdiploma.html): The Zwem-ABC diplomas A, B and C, why children take the exam in their clothes, which diploma is needed at which pool, and how long it takes.
+- [Peuterspeelzaal & voorschool in Amsterdam](https://raisingamsterdam.com/guides/peuterspeelzaal-voorschool-amsterdam.html): The Amsterdam preschool for 2 to 4 year olds (peuterspeelzaal, peuteropvang, voorschool): registration from age 1, the 16 hours a week, the 2026 parent contribution table, kinderopvangtoeslag, and an honest comparison with full-day daycare (KDV).
+- [Swimming & the zwemdiploma](https://raisingamsterdam.com/guides/swimming-and-zwemdiploma.html): The Zwem-ABC diplomas A, B and C, when to start (baby swimming, diploma A from 4.5), why children take the exam in their clothes, which diploma is needed at which pool, and how long it takes.
 - [Childcare in the Netherlands (full guide)](https://raisingamsterdam.com/childcare-guide.html): Long-form printable guide to Dutch childcare from start to finish.
 - [Guides hub in the app](https://raisingamsterdam.com/guides): The same guides inside the RaisingAmsterdam web app.
 
@@ -31,7 +32,7 @@ The content is written by a childcare professional based in Amsterdam. It is pra
 
 ## Topics covered
 
-Dutch healthcare for children, free health insurance for under-18s, registering with a huisarts (GP), the consultatiebureau (JGZ) baby and toddler clinic, verloskundige (midwife) care, kraamzorg postnatal home care and its cost, aanvullende (supplementary) insurance and reimbursement for osteopathy, acupuncture, anthroposophic medicine and homeopathy, child and baby first aid (kinder-EHBO), full-day daycare (KDV), peuteropvang and peuterspeelzaal, VVE early education, childcare costs and the kinderopvangtoeslag allowance, choosing a daycare, Dutch primary school (basisschool), openbaar versus bijzonder schools, Montessori Dalton Jenaplan and other onderwijsconcepten, school registration in Amsterdam, registering a newborn, BSN and DigiD basics for newcomers, childcare waiting lists, swimming lessons and the Dutch zwemdiploma.
+Dutch healthcare for children, free health insurance for under-18s, registering with a huisarts (GP), the consultatiebureau (JGZ) baby and toddler clinic, verloskundige (midwife) care, kraamzorg postnatal home care and its cost, aanvullende (supplementary) insurance and reimbursement for osteopathy, acupuncture, anthroposophic medicine and homeopathy, child and baby first aid (kinder-EHBO), full-day daycare (KDV), peuteropvang, peuterspeelzaal and the Amsterdam voorschool (registration, 16 hours, 2026 costs), VVE early education, childcare costs and the kinderopvangtoeslag allowance, choosing a daycare, Dutch primary school (basisschool), openbaar versus bijzonder schools, Montessori Dalton Jenaplan and other onderwijsconcepten, school registration in Amsterdam, registering a newborn, BSN and DigiD basics for newcomers, childcare waiting lists, swimming lessons and the Dutch zwemdiploma.
 
 
 ---
@@ -61,6 +62,7 @@ The Dutch childcare world decoded — KDV, peuteropvang and VVE — what it cost
 - Peuteropvang (the former peuterspeelzaal) is for toddlers 2–4, in half-day parts (a morning or an afternoon) rather than full days.
 - It runs a playful, structured programme (like Piramide or Uk & Puk) that gently prepares children for primary school.
 - A lovely lighter option if you don't need full-day care but want your toddler to play, socialise and get school-ready.
+- In Amsterdam it is called the voorschool and every 2 to 4 year old may go 16 hours a week. Registration from age 1, the 2026 costs and the honest comparison with KDV are in our peuterspeelzaal & voorschool guide.
 
 ## 📚 VVE — a little extra early education
 - VVE (voor- en vroegschoolse educatie) is extra early-learning support — mainly around language — for children who could use a boost, continuing into the first years of primary school.
@@ -249,11 +251,123 @@ Good to know: this is friendly orientation, not official or medical advice. Alwa
 
 ---
 
+<!-- Peuterspeelzaal & voorschool in Amsterdam -->
+Source: https://raisingamsterdam.com/guides/peuterspeelzaal-voorschool-amsterdam.html
+
+# Peuterspeelzaal & voorschool in Amsterdam
+The Amsterdam preschool for 2 to 4 year olds, explained by a preschool teacher who works in it: what it is, how to register from age 1, the 16 hours, what you pay in 2026 and how it compares with daycare.
+
+## 🎨 One thing, three names
+- Peuterspeelzaal is the old name most Dutch people still use: a playgroup for toddlers, a few mornings a week.
+- Peuteropvang is the national name since 2018, when playgroups and daycare were put under the same law and the same quality rules.
+- Voorschool is what Amsterdam calls it. Almost 300 childcare centres in the city run a voorschool programme, and the municipality says it plainly: the voorschool is for all Amsterdam children aged 2 to 4.
+- What happens there: a small, stable group, a lot of language (songs, books, talking), playing together, and a gentle routine that makes the step into basisschool at 4 much easier. Programmes have names like Piramide or Uk & Puk.
+- Some children get a voorschooladvies (also called a VVE indication) from the consultatiebureau, usually around 14 months, when there is a risk of a language gap. It changes the price, not the group: the child sits in the same room as everyone else.
+Official sources
+- Uw kind aanmelden voor de voorschool — Gemeente Amsterdam
+- Is de voorschool toegankelijk voor alle peuters? — OCO Amsterdam
+
+## 📋 How to register (and when)
+- You can register from your child's first birthday. Children attend from 2 until they start primary school at 4.
+- You register with the location, not with the city. Pick a voorschool, call or use their online form. Addresses and phone numbers are in the official Amsterdam School Finder (Schoolwijzer); in the nursery list, locations that run a voorschool are tagged Preschool.
+- Register early. Locations near you and locations attached to a popular primary school fill up. Around the first birthday is normal, not neurotic.
+- Ask two practical questions on the phone: how are the 16 hours spread over the week here? (some do mornings, some whole days inside a daycare) and is there a waiting list for a 2-year-old starting in month X?
+- If your child has a voorschooladvies from the consultatiebureau, mention it when you register. The location arranges the municipal contribution for you.
+Official sources
+- Nurseries and preschools — Amsterdam School Finder (English)
+- Aanmelden voorschool — Gemeente Amsterdam
+
+## 🕘 The 16 hours
+- The Amsterdam standard is 16 hours a week, over at least 3 days, 40 weeks a year. Think school weeks: most locations follow the primary-school holidays.
+- Fewer hours? Possible, talk to the location. More hours? Possible, you pay for the extra hours; if you are entitled to kinderopvangtoeslag you can claim it for those hours too.
+- A 2-year-old usually starts with a settling-in period (wennen): a couple of shorter visits with you nearby, then the first mornings alone.
+Official sources
+- Proefberekening ouderbijdrage voorschool 2026 — Gemeente Amsterdam
+
+## 💶 What it costs in 2026
+Two routes, depending on your situation. Both start from the same maximum hourly rate of €11.23 (2026) and the same basis of 16 hours a week, 40 weeks a year, which is about €599 a month before any allowance.
+- You (or your partner) work or study? You claim kinderopvangtoeslag from the Belastingdienst, exactly as for daycare: up to roughly 96% back for lower incomes, less as income rises. The voorschool must be in the national register (LRK), and in Amsterdam they are.
+- Not entitled to kinderopvangtoeslag? The municipality pays a contribution instead, and the location applies for it on your behalf. What is left for you, per month, for 16 hours in 2026:
+- Gross household income per year
+- Municipality pays
+- You pay per month
+- under €56,413
+- €575
+- €24
+- €69,493 to €73,292
+- €542
+- €57
+- €99,890 to €103,694
+- €432
+- €167
+- €138,421 to €142,312
+- €302
+- €297
+- €165,658 and higher
+- €219
+- €380
+- The full table has 32 income bands; the official page linked below has all of them. With a Stadspas you never pay more than €24 a month for the 16 hours.
+- Low income? Amsterdam also has Kindtegoed voorschool, an extra credit you apply for each year.
+- Rule of thumb from the table: for most expat households the voorschool costs somewhere between a cheap lunch and a nice dinner per month. It is one of the best-value things the city does for families.
+Official sources
+- Ouderbijdrage voorschool 2026 (full table) — Gemeente Amsterdam
+- Calculate your own contribution — Gemeente Amsterdam
+- Kindtegoed voorschool — Gemeente Amsterdam
+- Kinderopvangtoeslag — Belastingdienst
+
+## ⚖️ Voorschool or daycare (KDV)? Honest comparison
+- Voorschool
+- KDV (full-day daycare)
+- Age
+- 2 to 4
+- about 6 weeks to 4
+- Hours
+- 16 a week, 40 weeks
+- full days, usually 7:30 to 18:30, all year
+- Made for
+- the child: language, play, school readiness
+- the parents' working week, with the same pedagogy inside
+- Hourly price
+- max €11.23
+- max €11.23 (many charge a bit more)
+- Working parents
+- kinderopvangtoeslag
+- kinderopvangtoeslag
+- Not working
+- municipal contribution (see table)
+- no allowance, full price
+- Cheaper? Usually yes, because you buy far fewer hours and because non-working parents get help that daycare does not offer. Per hour the price is the same.
+- A replacement for daycare? No. Sixteen hours over three days does not cover a job. It covers a toddler's need for other children, a routine and Dutch words before school starts.
+- Combining is normal. Many Amsterdam daycares are voorschool at the same time, so the 16 hours simply happen inside the daycare days. Others run separate voorschool groups in the morning. If you use a KDV two days a week, ask whether the voorschool programme is included or whether you can add a voorschool group on a third day.
+- One quirk to expect: voorschool follows school holidays. If you work, those 12 closed weeks are exactly when a regular babysitter earns her keep.
+
+## 💛 What I look at as a teacher (and what you can ask)
+I am not the municipality and not your accountant; for the numbers, use the calculator above. What I can tell you is what a good voorschool group looks like from the inside.
+- The same faces. Ask how many different pedagogisch medewerkers your child will see in a week. Two or three regulars beats a rotating cast, every time.
+- Talking, not just watching. Sit in for ten minutes. Are the adults on the floor, naming things, asking questions? For a child learning Dutch this is the whole point.
+- Your language is welcome. A good group does not ask you to stop speaking your own language at home. Children need a strong first language to build a second one on.
+- Read the GGD inspection report. Every registered location has one, free, in the national register. It tells you whether the rules are met; your own eyes tell you whether it feels warm.
+- Wennen is not optional. A location that wants your 2-year-old to stay a full morning on day one is telling you something.
+Official sources
+- Inspection reports — Landelijk Register Kinderopvang
+Good to know: this is friendly orientation, not official advice. Amounts are the 2026 figures published by the Gemeente Amsterdam and change every January, so check the official source linked in each section before you decide.
+
+
+---
+
 <!-- Swimming & the zwemdiploma -->
 Source: https://raisingamsterdam.com/guides/swimming-and-zwemdiploma.html
 
-# Swimming & the zwemdiploma (very Dutch!)
+# Zwem-ABC & the zwemdiploma in Amsterdam (very Dutch!)
 In a country full of canals, learning to swim is a rite of passage — and it works differently here.
+
+## 👶 When to start: baby swimming and the right age for diploma A
+- Babies and toddlers (0 to 4): real strokes are too hard yet, but almost every Amsterdam pool runs ouder-en-kindzwemmen (also called babyzwemmen, peuterzwemmen or survival swimming). You are in the warm water together; your child learns to turn, float and climb out. The Nationale Raad Zwemveiligheid actively encourages it, because most drownings in the Netherlands happen between 0 and 4.
+- Diploma A lessons: the official advice is to start at 4.5 to 5 years. Three is too early for the A requirements, and a 4-year-old has just started school, which costs energy. Wait half a year and the lessons go faster.
+- Anyone may teach swimming in the Netherlands; it is not regulated by law. Choose a provider with the Licentie Nationale Zwemdiploma's, so the diploma is the real national one.
+- Can't afford lessons? Ask the gemeente; there are schemes, and Stadspas holders in Amsterdam get help with sports costs.
+Official sources
+- Beginnen met zwemmen — Alles over zwemles (Nationale Raad Zwemveiligheid)
 
 ## 🏊 How the Zwem-ABC works
 - Most Dutch children earn the Zwem-ABC: three national diplomas from the Nationale Raad Zwemveiligheid — A (aanleren / learning), B (beter maken / improving) and C (compleet maken / complete). After C, your child meets the national swimming-safety norm.
