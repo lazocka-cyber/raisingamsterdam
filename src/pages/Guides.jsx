@@ -143,6 +143,26 @@ const SECTIONS = [
     ],
   },
   {
+    emoji: '🎨',
+    title: 'Peuterspeelzaal & voorschool (2–4)',
+    intro:
+      'The Amsterdam preschool for toddlers — a few mornings a week of play, Dutch words and friends before school starts. Open to every 2 to 4 year old in the city.',
+    points: [
+      'Three names, one thing: peuterspeelzaal (the old name), peuteropvang (the national name since 2018) and voorschool (what Amsterdam calls it). Almost 300 childcare centres in Amsterdam run a voorschool programme.',
+      'Register from your child’s first birthday, directly with the voorschool of your choice — not with the city. Addresses are in the official Amsterdam School Finder (Schoolwijzer), where locations are tagged “Preschool”. Popular ones have waiting lists.',
+      'The standard is 16 hours a week over at least 3 days, 40 weeks a year (school weeks). Fewer hours by agreement, more hours for a fee.',
+      'What you pay in 2026 depends on your income. Working parents claim kinderopvangtoeslag, exactly as for daycare. Parents without that allowance get a municipal contribution instead: from €24 a month for lower incomes up to €380 for the highest. With a Stadspas it is never more than €24.',
+      'Cheaper than a KDV? Usually yes — you buy far fewer hours and non-working parents get help that daycare does not offer. The hourly rate itself is the same (€11.23). It is not a replacement for full-day care; combining the two is normal, and many daycares are voorschool at the same time.',
+      'Our full guide has the 2026 cost table, the honest comparison with KDV, and what to look at on a visit — written by a preschool teacher who works in one.',
+    ],
+    links: [
+      { label: 'Peuterspeelzaal & voorschool in Amsterdam — full guide with the 2026 table', url: '/guides/peuterspeelzaal-voorschool-amsterdam.html' },
+      { label: 'Register your child for the voorschool — Gemeente Amsterdam', url: 'https://www.amsterdam.nl/onderwijs/kinderopvang-voorschool/voorschool/kind-aanmelden-voorschool/' },
+      { label: 'Calculate your own contribution 2026 — Gemeente Amsterdam', url: 'https://www.amsterdam.nl/onderwijs-jeugd/voorschool/rekensom/' },
+      { label: 'Nurseries & preschools — Amsterdam School Finder (English)', url: 'https://schoolwijzer.amsterdam.nl/en/opvang/nursery/' },
+    ],
+  },
+  {
     emoji: '🎒',
     title: 'Primary school (basisschool)',
     intro:
@@ -253,12 +273,14 @@ const SECTIONS = [
     intro:
       'In a country full of canals, learning to swim is a rite of passage — and it works differently here.',
     points: [
+      'When to start: baby and toddler swimming with a parent (ouder-en-kindzwemmen) is offered at most Amsterdam pools from a few months old. Lessons for diploma A are advised from 4.5 to 5 years — three is too early, and a 4-year-old has just started school.',
       'Most Dutch children earn the Zwem-ABC: three national diplomas from the Nationale Raad Zwemveiligheid — A (aanleren / learning), B (beter maken / improving) and C (compleet maken / complete). After C, your child meets the national swimming-safety norm.',
       'The famous twist: at the exam (afzwemmen) children swim in their clothes and shoes! Diploma A is in summer clothing; higher diplomas add long sleeves and trousers. It sounds funny, but it prepares children for a real, unexpected fall into cold water — very relevant in a city of canals. 🤿',
       'Diplomas open doors at the pool: without one, a child needs armbands and an adult (often just one no-diploma child per grown-up). You usually need at least diploma A to swim on your own, B for pools with slides and waves (attractiebad), and C is the recommended minimum for the sea, a lake or holidays.',
       'It’s a journey — on average 18–28 months for all three — and lessons can have waiting lists, so sign up in good time. School swimming is no longer standard, so most families arrange lessons themselves.',
     ],
     links: [
+      { label: 'Zwem-ABC & zwemdiploma in Amsterdam — full guide', url: '/guides/swimming-and-zwemdiploma.html' },
       { label: 'Zwem-ABC — Nationale Raad Zwemveiligheid', url: 'https://www.nrz-nl.nl/licentie-nationale-zwemdiplomas/zwem-abc-en-andere-nationale-zwemdiplomas/' },
     ],
   },
