@@ -146,7 +146,7 @@ export default function Register() {
               >
                 <img
                   src={`https://img.youtube.com/vi/${YOUTUBE_VIDEO_ID}/maxresdefault.jpg`}
-                  alt=""
+                  alt="Preview of the tutorial showing babysitters how to post a listing on RaisingAmsterdam"
                   style={{
                     display: 'block',
                     width: '100%',

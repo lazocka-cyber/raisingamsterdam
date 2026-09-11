@@ -7,5 +7,8 @@
       "permanent": true
     }
   ],
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+  "rewrites": [
+    { "source": "/listings/:id", "destination": "/app-shell.html" },
+    { "source": "/post-listing/:id", "destination": "/app-shell.html" }
+  ]
 }
