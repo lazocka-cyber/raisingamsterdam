@@ -235,6 +235,10 @@ function Layout({ children }) {
             </svg>
             Delete account
           </Link>
+          <span className="mx-2">·</span>
+          <a href="/privacy.html" className="underline hover:text-white/70 align-middle">Privacy</a>
+          <span className="mx-2">·</span>
+          <a href="/terms.html" className="underline hover:text-white/70 align-middle">Terms</a>
           <div className="mt-2">
             More from us:{' '}
             <a href="https://www.raisingsmall.com" className="underline hover:text-white/70">RaisingSmall</a>
