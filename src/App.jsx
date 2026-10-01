@@ -47,12 +47,26 @@ function RouteTracker() {
   return null
 }
 
-// Handles the Supabase magic-link redirect. Supabase appends #access_token
-// to the URL hash; once the session is established we send the user to the
-// dashboard.
+// Handles the Supabase magic-link redirect. Two link styles:
+// - new (since 1. 10. 2026): the e-mail links straight to raisingamsterdam.com
+//   with ?token_hash=…&type=… — we verify it here, so people never see the
+//   supabase.co address. The token is used only when the page runs, so mail
+//   link scanners (Outlook) can't burn it by pre-opening the link.
+// - old: Supabase appends #access_token to the URL hash.
+// Once the session is established we send the user to the dashboard.
 function AuthCallback() {
   const navigate = useNavigate()
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const tokenHash = params.get('token_hash')
+    if (tokenHash) {
+      supabase.auth
+        .verifyOtp({ token_hash: tokenHash, type: params.get('type') || 'email' })
+        .then(({ error }) => {
+          navigate(error ? '/register?link=expired' : '/dashboard', { replace: true })
+        })
+      return
+    }
     if (window.location.hash.includes('access_token')) {
       supabase.auth.getSession().then(() => {
         navigate('/dashboard', { replace: true })

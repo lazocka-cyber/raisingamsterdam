@@ -64,7 +64,12 @@ export default function Register() {
   const [videoOpen, setVideoOpen] = useState(false)
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
+  // Arrived from an expired or already-used e-mail link (see AuthCallback).
+  const [error, setError] = useState(() =>
+    new URLSearchParams(window.location.search).get('link') === 'expired'
+      ? 'That sign-in link has expired or was already used. Enter your email below and we\'ll send you a fresh one.'
+      : '',
+  )
   const [success, setSuccess] = useState('')
 
   async function handleGoogleSignIn() {
