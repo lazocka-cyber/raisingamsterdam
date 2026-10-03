@@ -3,7 +3,7 @@ import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
 import { LISTING_COLUMNS } from '../lib/listingUtils'
-import { trackLead, getAttribution } from '../lib/tracking.js'
+import { getAttribution } from '../lib/tracking.js'
 import { buzz, playTada } from '../lib/attention.js'
 import ParticleHeader from '../components/ParticleHeader'
 import ConfettiBurst from '../components/ConfettiBurst'
@@ -592,8 +592,6 @@ export default function PostListing() {
         setError(dbError.message)
         return
       }
-      // Meta Pixel konverze — až po potvrzeném úspěchu insertu
-      trackLead()
       // Tell the gate the listing exists so it stops redirecting instantly.
       markListingPosted()
       clearDraft()

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   BrowserRouter,
   Routes,
@@ -7,10 +7,8 @@ import {
   Link,
   Navigate,
   useNavigate,
-  useLocation,
 } from 'react-router-dom'
 import { Analytics } from '@vercel/analytics/react'
-import { trackPageView } from './lib/tracking.js'
 import { AuthProvider, useAuth } from './context/AuthContext.jsx'
 import { supabase } from './lib/supabase'
 import { hasParentIntent } from './lib/intent'
@@ -36,22 +34,6 @@ import DeleteAccount from './pages/DeleteAccount.jsx'
 import ListingGate from './components/ListingGate.jsx'
 
 const NAVY = '#042C53'
-
-// Meta Pixel: PageView při každé změně routy. Base kód v index.html pokryje
-// jen úplně první načtení — appka je SPA, další "stránky" se bez tohoto
-// nezměří. První render se přeskakuje, aby se PageView nepočítal dvakrát.
-function RouteTracker() {
-  const location = useLocation()
-  const isFirstRender = useRef(true)
-  useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false
-      return
-    }
-    trackPageView()
-  }, [location.pathname])
-  return null
-}
 
 // Handles the Supabase magic-link redirect. Two link styles:
 // - new (since 1. 10. 2026): the e-mail links straight to raisingamsterdam.com
@@ -245,6 +227,7 @@ function Layout({ children }) {
           <a href="/privacy.html" className="underline hover:text-white/70 align-middle">Privacy</a>
           <span className="mx-2">·</span>
           <a href="/terms.html" className="underline hover:text-white/70 align-middle">Terms</a>
+
           <div className="mt-2">
             More from us:{' '}
             <a href="https://www.raisingsmall.com" className="underline hover:text-white/70">RaisingSmall</a>
@@ -266,7 +249,6 @@ export default function App() {
     <BrowserRouter>
       <AuthProvider>
         <AuthCallback />
-        <RouteTracker />
         <Analytics />
         <ListingGate />
         <Layout>

@@ -1,8 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
 import {
-  shouldTrackRegistration,
-  trackRegistration,
   isFreshAccount,
   getAttribution,
 } from '../lib/tracking.js'
@@ -61,15 +59,6 @@ export function AuthProvider({ children }) {
       return { ...currentProfile, role: 'parent' }
     }
 
-    // Registrace jde přes Google OAuth / magic link (redirect), takže žádný
-    // signUp success handler neexistuje — konverzi měříme tady, když se nový
-    // uživatel poprvé objeví se session. shouldTrackRegistration hlídá, aby
-    // událost nechodila při každém přihlášení.
-    function maybeTrackRegistration(currentUser) {
-      if (!shouldTrackRegistration(currentUser)) return
-      trackRegistration()
-    }
-
     // First-party zdroj (utm/fbclid/referrer z localStorage) → profiles.source.
     // Zapisuje se jen jednou, jen u čerstvých účtů, a jen když řádek profilu
     // už existuje (trigger ho vytváří server-side s malým zpožděním — pokud
@@ -113,7 +102,6 @@ export function AuthProvider({ children }) {
         if (active) setProfile(null)
         return
       }
-      maybeTrackRegistration(currentUser)
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
