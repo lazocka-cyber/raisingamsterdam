@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
@@ -40,6 +40,23 @@ export default function Membership() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [done, setDone] = useState(false)
+  // Parents who posted a request go back to their replies after unlocking.
+  const [hasRequests, setHasRequests] = useState(false)
+
+  useEffect(() => {
+    if (!user) return
+    let cancelled = false
+    supabase
+      .from('family_requests')
+      .select('id', { count: 'exact', head: true })
+      .eq('user_id', user.id)
+      .then(({ count }) => {
+        if (!cancelled) setHasRequests((count ?? 0) > 0)
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [user])
 
   // Not signed in → ask them to join first (free).
   if (!user) {
@@ -74,14 +91,16 @@ export default function Membership() {
           </p>
           <div className="flex flex-col items-center gap-3" style={{ marginTop: 22 }}>
             <Link
-              to="/my-requests"
+              to={hasRequests ? '/my-requests' : '/listings'}
               style={{ display: 'inline-block', background: GREEN, color: NAVY, borderRadius: 10, padding: '11px 22px', fontWeight: 700 }}
             >
-              See who replied to your requests
+              {hasRequests ? 'See who replied to your requests' : 'Browse listings'}
             </Link>
-            <Link to="/listings" className="text-white/60 underline text-sm">
-              Browse all listings
-            </Link>
+            {hasRequests && (
+              <Link to="/listings" className="text-white/60 underline text-sm">
+                Browse all listings
+              </Link>
+            )}
           </div>
         </div>
       </section>

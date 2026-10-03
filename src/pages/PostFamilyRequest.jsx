@@ -62,7 +62,12 @@ export default function PostFamilyRequest() {
     })
     setSubmitting(false)
     if (dbError) {
-      setError("Couldn't post your request — please try again.")
+      // 42501 = blocked by the database rule "max 3 open requests per account".
+      setError(
+        dbError.code === '42501'
+          ? 'You already have 3 open requests. Close one under My requests first.'
+          : "Couldn't post your request — please try again.",
+      )
       return
     }
     navigate('/my-requests', {
