@@ -436,6 +436,47 @@ export default function Guides() {
         ))}
       </div>
 
+      {/* Our free sites — linked from the footer too. */}
+      <h2 className="text-white font-bold text-xl" style={{ marginTop: 32 }}>
+        Free tools from us
+      </h2>
+      <div className="grid gap-3 sm:grid-cols-2" style={{ marginTop: 12 }}>
+        {[
+          {
+            href: 'https://pottytraininggame.com/',
+            title: '🚽 Potty Training Game',
+            text: 'A free, calm potty training game for toddlers aged 2 to 4, with a readiness check and honest guidance for parents.',
+          },
+          {
+            href: 'https://toddlerbiting.com/',
+            title: '🦷 Toddler Biting',
+            text: 'A calm, free guide for worried parents: why toddlers bite and what to do the moment it happens.',
+          },
+        ].map((t) => (
+          <a
+            key={t.href}
+            href={t.href}
+            target="_blank"
+            rel="noopener"
+            style={{
+              display: 'block',
+              background: '#1a1a2e',
+              border: '1px solid rgba(255,255,255,0.12)',
+              borderRadius: 14,
+              padding: '16px 18px',
+            }}
+          >
+            <span className="text-white font-semibold">{t.title}</span>
+            <span className="block text-white/60 text-sm" style={{ marginTop: 6, lineHeight: 1.55 }}>
+              {t.text}
+            </span>
+            <span className="block text-sm" style={{ marginTop: 10, color: '#60d0ff', fontWeight: 600 }}>
+              Open, it's free →
+            </span>
+          </a>
+        ))}
+      </div>
+
       {/* Proper disclaimer at the end. */}
       <div
         style={{

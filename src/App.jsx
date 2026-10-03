@@ -246,6 +246,10 @@ function Layout({ children }) {
             <a href="https://www.raisingsmall.com" className="underline hover:text-white/70">RaisingSmall</a>
             <span className="mx-2">·</span>
             <a href="https://mysticapatyka.com/" className="underline hover:text-white/70">Mystická Apatyka</a>
+            <span className="mx-2">·</span>
+            <a href="https://pottytraininggame.com/" className="underline hover:text-white/70">Potty Training Game</a>
+            <span className="mx-2">·</span>
+            <a href="https://toddlerbiting.com/" className="underline hover:text-white/70">Toddler Biting</a>
           </div>
         </div>
       </footer>
