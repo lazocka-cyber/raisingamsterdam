@@ -53,6 +53,13 @@ const pages = [
     copy: 'The SOS board connects local parents who need last-minute childcare with available community members in Amsterdam.',
   },
   {
+    path: 'families',
+    title: 'Families looking for a babysitter in Amsterdam | RaisingAmsterdam',
+    description: 'Parents in Amsterdam post what childcare help they need. Babysitters and local services can offer help for free.',
+    heading: 'Families looking for help in Amsterdam',
+    copy: 'Parents post a free request with their neighbourhood, days and children\'s ages. Babysitters and services in Amsterdam can offer help.',
+  },
+  {
     path: 'membership',
     title: 'RaisingAmsterdam membership for expat parents',
     description: 'See how RaisingAmsterdam membership unlocks direct contact with babysitters, services and other parents in Amsterdam.',
@@ -86,7 +93,7 @@ const pages = [
   },
 ]
 
-const noIndexRoutes = ['delete-account', 'dashboard', 'my-listings', 'post-listing', 'meetups/new', 'sos/new']
+const noIndexRoutes = ['delete-account', 'dashboard', 'my-listings', 'post-listing', 'meetups/new', 'sos/new', 'families/new', 'my-requests']
 
 const escapeHtml = (value) => value
   .replaceAll('&', '&amp;')

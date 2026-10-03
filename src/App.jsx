@@ -22,6 +22,9 @@ import PostMeetup from './pages/PostMeetup.jsx'
 import Membership from './pages/Membership.jsx'
 import ListingDetail from './pages/ListingDetail.jsx'
 import Reference from './pages/Reference.jsx'
+import FamilyRequests from './pages/FamilyRequests.jsx'
+import PostFamilyRequest from './pages/PostFamilyRequest.jsx'
+import MyRequests from './pages/MyRequests.jsx'
 import Dashboard from './pages/Dashboard.jsx'
 import PostListing from './pages/PostListing.jsx'
 import MyListings from './pages/MyListings.jsx'
@@ -123,13 +126,8 @@ function NavBar() {
       <NavLink to="/guides" className={linkClass} onClick={() => setOpen(false)}>
         Guides
       </NavLink>
-      <NavLink
-        to="/sos"
-        className={linkClass}
-        title="Need a sitter urgently?"
-        onClick={() => setOpen(false)}
-      >
-        <span className="sos-nav">🚨 SOS</span>
+      <NavLink to="/families" className={linkClass} onClick={() => setOpen(false)}>
+        Families
       </NavLink>
       {user ? (
         <>
@@ -138,6 +136,9 @@ function NavBar() {
           </NavLink>
           <NavLink to="/my-listings" className={linkClass} onClick={() => setOpen(false)}>
             My listings
+          </NavLink>
+          <NavLink to="/my-requests" className={linkClass} onClick={() => setOpen(false)}>
+            My requests
           </NavLink>
           <button
             type="button"
@@ -280,6 +281,23 @@ export default function App() {
               }
             />
             <Route path="/sos" element={<SosBoard />} />
+            <Route path="/families" element={<FamilyRequests />} />
+            <Route
+              path="/families/new"
+              element={
+                <ProtectedRoute>
+                  <PostFamilyRequest />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/my-requests"
+              element={
+                <ProtectedRoute>
+                  <MyRequests />
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="/sos/new"
               element={

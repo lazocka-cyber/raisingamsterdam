@@ -393,10 +393,8 @@ export default function PostListing() {
       return
     }
     await refreshProfile()
-    navigate('/listings', {
-      state: { toast: 'Welcome! Browse sitters below 👋' },
-      replace: true,
-    })
+    // Parents start with the free request — sitters reply, then they unlock.
+    navigate('/families/new', { replace: true })
   }
 
   // In edit mode, load the existing listing (only if it belongs to the user)

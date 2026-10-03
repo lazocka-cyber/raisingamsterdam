@@ -57,3 +57,24 @@ export function waNumber(phone) {
   if (n.startsWith('0')) return `31${n.slice(1)}`
   return n
 }
+
+// Options shared by the listing form and family requests (same wording, so a
+// request "Weekends" matches a sitter's "Weekends").
+export const AVAILABILITY_OPTIONS = [
+  'Monday-Friday mornings',
+  'Monday-Friday afternoons',
+  'Monday-Friday evenings',
+  'Weekends',
+  'Flexible / on-call',
+  'Overnight stays',
+]
+export const AGE_GROUP_OPTIONS = ['0-1 year', '1-2 years', '2-4 years', '4-6 years', '6-12 years']
+
+// "today", "yesterday", "3 days ago"
+export function daysAgo(value) {
+  if (!value) return ''
+  const days = Math.floor((Date.now() - new Date(value).getTime()) / 86400000)
+  if (days <= 0) return 'today'
+  if (days === 1) return 'yesterday'
+  return `${days} days ago`
+}
