@@ -230,7 +230,11 @@ export default function ReviewsSection({ listingId, listingOwnerId, category, us
       {loading ? (
         <p className="text-white/50 text-sm">Loading reviews…</p>
       ) : count === 0 ? (
-        <p className="text-white/50 text-sm">No reviews yet — be the first to leave one.</p>
+        <p className="text-white/50 text-sm">
+          {isOwner && category !== 'community'
+            ? "No reviews yet. Send your link to families you've worked for."
+            : 'No reviews yet — be the first to leave one.'}
+        </p>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           {allItems.map((r) => (
