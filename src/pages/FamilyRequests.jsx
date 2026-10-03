@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
 import { daysAgo } from '../lib/listingUtils'
 import LinkifiedText from '../components/LinkifiedText'
+import { setParentIntent } from '../lib/intent'
 
 // "Families looking for help" — parents post requests for free, sitters and
 // services with a listing tap "I can help". See supabase/family_requests.sql.
@@ -263,7 +264,11 @@ export default function FamilyRequests() {
         </div>
         <button
           type="button"
-          onClick={() => navigate(user ? '/families/new' : '/register')}
+          onClick={() => {
+            if (user) return navigate('/families/new')
+            setParentIntent()
+            navigate('/register?for=parent')
+          }}
           style={{ ...helpBtn, width: 'auto', padding: '11px 20px' }}
         >
           Post a free request

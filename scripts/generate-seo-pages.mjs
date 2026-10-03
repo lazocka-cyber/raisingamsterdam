@@ -53,6 +53,13 @@ const pages = [
     copy: 'The SOS board connects local parents who need last-minute childcare with available community members in Amsterdam.',
   },
   {
+    path: 'for-parents',
+    title: 'Find a babysitter in Amsterdam | Post a free request | RaisingAmsterdam',
+    description: 'Post your neighbourhood, days and your kids\' ages for free. Babysitters in Amsterdam reply and you choose who to message. One payment, no subscription.',
+    heading: 'Post once. Babysitters in Amsterdam come to you.',
+    copy: 'Parents in Amsterdam post a free request. Babysitters who can help reply. One payment of 24.95 euro unlocks WhatsApp for every babysitter and family service, with no subscription.',
+  },
+  {
     path: 'families',
     title: 'Families looking for a babysitter in Amsterdam | RaisingAmsterdam',
     description: 'Parents in Amsterdam post what childcare help they need. Babysitters and local services can offer help for free.',

@@ -1,12 +1,16 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { Link, useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
+import { setParentIntent } from '../lib/intent'
 
 const PURPLE = '#a78bfa'
 // Tutoriál pro chůvy na YouTube — když je ID prázdné, sekce s videem se nevykreslí
 const YOUTUBE_VIDEO_ID = 'GcOP2vPfZio'
+// Neutral: the same message reaches new babysitters, returning users and parents.
 const SUCCESS_MSG =
-  "Check your email! 📬 Click the link inside to finish step 2 — posting your listing. Takes 2 minutes, and without it parents can't find you."
+  'Check your email! 📬 Tap the link inside to sign in. New babysitter? After signing in, post your free listing so families can find you.'
+const SUCCESS_MSG_PARENT =
+  'Check your email! 📬 Tap the link inside, then post your free request. Babysitters near you reply.'
 
 const inputStyle = {
   background: 'rgba(255,255,255,0.07)',
@@ -61,6 +65,12 @@ function GoogleButton({ onClick }) {
 }
 
 export default function Register() {
+  // /register?for=parent — arrived from /for-parents or a parent ad
+  const [params] = useSearchParams()
+  const forParent = params.get('for') === 'parent'
+  useEffect(() => {
+    if (forParent) setParentIntent()
+  }, [forParent])
   const [videoOpen, setVideoOpen] = useState(false)
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
@@ -91,12 +101,18 @@ export default function Register() {
     try {
       const { error: otpError } = await supabase.auth.signInWithOtp({
         email,
-        options: { emailRedirectTo: `${window.location.origin}/dashboard` },
+        options: {
+          emailRedirectTo: `${window.location.origin}/dashboard`,
+          // New accounts get their profile role from this (profiles trigger),
+          // so a parent never lands on the babysitter listing form — even when
+          // the e-mail link opens in another browser. Existing accounts ignore it.
+          ...(forParent ? { data: { role: 'parent' } } : {}),
+        },
       })
       if (otpError) {
         setError(otpError.message)
       } else {
-        setSuccess(SUCCESS_MSG)
+        setSuccess(forParent ? SUCCESS_MSG_PARENT : SUCCESS_MSG)
       }
     } catch (err) {
       setError(err.message || 'Something went wrong. Please try again.')
@@ -108,7 +124,7 @@ export default function Register() {
   return (
     <section style={{ minHeight: '100%' }} className="w-full px-6 pt-6 pb-16 flex flex-col items-center">
 
-      {YOUTUBE_VIDEO_ID && (
+      {YOUTUBE_VIDEO_ID && !forParent && (
         <button
           type="button"
           onClick={() =>
@@ -131,17 +147,20 @@ export default function Register() {
         }}
       >
         <h1 className="text-white text-2xl font-bold text-center">
-          Join RaisingAmsterdam
+          {forParent ? 'Post your free request' : 'Join RaisingAmsterdam'}
         </h1>
         <p className="text-white/60 text-sm text-center mt-2">
-          It's free to join. Browse, post a listing, and meet other expat parents.
-          Unlock contact whenever you're ready.
+          {forParent
+            ? 'Create your free account, then tell babysitters what you need. They reply, you choose who to message.'
+            : "It's free to join. Browse, post a listing, and meet other expat parents. Unlock contact whenever you're ready."}
         </p>
         <p
           className="text-center text-sm mt-3"
           style={{ color: '#34d399', fontWeight: 600 }}
         >
-          Step 1 of 2: create your account · Step 2: post your listing
+          {forParent
+            ? 'Step 1 of 2: create your account · Step 2: post your request'
+            : 'Step 1 of 2: create your account · Step 2: post your listing'}
         </p>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginTop: 24 }}>
@@ -194,6 +213,12 @@ export default function Register() {
             Already bought access? Sign in, then add your key on the{' '}
             <Link to="/membership" style={{ color: '#60d0ff' }}>Membership</Link> page.
           </p>
+          {!forParent && (
+            <p className="text-white/45 text-xs text-center">
+              Looking for a babysitter?{' '}
+              <Link to="/for-parents" style={{ color: '#60d0ff' }}>Post a free request</Link>
+            </p>
+          )}
         </div>
       </div>
 
@@ -201,7 +226,7 @@ export default function Register() {
           Nad kartou zabíralo na iPhonu celou první obrazovku a tlačítko registrace
           nebylo vidět. Aby se video znovu neztratilo (29. 8.: nikdo ho nenašel),
           vede na něj odkaz „Watch how it works“ nad kartou. */}
-      {YOUTUBE_VIDEO_ID && (
+      {YOUTUBE_VIDEO_ID && !forParent && (
         <div id="tutorial-video" className="w-full mt-8" style={{ maxWidth: 460 }}>
           <h2 className="text-white text-lg font-semibold text-center">
             See how to post your listing

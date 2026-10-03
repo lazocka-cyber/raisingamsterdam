@@ -6,6 +6,7 @@ import {
   isFreshAccount,
   getAttribution,
 } from '../lib/tracking.js'
+import { clearParentIntent, hasParentIntent } from '../lib/intent'
 
 const AuthContext = createContext({
   user: null,
@@ -34,6 +35,31 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     let active = true
     let sourceSaveStarted = false
+    let intentApplied = false
+
+    // Came in as a parent (/for-parents) → make the profile a parent right away,
+    // before the profile is shown, so the listing gate never sends them to the
+    // babysitter form. Only for accounts without a listing (real sitters stay sitters).
+    async function maybeApplyParentIntent(currentUser, currentProfile) {
+      if (intentApplied || !hasParentIntent()) return currentProfile
+      intentApplied = true
+      if (currentProfile?.role === 'parent') {
+        clearParentIntent()
+        return currentProfile
+      }
+      const { count } = await supabase
+        .from('listings')
+        .select('id', { count: 'exact', head: true })
+        .eq('user_id', currentUser.id)
+      clearParentIntent()
+      if ((count ?? 0) > 0) return currentProfile
+      const { error: rpcError } = await supabase.rpc('choose_parent')
+      if (rpcError) {
+        console.warn('Could not switch to parent:', rpcError.message)
+        return currentProfile
+      }
+      return { ...currentProfile, role: 'parent' }
+    }
 
     // Registrace jde přes Google OAuth / magic link (redirect), takže žádný
     // signUp success handler neexistuje — konverzi měříme tady, když se nový
@@ -104,7 +130,9 @@ export function AuthProvider({ children }) {
       const baseProfile = data ?? { id: currentUser.id, role: 'sitter' }
       // Fire-and-forget — zápis zdroje nesmí zdržet načtení profilu.
       if (data) maybeSaveSource(currentUser, data)
-      setProfile(baseProfile)
+      const finalProfile = data ? await maybeApplyParentIntent(currentUser, baseProfile) : baseProfile
+      if (!active) return
+      setProfile(finalProfile)
     }
 
     // 1) Register the listener FIRST so we never miss the SIGNED_IN event

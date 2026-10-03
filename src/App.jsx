@@ -13,6 +13,7 @@ import { Analytics } from '@vercel/analytics/react'
 import { trackPageView } from './lib/tracking.js'
 import { AuthProvider, useAuth } from './context/AuthContext.jsx'
 import { supabase } from './lib/supabase'
+import { hasParentIntent } from './lib/intent'
 import Home from './pages/Home.jsx'
 import Register from './pages/Register.jsx'
 import Listings from './pages/Listings.jsx'
@@ -23,6 +24,7 @@ import Membership from './pages/Membership.jsx'
 import ListingDetail from './pages/ListingDetail.jsx'
 import Reference from './pages/Reference.jsx'
 import FamilyRequests from './pages/FamilyRequests.jsx'
+import ForParents from './pages/ForParents.jsx'
 import PostFamilyRequest from './pages/PostFamilyRequest.jsx'
 import MyRequests from './pages/MyRequests.jsx'
 import Dashboard from './pages/Dashboard.jsx'
@@ -61,19 +63,21 @@ function RouteTracker() {
 function AuthCallback() {
   const navigate = useNavigate()
   useEffect(() => {
+    // Read before AuthContext clears it: parents go straight to the request form.
+    const home = hasParentIntent() ? '/families/new' : '/dashboard'
     const params = new URLSearchParams(window.location.search)
     const tokenHash = params.get('token_hash')
     if (tokenHash) {
       supabase.auth
         .verifyOtp({ token_hash: tokenHash, type: params.get('type') || 'email' })
         .then(({ error }) => {
-          navigate(error ? '/register?link=expired' : '/dashboard', { replace: true })
+          navigate(error ? '/register?link=expired' : home, { replace: true })
         })
       return
     }
     if (window.location.hash.includes('access_token')) {
       supabase.auth.getSession().then(() => {
-        navigate('/dashboard', { replace: true })
+        navigate(home, { replace: true })
       })
     }
   }, [navigate])
@@ -286,6 +290,7 @@ export default function App() {
             />
             <Route path="/sos" element={<SosBoard />} />
             <Route path="/families" element={<FamilyRequests />} />
+            <Route path="/for-parents" element={<ForParents />} />
             <Route
               path="/families/new"
               element={
