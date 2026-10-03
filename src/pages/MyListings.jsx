@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
 import { BADGE, formatPrice, LISTING_COLUMNS } from '../lib/listingUtils'
+import ReferencesManager from '../components/ReferencesManager'
 
 function CategoryBadge({ category }) {
   const badge = BADGE[category] ?? { label: category, color: '#9ca3af' }
@@ -85,6 +86,8 @@ function MyListingCard({ listing, onEdit, onDelete, deleting }) {
         )}
         {listing.created_at && <span>🗓 {formatDate(listing.created_at)}</span>}
       </div>
+
+      {listing.category !== 'community' && <ReferencesManager listingId={listing.id} />}
 
       <div className="mt-2 pt-3 border-t border-white/10 flex flex-wrap items-center gap-3">
         <Link

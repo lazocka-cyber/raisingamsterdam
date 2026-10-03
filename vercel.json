@@ -9,6 +9,7 @@
   ],
   "rewrites": [
     { "source": "/listings/:id", "destination": "/app-shell.html" },
+    { "source": "/reference/:id", "destination": "/app-shell.html" },
     { "source": "/post-listing/:id", "destination": "/app-shell.html" }
   ]
 }

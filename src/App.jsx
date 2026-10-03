@@ -21,6 +21,7 @@ import Meetups from './pages/Meetups.jsx'
 import PostMeetup from './pages/PostMeetup.jsx'
 import Membership from './pages/Membership.jsx'
 import ListingDetail from './pages/ListingDetail.jsx'
+import Reference from './pages/Reference.jsx'
 import Dashboard from './pages/Dashboard.jsx'
 import PostListing from './pages/PostListing.jsx'
 import MyListings from './pages/MyListings.jsx'
@@ -265,6 +266,7 @@ export default function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/listings" element={<Listings />} />
             <Route path="/listings/:id" element={<ListingDetail />} />
+            <Route path="/reference/:listingId" element={<Reference />} />
             <Route path="/guides" element={<Guides />} />
             <Route path="/membership" element={<Membership />} />
             <Route path="/delete-account" element={<DeleteAccount />} />

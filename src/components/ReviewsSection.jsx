@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { Stars, StarInput } from './Stars'
+import ReferencesManager from './ReferencesManager'
 
 function formatDate(value) {
   if (!value) return ''
@@ -34,6 +35,8 @@ function reviewPrompts(category) {
 
 export default function ReviewsSection({ listingId, listingOwnerId, category, user, isMember, onSummary }) {
   const [reviews, setReviews] = useState([])
+  // Approved references from families outside the app (sitter_references).
+  const [references, setReferences] = useState([])
   const [loading, setLoading] = useState(true)
 
   const [rating, setRating] = useState(0)
@@ -48,11 +51,20 @@ export default function ReviewsSection({ listingId, listingOwnerId, category, us
 
   async function load() {
     setLoading(true)
-    const { data, error: dbError } = await supabase
-      .from('reviews')
-      .select('*')
-      .eq('listing_id', listingId)
-      .order('created_at', { ascending: false })
+    const [{ data, error: dbError }, { data: refData }] = await Promise.all([
+      supabase
+        .from('reviews')
+        .select('*')
+        .eq('listing_id', listingId)
+        .order('created_at', { ascending: false }),
+      // The owner can also read pending ones — show only approved.
+      supabase
+        .from('sitter_references')
+        .select('id, author_name, relation, rating, comment, created_at')
+        .eq('listing_id', listingId)
+        .eq('status', 'approved'),
+    ])
+    setReferences(refData ?? [])
     if (dbError) {
       setError(dbError.message)
       setReviews([])
@@ -76,8 +88,12 @@ export default function ReviewsSection({ listingId, listingOwnerId, category, us
   }, [listingId])
 
   // Report the average up to the parent (for the header summary).
-  const count = reviews.length
-  const avg = count ? reviews.reduce((s, r) => s + r.rating, 0) / count : 0
+  const allItems = [
+    ...reviews.map((r) => ({ ...r, kind: 'member' })),
+    ...references.map((r) => ({ ...r, kind: 'reference' })),
+  ].sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+  const count = allItems.length
+  const avg = count ? allItems.reduce((s, r) => s + r.rating, 0) / count : 0
   useEffect(() => {
     onSummary?.({ avg, count })
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -139,6 +155,13 @@ export default function ReviewsSection({ listingId, listingOwnerId, category, us
           </span>
         )}
       </div>
+
+      {/* Owner: share the reference link and approve references */}
+      {isOwner && category !== 'community' && (
+        <div style={{ marginBottom: 20 }}>
+          <ReferencesManager listingId={listingId} />
+        </div>
+      )}
 
       {/* Review form (parents only) */}
       {canReview && (
@@ -210,8 +233,23 @@ export default function ReviewsSection({ listingId, listingOwnerId, category, us
         <p className="text-white/50 text-sm">No reviews yet — be the first to leave one.</p>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-          {reviews.map((r) => (
-            <div key={r.id} style={card}>
+          {allItems.map((r) => (
+            <div key={`${r.kind}-${r.id}`} style={card}>
+              <span
+                style={{
+                  display: 'inline-block',
+                  fontSize: 11,
+                  fontWeight: 700,
+                  borderRadius: 6,
+                  padding: '2px 8px',
+                  marginBottom: 8,
+                  ...(r.kind === 'reference'
+                    ? { background: 'rgba(52,211,153,0.15)', color: '#34d399' }
+                    : { background: 'rgba(167,139,250,0.18)', color: '#a78bfa' }),
+                }}
+              >
+                {r.kind === 'reference' ? 'Reference' : '✓ Verified member'}
+              </span>
               <div className="flex items-center justify-between gap-3">
                 <Stars value={r.rating} size={14} />
                 <span className="text-white/40 text-xs">{formatDate(r.created_at)}</span>
@@ -219,6 +257,12 @@ export default function ReviewsSection({ listingId, listingOwnerId, category, us
               {r.comment && (
                 <p className="text-white/75 text-sm" style={{ marginTop: 8, whiteSpace: 'pre-line' }}>
                   {r.comment}
+                </p>
+              )}
+              {r.kind === 'reference' && (
+                <p className="text-white/45 text-xs" style={{ marginTop: 6 }}>
+                  {r.author_name}
+                  {r.relation ? ` · ${r.relation}` : ''}
                 </p>
               )}
             </div>

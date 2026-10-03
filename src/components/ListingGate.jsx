@@ -14,7 +14,7 @@ import { buzz } from '../lib/attention'
 // autosave keeps their answers); "Leave anyway" snoozes the gate until the
 // next full page load.
 
-const EXEMPT_PREFIXES = ['/post-listing', '/delete-account', '/membership']
+const EXEMPT_PREFIXES = ['/post-listing', '/delete-account', '/membership', '/reference']
 
 function isExempt(pathname) {
   return EXEMPT_PREFIXES.some((p) => pathname.startsWith(p))
