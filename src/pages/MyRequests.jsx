@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
-import { BADGE, daysAgo, openListingContact } from '../lib/listingUtils'
+import { BADGE, daysAgo, MEMBERSHIP_PRICE, openListingContact } from '../lib/listingUtils'
 import { Stars } from '../components/Stars'
 
 // The parent's side of "Families looking for help": her requests and who
@@ -210,7 +210,7 @@ export default function MyRequests() {
             {totalOffers} {totalOffers === 1 ? 'babysitter wants' : 'babysitters want'} to help you
           </p>
           <p className="text-white/65 text-sm" style={{ marginTop: 4 }}>
-            Unlock WhatsApp to message them directly. One payment, no subscription.
+            Unlock WhatsApp to message them directly. {MEMBERSHIP_PRICE} once, no subscription.
           </p>
           <Link
             to="/membership"
@@ -225,7 +225,7 @@ export default function MyRequests() {
               fontWeight: 800,
             }}
           >
-            🔓 Unlock WhatsApp
+            🔓 Unlock WhatsApp · {MEMBERSHIP_PRICE}
           </Link>
         </div>
       )}

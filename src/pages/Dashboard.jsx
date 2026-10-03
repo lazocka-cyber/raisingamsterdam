@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
-import { LISTING_COLUMNS } from '../lib/listingUtils'
+import { LISTING_COLUMNS, MEMBERSHIP_PRICE } from '../lib/listingUtils'
 
 const GREEN = '#34d399'
 const PURPLE = '#a78bfa'
@@ -472,8 +472,8 @@ function MembershipBanner() {
     >
       <h2 className="text-white font-bold text-lg">🔓 Unlock contact</h2>
       <p className="text-white/65 text-sm mt-1">
-        One-time payment — full access, no subscription. Message babysitters and local
-        services directly on WhatsApp, as often as you like.
+        {MEMBERSHIP_PRICE} once — no subscription. Message babysitters and local services
+        directly on WhatsApp, as often as you like.
       </p>
       <Link
         to="/membership"

@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
+import { MEMBERSHIP_BUY_URL, MEMBERSHIP_PRICE } from '../lib/listingUtils'
+import PaymentNote from '../components/PaymentNote'
 
 const GREEN = '#34d399'
 const PURPLE = '#a78bfa'
@@ -143,7 +145,8 @@ export default function Membership() {
     <section className="mx-auto px-6 py-12" style={{ maxWidth: 520 }}>
       <h1 className="text-white text-3xl font-bold">Unlock contact</h1>
       <p className="mt-2 text-white/60">
-        One-time payment — full access, no subscription, no recurring fees.
+        <strong className="text-white">{MEMBERSHIP_PRICE} once</strong>, incl. VAT — no
+        subscription, no recurring fees.
       </p>
 
       <div style={{ background: '#1a1a2e', borderRadius: 16 }} className="p-6 mt-6">
@@ -152,12 +155,38 @@ export default function Membership() {
         </p>
         <ul style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           <Perk>Message babysitters & local services directly on WhatsApp</Perk>
-          <Perk>Post urgent 🚨 SOS requests when you need a sitter last-minute</Perk>
+          <Perk>See which babysitters replied to your request — and message them</Perk>
           <Perk>Reach out as often as you like — pay once, keep forever</Perk>
           <Perk>Support a small, ad-free community for expat parents 💛</Perk>
         </ul>
 
-        <form onSubmit={handleUnlock} style={{ marginTop: 22, display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <a
+          href={MEMBERSHIP_BUY_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            display: 'block',
+            marginTop: 22,
+            textAlign: 'center',
+            background: `linear-gradient(90deg, ${GREEN}, ${BLUE})`,
+            color: NAVY,
+            borderRadius: 12,
+            padding: 15,
+            fontWeight: 800,
+            fontSize: 16,
+          }}
+        >
+          Get access · {MEMBERSHIP_PRICE}
+        </a>
+        <PaymentNote style={{ marginTop: 10 }} />
+
+        <p
+          className="text-white/70 text-sm font-semibold"
+          style={{ marginTop: 24, paddingTop: 18, borderTop: '1px solid rgba(255,255,255,0.1)' }}
+        >
+          Already paid? Paste the access key from your Gumroad email:
+        </p>
+        <form onSubmit={handleUnlock} style={{ marginTop: 10, display: 'flex', flexDirection: 'column', gap: 12 }}>
           <input
             type="text"
             value={licenseKey}
@@ -170,11 +199,11 @@ export default function Membership() {
             type="submit"
             disabled={loading}
             style={{
-              background: `linear-gradient(90deg, ${PURPLE}, ${BLUE})`,
-              color: NAVY,
-              border: 'none',
+              background: 'transparent',
+              color: 'white',
+              border: `1px solid ${PURPLE}`,
               borderRadius: 12,
-              padding: 14,
+              padding: 13,
               fontWeight: 700,
               fontSize: 15,
               cursor: 'pointer',
@@ -184,17 +213,6 @@ export default function Membership() {
           </button>
         </form>
 
-        <p className="text-white/50 text-sm" style={{ marginTop: 16 }}>
-          Don't have a key yet?{' '}
-          <a
-            href="https://peuterpraktisch.gumroad.com/l/raisingamsterdam"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ color: BLUE, fontWeight: 600 }}
-          >
-            Get access →
-          </a>
-        </p>
       </div>
     </section>
   )

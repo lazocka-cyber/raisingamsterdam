@@ -78,3 +78,9 @@ export function daysAgo(value) {
   if (days === 1) return 'yesterday'
   return `${days} days ago`
 }
+
+// Membership price as the parent pays it in the Netherlands (incl. 21 % VAT).
+// Gumroad shows prices BEFORE VAT, so the Gumroad base price is €20.62 —
+// keep the two in sync (checked on the real checkout 3. 10. 2026).
+export const MEMBERSHIP_PRICE = '€24.95'
+export const MEMBERSHIP_BUY_URL = 'https://peuterpraktisch.gumroad.com/l/raisingamsterdam'
