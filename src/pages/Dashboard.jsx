@@ -382,16 +382,30 @@ function ParentOnboarding() {
       >
         <h2 className="text-white text-xl font-bold">Welcome! 👋</h2>
         <p className="text-white/65 mt-2">
-          You have full access to RaisingAmsterdam. Here's how to make the most of it.
+          Here's how to find help in Amsterdam.
         </p>
       </div>
+
+      <GuideCard
+        emoji="🙋"
+        title="Tell babysitters what you need"
+        actions={
+          <>
+            <GuideButton to="/families/new" label="Post a free request" primary />
+            <GuideButton to="/my-requests" label="My requests" />
+          </>
+        }
+      >
+        Post your neighbourhood, days and your children's ages. Babysitters who can
+        help reply, and you see them under My requests.
+      </GuideCard>
 
       <GuideCard
         emoji="🔎"
         title="Find babysitters & local services"
         actions={
           <>
-            <GuideButton to="/listings?cat=babysitter" label="Find a babysitter" primary />
+            <GuideButton to="/listings?cat=babysitter" label="Find a babysitter" />
             <GuideButton to="/listings?cat=services" label="Local services" />
           </>
         }

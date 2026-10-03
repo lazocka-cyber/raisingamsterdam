@@ -4,7 +4,6 @@ import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
 import { BADGE, daysAgo, openListingContact } from '../lib/listingUtils'
 import { Stars } from '../components/Stars'
-import NotifyButton from '../components/NotifyButton'
 
 // The parent's side of "Families looking for help": her requests and who
 // offered help. WhatsApp stays locked until membership (get_listing_contact
@@ -95,6 +94,7 @@ export default function MyRequests() {
   const [offers, setOffers] = useState({}) // request_id → offers[]
   const [ratings, setRatings] = useState({})
   const [loading, setLoading] = useState(true)
+  const [loadError, setLoadError] = useState(false)
   const [busyId, setBusyId] = useState(null)
   const [toast, setToast] = useState(location.state?.toast || '')
 
@@ -111,11 +111,18 @@ export default function MyRequests() {
     let cancelled = false
     async function load() {
       setLoading(true)
-      const { data: reqs } = await supabase
+      const { data: reqs, error: reqError } = await supabase
         .from('family_requests')
         .select('id, area, days, age_groups, note, status, expires_at, created_at')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
+      if (reqError) {
+        if (!cancelled) {
+          setLoadError(true)
+          setLoading(false)
+        }
+        return
+      }
       const list = reqs ?? []
       let grouped = {}
       let ratingMap = {}
@@ -188,8 +195,6 @@ export default function MyRequests() {
         </div>
       )}
 
-      <NotifyButton variant="family" />
-
       {/* Unlock — shown once someone replied and the parent isn't a member yet */}
       {!isMember && totalOffers > 0 && (
         <div
@@ -228,6 +233,8 @@ export default function MyRequests() {
       <div className="mt-6 flex flex-col gap-4">
         {loading ? (
           <p className="text-white/50">Loading your requests…</p>
+        ) : loadError ? (
+          <p style={{ color: '#fca5a5' }}>Couldn't load your requests. Check your connection and refresh the page.</p>
         ) : requests.length === 0 ? (
           <div style={{ background: '#1a1a2e', borderRadius: 16 }} className="p-10 text-center">
             <p className="text-white/70 text-lg">You haven't posted a request yet.</p>
@@ -263,7 +270,7 @@ export default function MyRequests() {
                 </p>
                 {list.length === 0 && open && (
                   <p className="text-white/50 text-sm" style={{ marginTop: 4 }}>
-                    Babysitters can see your request now. Replies appear here.
+                    Babysitters can see your request now. Check back here for replies.
                   </p>
                 )}
                 <div className="flex flex-col gap-2" style={{ marginTop: 10 }}>

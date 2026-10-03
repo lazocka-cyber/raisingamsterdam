@@ -72,12 +72,17 @@ export default function Membership() {
             You can now message babysitters and local services directly on WhatsApp —
             anytime, no subscription.
           </p>
-          <Link
-            to="/listings"
-            style={{ display: 'inline-block', marginTop: 22, background: GREEN, color: NAVY, borderRadius: 10, padding: '11px 22px', fontWeight: 700 }}
-          >
-            Browse listings
-          </Link>
+          <div className="flex flex-col items-center gap-3" style={{ marginTop: 22 }}>
+            <Link
+              to="/my-requests"
+              style={{ display: 'inline-block', background: GREEN, color: NAVY, borderRadius: 10, padding: '11px 22px', fontWeight: 700 }}
+            >
+              See who replied to your requests
+            </Link>
+            <Link to="/listings" className="text-white/60 underline text-sm">
+              Browse all listings
+            </Link>
+          </div>
         </div>
       </section>
     )

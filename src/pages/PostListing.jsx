@@ -940,7 +940,7 @@ export default function PostListing() {
             👨‍👩‍👧 I'm a parent looking for help
           </span>
           <span className="block text-white/60 mt-1" style={{ fontSize: 14 }}>
-            {roleSaving ? 'One moment…' : 'Browse babysitters and local services.'}
+            {roleSaving ? 'One moment…' : 'Tell us what you need — babysitters reply. Free.'}
           </span>
         </button>
 

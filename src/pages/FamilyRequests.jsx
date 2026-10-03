@@ -104,6 +104,7 @@ export default function FamilyRequests() {
   const [error, setError] = useState('')
   const [busyId, setBusyId] = useState(null)
   const [toast, setToast] = useState(location.state?.toast || '')
+  const [offerError, setOfferError] = useState('')
 
   useEffect(() => {
     if (!location.state?.toast) return
@@ -161,6 +162,7 @@ export default function FamilyRequests() {
 
   async function offerHelp(requestId) {
     if (!chosenListing) return
+    setOfferError('')
     setBusyId(requestId)
     const { data, error: dbError } = await supabase
       .from('request_offers')
@@ -169,7 +171,7 @@ export default function FamilyRequests() {
       .single()
     setBusyId(null)
     if (dbError) {
-      setToast("Couldn't send your offer — please try again.")
+      setOfferError("Couldn't send your offer — please try again.")
       return
     }
     setMyOffers((prev) => ({ ...prev, [requestId]: data.id }))
@@ -301,6 +303,12 @@ export default function FamilyRequests() {
         >
           {toast}
         </div>
+      )}
+
+      {offerError && (
+        <p role="alert" style={{ color: '#fca5a5', marginTop: 16, fontWeight: 600 }}>
+          {offerError}
+        </p>
       )}
 
       <div className="mt-8">
