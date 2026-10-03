@@ -59,6 +59,7 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     let active = true
+    let sourceSaveStarted = false
 
     // If the parent signed in with Google, their profile was created as
     // 'sitter'. Re-verify the stored license and flip it to 'parent'.
@@ -120,10 +121,14 @@ export function AuthProvider({ children }) {
       if (!isFreshAccount(currentUser)) return
       const attribution = getAttribution()
       if (!attribution) return
-      const { error: sourceError } = await supabase
-        .from('profiles')
-        .update({ source: attribution })
-        .eq('id', currentUser.id)
+      // getSession i onAuthStateChange načtou profil zároveň → zapsat jen jednou.
+      if (sourceSaveStarted) return
+      sourceSaveStarted = true
+      // profiles nemá UPDATE pro klienta (paywall zámek) → přes RPC, viz
+      // supabase/profiles_write_rpcs.sql.
+      const { error: sourceError } = await supabase.rpc('save_signup_source', {
+        p_source: attribution,
+      })
       if (sourceError) {
         console.warn('Could not save signup source:', sourceError.message)
       }

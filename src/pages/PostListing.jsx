@@ -384,10 +384,9 @@ export default function PostListing() {
   async function chooseParent() {
     if (!user || roleSaving) return
     setRoleSaving(true)
-    const { error: roleError } = await supabase
-      .from('profiles')
-      .update({ role: 'parent' })
-      .eq('id', user.id)
+    // profiles has no client UPDATE right (paywall lock) — see
+    // supabase/profiles_write_rpcs.sql.
+    const { error: roleError } = await supabase.rpc('choose_parent')
     if (roleError) {
       setRoleSaving(false)
       setError("Couldn't save your choice — please try again.")
