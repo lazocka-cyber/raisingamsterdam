@@ -7,6 +7,7 @@ import { getAttribution } from '../lib/tracking.js'
 import { buzz, playTada } from '../lib/attention.js'
 import ParticleHeader from '../components/ParticleHeader'
 import ConfettiBurst from '../components/ConfettiBurst'
+import SosAlertsCard from '../components/SosAlertsCard'
 
 const DESC_MAX = 500
 
@@ -1273,6 +1274,10 @@ export default function PostListing() {
               A photo and a few details get you far more replies — add them now while
               you're here, or skip and do it later.
             </p>
+          </div>
+
+          <div style={{ marginBottom: 20 }}>
+            <SosAlertsCard title="One more thing: turn on SOS alerts" />
           </div>
 
           <Card

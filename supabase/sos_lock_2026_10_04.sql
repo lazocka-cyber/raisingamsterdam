@@ -90,10 +90,10 @@ CREATE POLICY "Profiles are readable by authenticated users"
 SELECT
   has_column_privilege('anon', 'public.sos_requests', 'phone', 'SELECT')          AS neprihlaseny_vidi_cislo,
   has_column_privilege('authenticated', 'public.sos_requests', 'phone', 'SELECT') AS prihlaseny_vidi_cislo,
-  (SELECT string_agg(tgname || ' = ' || tgenabled, ', ')
+  (SELECT string_agg(tgname::text || ' = ' || tgenabled::text, ', ')
      FROM pg_trigger
      WHERE tgrelid = 'public.sos_requests'::regclass AND NOT tgisinternal)         AS sos_upozorneni,
   (SELECT count(*) FROM public.push_subscriptions)                                AS telefony_s_upozornenim,
-  (SELECT string_agg(policyname || ': ' || coalesce(qual, '-'), '  |  ')
+  (SELECT string_agg(policyname::text || ': ' || coalesce(qual, '-'), '  |  ')
      FROM pg_policies
      WHERE schemaname = 'public' AND tablename = 'profiles' AND cmd = 'SELECT')    AS kdo_cte_profily;

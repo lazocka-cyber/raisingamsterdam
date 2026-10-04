@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
 import { setParentIntent } from '../lib/intent'
 import { MEMBERSHIP_PRICE } from '../lib/listingUtils'
+import SosSpotlight from '../components/SosSpotlight'
 
 // Landing page for PARENTS (ads, group posts, flyers): /for-parents.
 // One job: get a parent to post a free request. Everything here is true today —
@@ -144,6 +145,11 @@ export default function ForParents() {
         </div>
       </section>
 
+      {/* SOS — need someone today */}
+      <section className="mx-auto px-6 pb-12" style={{ maxWidth: 1000 }}>
+        <SosSpotlight forSitters={false} />
+      </section>
+
       {/* How it works */}
       <section className="mx-auto px-6 pb-12" style={{ maxWidth: 1000 }}>
         <h2 className="text-white font-bold text-2xl">How it works</h2>
@@ -210,6 +216,7 @@ export default function ForParents() {
               ['Post your requests', 'Free', GREEN],
               ['See who wants to help', 'Free', GREEN],
               ['WhatsApp every babysitter & service', `${MEMBERSHIP_PRICE} once`, CYAN],
+              ['Send an SOS when you need someone fast', 'Included', CYAN],
               ['Access', 'Lifetime', CYAN],
             ].map(([a, b, col]) => (
               <div key={a} className="flex items-center justify-between gap-4" style={{ fontSize: 16 }}>

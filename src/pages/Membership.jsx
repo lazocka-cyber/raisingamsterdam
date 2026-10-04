@@ -154,6 +154,10 @@ export default function Membership() {
           Membership unlocks:
         </p>
         <ul style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          <Perk>
+            <strong className="text-white">Send an SOS</strong> when you need a sitter fast:
+            babysitters and services with alerts on get a ping right away
+          </Perk>
           <Perk>Message babysitters & local services directly on WhatsApp</Perk>
           <Perk>See which babysitters replied to your request — and message them</Perk>
           <Perk>Reach out as often as you like — pay once, keep forever</Perk>

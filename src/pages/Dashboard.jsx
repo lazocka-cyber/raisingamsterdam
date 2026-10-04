@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
 import { LISTING_COLUMNS, MEMBERSHIP_PRICE } from '../lib/listingUtils'
+import SosAlertsCard from '../components/SosAlertsCard'
+import SirenIcon from '../components/SirenIcon'
 
 const GREEN = '#34d399'
 const PURPLE = '#a78bfa'
@@ -165,10 +167,10 @@ function SitterOnboarding({ listings }) {
 }
 
 // A single onboarding card: emoji, title, body and optional action buttons.
-function GuideCard({ emoji, title, children, actions }) {
+function GuideCard({ emoji, title, children, actions, accent }) {
   return (
     <div
-      style={{ background: '#1a1a2e', borderRadius: 16 }}
+      style={{ background: '#1a1a2e', borderRadius: 16, border: accent ? `2px solid ${accent}` : undefined }}
       className="p-6 text-left"
     >
       <div className="flex items-start gap-3">
@@ -185,14 +187,14 @@ function GuideCard({ emoji, title, children, actions }) {
   )
 }
 
-function GuideButton({ to, label, primary }) {
+function GuideButton({ to, label, primary, danger }) {
   return (
     <Link
       to={to}
       style={{
-        background: primary ? GREEN : 'rgba(255,255,255,0.08)',
-        color: primary ? NAVY : 'white',
-        border: primary ? 'none' : '1px solid rgba(255,255,255,0.18)',
+        background: danger ? 'linear-gradient(90deg, #ef4444, #f97316)' : primary ? GREEN : 'rgba(255,255,255,0.08)',
+        color: danger ? 'white' : primary ? NAVY : 'white',
+        border: primary || danger ? 'none' : '1px solid rgba(255,255,255,0.18)',
         borderRadius: 10,
         padding: '9px 18px',
         fontWeight: 600,
@@ -373,6 +375,30 @@ function AddToHomeScreen() {
   )
 }
 
+// Parents: SOS is the most important feature, so it sits at the very top.
+function ParentSosCard() {
+  return (
+    <GuideCard
+      accent="rgba(239,68,68,0.6)"
+      emoji={
+        <span style={{ color: '#f87171', display: 'inline-flex' }}>
+          <SirenIcon size={26} />
+        </span>
+      }
+      title="Need someone today? Send an SOS"
+      actions={
+        <>
+          <GuideButton to="/sos/new" label="Send an SOS" danger />
+          <GuideButton to="/sos" label="Open SOS board" />
+        </>
+      }
+    >
+      Babysitters and services who turned on alerts get a ping on their phone right
+      away, and message you on WhatsApp. Sending an SOS is for members.
+    </GuideCard>
+  )
+}
+
 function ParentOnboarding() {
   return (
     <div className="flex flex-col gap-4">
@@ -415,15 +441,6 @@ function ParentOnboarding() {
       </GuideCard>
 
       <AddToHomeScreen />
-
-      <GuideCard
-        emoji="🚨"
-        title="Need someone last-minute? Use SOS"
-        actions={<GuideButton to="/sos" label="Open SOS board" />}
-      >
-        Stuck without a sitter? Post a quick SOS request — it shows up in red and
-        nearby babysitters see it right away.
-      </GuideCard>
 
       <GuideCard
         emoji="💬"
@@ -472,8 +489,8 @@ function MembershipBanner() {
     >
       <h2 className="text-white font-bold text-lg">🔓 Unlock contact</h2>
       <p className="text-white/65 text-sm mt-1">
-        {MEMBERSHIP_PRICE} once — no subscription. Message babysitters and local services
-        directly on WhatsApp, as often as you like.
+        {MEMBERSHIP_PRICE} once — no subscription. Send an SOS when you need someone fast,
+        and message babysitters and local services directly on WhatsApp, as often as you like.
       </p>
       <Link
         to="/membership"
@@ -551,6 +568,13 @@ export default function Dashboard() {
         </button>
       </div>
 
+      {/* Parents: SOS first. */}
+      {role === 'parent' && (
+        <div className="mb-6">
+          <ParentSosCard />
+        </div>
+      )}
+
       {/* Sitters without a listing: the ONE thing to do here is publish it —
           it goes first, pulsing, and the membership pitch waits its turn. */}
       {!loading && role !== 'parent' && listings.length === 0 ? (
@@ -574,6 +598,13 @@ export default function Dashboard() {
         </div>
       ) : (
         <>
+          {/* Babysitters and services: an SOS only reaches them with alerts on. */}
+          {role !== 'parent' && (
+            <div className="mb-6">
+              <SosAlertsCard />
+            </div>
+          )}
+
           {/* Model B: anyone can unlock contact (one-time). Members don't see this. */}
           {!isMember && <MembershipBanner />}
 

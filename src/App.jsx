@@ -67,7 +67,7 @@ function AuthCallback() {
 }
 
 const linkClass = ({ isActive }) =>
-  `px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+  `px-4 py-2 rounded-md text-sm font-medium whitespace-nowrap transition-colors ${
     isActive
       ? 'bg-white/15 text-white'
       : 'text-white/70 hover:text-white hover:bg-white/10'
@@ -147,7 +147,7 @@ function NavBar() {
       className="border-b border-white/10"
       style={{ paddingTop: 'env(safe-area-inset-top)' }}
     >
-      <nav className="mx-auto max-w-5xl flex items-center justify-between px-6 py-4">
+      <nav className="mx-auto max-w-6xl flex items-center justify-between px-6 py-4">
         <Link
           to="/"
           className="text-white text-lg font-bold tracking-tight"
@@ -156,35 +156,49 @@ function NavBar() {
           Raising<span className="text-sky-300">Amsterdam</span>
         </Link>
 
-        {/* Desktop links */}
-        <div className="hidden sm:flex items-center gap-1">{navLinks}</div>
+        <div className="flex items-center gap-2">
+          {/* Desktop links — only where they all fit; otherwise the menu button
+              takes over and the SOS button stays visible next to it. */}
+          <div className={`hidden items-center gap-1 ${user ? 'xl:flex' : 'lg:flex'}`}>{navLinks}</div>
 
-        {/* Mobile hamburger */}
-        <button
-          type="button"
-          aria-label="Menu"
-          aria-expanded={open}
-          onClick={() => setOpen((v) => !v)}
-          className="sm:hidden flex flex-col justify-center gap-[5px] p-2 rounded-md hover:bg-white/10 transition-colors"
-        >
-          <span
-            className="block h-0.5 w-6 bg-white transition-transform"
-            style={open ? { transform: 'translateY(7px) rotate(45deg)' } : undefined}
-          />
-          <span
-            className="block h-0.5 w-6 bg-white transition-opacity"
-            style={open ? { opacity: 0 } : undefined}
-          />
-          <span
-            className="block h-0.5 w-6 bg-white transition-transform"
-            style={open ? { transform: 'translateY(-7px) rotate(-45deg)' } : undefined}
-          />
-        </button>
+          {/* SOS — the app's most important feature, always visible (also on mobile) */}
+          <NavLink
+            to="/sos"
+            title="Need a babysitter today? Send an SOS"
+            onClick={() => setOpen(false)}
+            className={({ isActive }) => `sos-pill${isActive ? ' sos-pill--active' : ''}`}
+          >
+            <span className="sos-pill__dot" aria-hidden="true" />
+            SOS
+          </NavLink>
+
+          {/* Mobile hamburger */}
+          <button
+            type="button"
+            aria-label="Menu"
+            aria-expanded={open}
+            onClick={() => setOpen((v) => !v)}
+            className={`${user ? 'xl:hidden' : 'lg:hidden'} flex flex-col justify-center gap-[5px] p-2 rounded-md hover:bg-white/10 transition-colors`}
+          >
+            <span
+              className="block h-0.5 w-6 bg-white transition-transform"
+              style={open ? { transform: 'translateY(7px) rotate(45deg)' } : undefined}
+            />
+            <span
+              className="block h-0.5 w-6 bg-white transition-opacity"
+              style={open ? { opacity: 0 } : undefined}
+            />
+            <span
+              className="block h-0.5 w-6 bg-white transition-transform"
+              style={open ? { transform: 'translateY(-7px) rotate(-45deg)' } : undefined}
+            />
+          </button>
+        </div>
       </nav>
 
       {/* Mobile dropdown menu */}
       {open && (
-        <div className="sm:hidden border-t border-white/10 px-4 pb-4 pt-2">
+        <div className={`${user ? 'xl:hidden' : 'lg:hidden'} border-t border-white/10 px-4 pb-4 pt-2`}>
           <div className="flex flex-col gap-1">{navLinks}</div>
         </div>
       )}

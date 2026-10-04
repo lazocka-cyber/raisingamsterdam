@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import Logo3D from '../components/Logo3D'
+import SosSpotlight from '../components/SosSpotlight'
 
 const STROKE = '#a78bfa'
 const ACCENT = '#34d399'
@@ -99,9 +100,12 @@ export default function Home() {
   return (
     <div className="w-full">
       {/* Hero — full width */}
-      <section className="w-full px-6 py-20 sm:py-28 text-center">
+      <section className="w-full px-6 pt-8 pb-16 sm:py-28 text-center">
         <div className="mx-auto max-w-4xl flex flex-col items-center">
-          <Logo3D size={300} />
+          {/* Smaller globe on phones, so the SOS block below fits on the first screen */}
+          <div className="home-logo">
+            <Logo3D size={240} />
+          </div>
           <Typewriter />
           <p className="mt-5 text-lg sm:text-xl text-white/70 max-w-2xl mx-auto">
             The expat parent community in Amsterdam — connect, share and belong.
@@ -119,6 +123,11 @@ export default function Home() {
             >
               Browse listings
             </Link>
+          </div>
+
+          {/* SOS — the most important feature, right under the hero */}
+          <div className="mt-8 sm:mt-12 w-full max-w-2xl">
+            <SosSpotlight />
           </div>
         </div>
       </section>

@@ -2,18 +2,19 @@ import { useEffect, useRef } from 'react';
 
 // ─────────────────────────────────────────────────────────────
 // Logo3D — animované logo RaisingAmsterdam:
-//   1. Zeměkoule se roztočí a plynule brzdí, až se zastaví
-//      s Nizozemskem čelem k divákovi
-//   2. Kamera najede zoom na Amsterdam
+//   1. Zeměkoule se krátce otočí (jedna otáčka) a zastaví se
+//      s Amsterdamem čelem k divákovi
+//   2. Kamera lehce najede na Amsterdam
 //   3. Na Amsterdamu pulzuje zelená tečka — a tam to zůstane
-// Kliknutím na glóbus se animace přehraje znovu.
+// Kliknutím na glóbus se animace přehraje znovu. Kdo má v telefonu
+// vypnuté animace (prefers-reduced-motion), uvidí rovnou konečný stav.
 //
 // Three.js se načítá z CDN za běhu — není potřeba npm install.
 // Textura: /earth-texture.jpg (je v public/).
 //
 // Použití:  import Logo3D from './components/Logo3D';
 //           <Logo3D size={260} />
-// Zatím NENÍ nikde importovaná — appku nijak neovlivňuje.
+// Používá se na úvodní stránce (Home.jsx).
 // ─────────────────────────────────────────────────────────────
 
 const THREE_CDN = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
@@ -24,12 +25,12 @@ const LON = 4.90 * Math.PI / 180;
 // Cílová rotace Y, při které je Amsterdam čelem ke kameře (+Z)
 const TARGET_Y = -Math.PI / 2 - LON;
 
-const SPINS = 4;            // počet otáček před zabrzděním
-const SPIN_MS = 4500;       // délka roztočení + brzdění
-const ZOOM_DELAY = 300;     // pauza před zoomem
-const ZOOM_MS = 2000;       // délka zoomu
+const SPINS = 1;            // jedna krátká otáčka (Zdeny 4. 10. 2026: „krátká otočka, zastavení na Amsterdamu“)
+const SPIN_MS = 1800;       // délka otáčky + brzdění
+const ZOOM_DELAY = 100;     // pauza před zoomem
+const ZOOM_MS = 900;        // délka zoomu
 const CAM_FAR = 6;
-const CAM_NEAR = 5.45; // zoom končí tak, aby zůstala vidět celá zeměkoule
+const CAM_NEAR = 5.85; // zoom končí tak, aby zůstala vidět celá zeměkoule i s modrým okrajem (5,45 ho ořízlo)
 
 const easeOutQuart = (p) => 1 - Math.pow(1 - p, 4);
 const easeInOutCubic = (p) => (p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2);
@@ -92,12 +93,12 @@ export default function Logo3D({ size = 260, textureUrl = '/earth-texture.jpg' }
         Math.sin(LAT) * R,
         Math.cos(LAT) * Math.sin(phi) * R,
       );
-      const dotGeo = new THREE.SphereGeometry(0.04, 16, 16);
+      const dotGeo = new THREE.SphereGeometry(0.065, 16, 16);
       const dotMat = new THREE.MeshBasicMaterial({ color: 0x34d399, transparent: true, opacity: 0 });
       const dot = new THREE.Mesh(dotGeo, dotMat);
       dot.position.copy(markerPos.clone().multiplyScalar(1.01));
       earth.add(dot);
-      const pulseGeo = new THREE.SphereGeometry(0.04, 16, 16);
+      const pulseGeo = new THREE.SphereGeometry(0.065, 16, 16);
       const pulseMat = new THREE.MeshBasicMaterial({ color: 0x34d399, transparent: true, opacity: 0 });
       const pulse = new THREE.Mesh(pulseGeo, pulseMat);
       pulse.position.copy(dot.position);
@@ -118,8 +119,9 @@ export default function Logo3D({ size = 260, textureUrl = '/earth-texture.jpg' }
       };
       window.addEventListener('pointermove', onMove);
 
-      // Klik = přehrát znovu
-      let start = performance.now();
+      // Klik = přehrát znovu. Při vypnutých animacích rovnou konečný stav.
+      const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+      let start = performance.now() - (reduceMotion ? SPIN_MS + ZOOM_DELAY + ZOOM_MS : 0);
       const onClick = () => { start = performance.now(); };
       canvasRef.current.addEventListener('click', onClick);
 
@@ -175,7 +177,7 @@ export default function Logo3D({ size = 260, textureUrl = '/earth-texture.jpg' }
     <canvas
       ref={canvasRef}
       style={{ width: size, height: size, display: 'block', cursor: 'pointer' }}
-      title="Klikni pro přehrání znovu"
+      title="Click to spin again"
     />
   );
 }
