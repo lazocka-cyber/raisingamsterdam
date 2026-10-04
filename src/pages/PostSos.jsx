@@ -18,6 +18,12 @@ const inputStyle = {
   outline: 'none',
 }
 
+// YYYY-MM-DD for today plus a number of days.
+function isoDay(offsetDays) {
+  const d = new Date()
+  return new Date(d.getTime() + offsetDays * 86400000).toISOString().slice(0, 10)
+}
+
 function Label({ children }) {
   return <span className="text-white/60 text-sm">{children}</span>
 }
@@ -25,28 +31,6 @@ function Label({ children }) {
 export default function PostSos() {
   const { user, isMember } = useAuth()
   const navigate = useNavigate()
-
-  // Posting an SOS is a member perk.
-  if (!isMember) {
-    return (
-      <section className="mx-auto px-6 py-16" style={{ maxWidth: 520 }}>
-        <div style={{ background: '#1a1a2e', borderRadius: 16 }} className="p-10 text-center">
-          <div style={{ fontSize: 38 }}>🚨</div>
-          <h1 className="text-white text-2xl font-bold mt-2">Posting SOS is a member feature</h1>
-          <p className="text-white/65 mt-3">
-            Become a member to post urgent requests and reach nearby babysitters in
-            seconds. Browsing and helping out stays free for everyone.
-          </p>
-          <Link
-            to="/membership"
-            style={{ display: 'inline-block', marginTop: 22, background: GREEN, color: NAVY, borderRadius: 10, padding: '11px 22px', fontWeight: 700 }}
-          >
-            Become a member
-          </Link>
-        </div>
-      </section>
-    )
-  }
 
   const [neededDate, setNeededDate] = useState('')
   const [neededTime, setNeededTime] = useState('')
@@ -59,7 +43,31 @@ export default function PostSos() {
   const [error, setError] = useState('')
   const [submitting, setSubmitting] = useState(false)
 
-  const today = new Date().toISOString().slice(0, 10)
+  const today = isoDay(0)
+  // An SOS is for the next few days only (the database allows at most 3 days).
+  const lastDay = isoDay(2)
+
+  // Posting an SOS is a member perk.
+  if (!isMember) {
+    return (
+      <section className="mx-auto px-6 py-16" style={{ maxWidth: 520 }}>
+        <div style={{ background: '#1a1a2e', borderRadius: 16 }} className="p-10 text-center">
+          <div style={{ fontSize: 38 }}>🚨</div>
+          <h1 className="text-white text-2xl font-bold mt-2">Posting SOS is a member feature</h1>
+          <p className="text-white/65 mt-3">
+            Become a member to post urgent requests and reach babysitters in seconds.
+            Browsing and helping out stays free for everyone.
+          </p>
+          <Link
+            to="/membership"
+            style={{ display: 'inline-block', marginTop: 22, background: GREEN, color: NAVY, borderRadius: 10, padding: '11px 22px', fontWeight: 700 }}
+          >
+            Become a member
+          </Link>
+        </div>
+      </section>
+    )
+  }
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -96,7 +104,13 @@ export default function PostSos() {
         expires_at: expiresAt,
       })
       if (dbError) {
-        setError(dbError.message)
+        setError(
+          dbError.code === '42501'
+            ? 'You can post up to 3 SOS requests in 24 hours, for the next 3 days.'
+            : dbError.code === '23514'
+              ? 'Please check the details: a shorter note or time, and a valid WhatsApp number.'
+              : dbError.message,
+        )
         return
       }
       navigate('/sos', { state: { toast: 'Your SOS is live — sitters can see it now! 🚨' } })
@@ -134,6 +148,7 @@ export default function PostSos() {
           <input
             type="date"
             min={today}
+            max={lastDay}
             value={neededDate}
             onChange={(e) => setNeededDate(e.target.value)}
             style={inputStyle}
@@ -214,7 +229,8 @@ export default function PostSos() {
             style={inputStyle}
           />
           <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: 12 }}>
-            Sitters will message you here.
+            Sitters will message you here. Only signed-in babysitters and services with a
+            listing on RaisingAmsterdam can see this number.
           </span>
         </label>
 

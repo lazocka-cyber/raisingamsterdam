@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
 import { waNumber } from '../lib/listingUtils'
@@ -7,6 +7,15 @@ import NotifyButton from '../components/NotifyButton'
 import LinkifiedText from '../components/LinkifiedText'
 
 const RED = '#ef4444'
+
+// Columns the board reads — deliberately WITHOUT `phone`. The parent's WhatsApp
+// number is fetched on demand via the get_sos_contact RPC, which returns it only
+// to a signed-in user with a listing (babysitter or service) or to the author.
+// See supabase/sos_lock_2026_10_04.sql.
+const SOS_COLUMNS =
+  'id, user_id, area, postcode, child_age, needed_date, needed_time, note, status, expires_at, created_at'
+
+const hintStyle = { color: 'rgba(255,255,255,0.5)', fontSize: 12.5, marginTop: 8, textAlign: 'center' }
 
 function formatDate(value) {
   if (!value) return ''
@@ -26,7 +35,31 @@ function isToday(value) {
   return value === new Date().toISOString().slice(0, 10)
 }
 
-function SosCard({ sos, isOwner, onClose, onDelete, busy }) {
+function SosCard({ sos, isOwner, onClose, onDelete, busy, user, hasListing }) {
+  const [phone, setPhone] = useState('')
+  const [revealing, setRevealing] = useState(false)
+  const [contactError, setContactError] = useState('')
+
+  async function reveal() {
+    setRevealing(true)
+    setContactError('')
+    const { data, error } = await supabase.rpc('get_sos_contact', { p_sos_id: sos.id })
+    setRevealing(false)
+    if (error) {
+      setContactError(
+        error.message?.includes('NEEDS_LISTING')
+          ? 'Only babysitters and services with a listing can contact families.'
+          : 'Could not load the contact. Please try again.',
+      )
+      return
+    }
+    if (!data) {
+      setContactError('This SOS is no longer open.')
+      return
+    }
+    setPhone(data)
+  }
+
   const when = [isToday(sos.needed_date) ? 'Today' : formatDate(sos.needed_date), sos.needed_time]
     .filter(Boolean)
     .join(' · ')
@@ -69,17 +102,47 @@ function SosCard({ sos, isOwner, onClose, onDelete, busy }) {
               Delete
             </button>
           </div>
-        ) : sos.phone ? (
+        ) : !user ? (
+          <>
+            <Link to="/register" className="sos-help-btn">
+              💬 I can help · sign in
+            </Link>
+            <p style={hintStyle}>Only signed-in babysitters and services see the family’s WhatsApp.</p>
+          </>
+        ) : hasListing === false ? (
+          <>
+            <Link to="/post-listing" className="sos-help-btn">
+              💬 I can help · post your free listing first
+            </Link>
+            <p style={hintStyle}>Only babysitters and services with a listing can contact families.</p>
+          </>
+        ) : phone ? (
+          // A real link tapped by the sitter — never a popup after an await,
+          // which Safari would block.
           <a
-            href={`https://wa.me/${waNumber(sos.phone)}`}
+            href={`https://wa.me/${waNumber(phone)}`}
             target="_blank"
             rel="noopener noreferrer"
             className="sos-help-btn"
           >
-            💬 Help out — message on WhatsApp
+            💬 Open WhatsApp
           </a>
         ) : (
-          <span className="text-white/40 text-sm">No contact info</span>
+          <>
+            <button type="button" disabled={revealing} onClick={reveal} className="sos-help-btn" style={{ border: 'none', cursor: 'pointer' }}>
+              {revealing ? 'Loading…' : '💬 Help out — message on WhatsApp'}
+            </button>
+            {contactError && (
+              <p style={{ ...hintStyle, color: '#fca5a5' }}>
+                {contactError}{' '}
+                {contactError.startsWith('Only') && (
+                  <Link to="/post-listing" style={{ color: '#fca5a5', textDecoration: 'underline' }}>
+                    Post your free listing
+                  </Link>
+                )}
+              </p>
+            )}
+          </>
         )}
       </div>
     </div>
@@ -87,7 +150,7 @@ function SosCard({ sos, isOwner, onClose, onDelete, busy }) {
 }
 
 export default function SosBoard() {
-  const { user, isMember } = useAuth()
+  const { user, isMember, hasListing } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -114,7 +177,7 @@ export default function SosBoard() {
     const nowIso = new Date().toISOString()
     const { data, error: dbError } = await supabase
       .from('sos_requests')
-      .select('*')
+      .select(SOS_COLUMNS)
       .eq('status', 'open')
       .gt('expires_at', nowIso)
       .order('created_at', { ascending: false })
@@ -190,9 +253,10 @@ export default function SosBoard() {
         }}
       >
         <strong className="text-white/80">How SOS works:</strong> stuck without a sitter?
-        Members can post a quick request — it shows up here in red and nearby babysitters
-        get a ping right away, then reach you on WhatsApp. Browsing and helping out is free
-        for everyone; turn on alerts below so you never miss an SOS.
+        Members post a quick request. It shows up here in red, and babysitters who turned on
+        alerts get a ping right away. Only signed-in babysitters and services with a listing
+        see your WhatsApp number. Helping out is free; turn on alerts below so you never
+        miss an SOS.
       </div>
 
       <NotifyButton />
@@ -233,6 +297,8 @@ export default function SosBoard() {
                 onClose={handleClose}
                 onDelete={handleDelete}
                 busy={busyId === sos.id}
+                user={user}
+                hasListing={hasListing}
               />
             ))}
           </div>
