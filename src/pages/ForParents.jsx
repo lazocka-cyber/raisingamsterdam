@@ -69,13 +69,10 @@ export default function ForParents() {
     }
   }, [])
 
+  // The request form first, the account last (5. 10. 2026).
   function start() {
-    if (user) {
-      navigate('/families/new')
-      return
-    }
-    setParentIntent()
-    navigate('/register?for=parent')
+    if (!user) setParentIntent()
+    navigate('/families/new')
   }
 
   return (

@@ -3,9 +3,13 @@ import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
 import { AGE_GROUP_OPTIONS, AVAILABILITY_OPTIONS } from '../lib/listingUtils'
+import { loadRequestDraft, saveRequestDraft } from '../lib/requestDraft'
+import { setParentIntent } from '../lib/intent'
 
 // A parent's free request ("Families looking for help"). No phone number:
 // the parent contacts sitters on WhatsApp after unlocking membership.
+// Open to visitors without an account (5. 10. 2026): the form comes first,
+// the account second — the request is kept and posted after sign-in.
 
 const NAVY = '#042C53'
 const ACCENT = '#34d399'
@@ -31,10 +35,12 @@ export default function PostFamilyRequest() {
   const { user } = useAuth()
   const navigate = useNavigate()
 
-  const [area, setArea] = useState('')
-  const [days, setDays] = useState([])
-  const [ages, setAges] = useState([])
-  const [note, setNote] = useState('')
+  // A request filled in before signing up comes back pre-filled.
+  const [draft] = useState(() => loadRequestDraft())
+  const [area, setArea] = useState(draft?.area || '')
+  const [days, setDays] = useState(draft?.days || [])
+  const [ages, setAges] = useState(draft?.age_groups || [])
+  const [note, setNote] = useState(draft?.note || '')
   const [error, setError] = useState('')
   const [submitting, setSubmitting] = useState(false)
 
@@ -50,6 +56,18 @@ export default function PostFamilyRequest() {
     }
     if (days.length === 0) {
       setError('Pick at least one moment you need help.')
+      return
+    }
+    // No account yet: keep the request and create the account as the last step.
+    if (!user) {
+      saveRequestDraft({
+        area: area.trim().slice(0, 80),
+        days,
+        age_groups: ages,
+        note: note.trim().slice(0, 500) || null,
+      })
+      setParentIntent()
+      navigate('/register?for=parent&draft=1')
       return
     }
     setSubmitting(true)
@@ -147,10 +165,12 @@ export default function PostFamilyRequest() {
             cursor: 'pointer',
           }}
         >
-          {submitting ? 'Posting…' : 'Post my request'}
+          {submitting ? 'Posting…' : user ? 'Post my request' : 'Post my request →'}
         </button>
         <p className="text-white/40 text-xs text-center" style={{ marginTop: -8 }}>
-          No phone number needed. You choose who to message.
+          {user
+            ? 'No phone number needed. You choose who to message.'
+            : 'Next: a free account, so you can see who replies. No phone number needed.'}
         </p>
       </form>
     </section>

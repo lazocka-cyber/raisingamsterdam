@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { setParentIntent } from '../lib/intent'
+import { loadRequestDraft } from '../lib/requestDraft'
 
 const PURPLE = '#a78bfa'
 // Tutoriál pro chůvy na YouTube — když je ID prázdné, sekce s videem se nevykreslí
@@ -11,6 +12,8 @@ const SUCCESS_MSG =
   'Check your email! 📬 Tap the link inside to sign in. New babysitter? After signing in, post your free listing so families can find you.'
 const SUCCESS_MSG_PARENT =
   'Check your email! 📬 Tap the link inside, then post your free request. Babysitters near you reply.'
+const SUCCESS_MSG_DRAFT =
+  'Check your email! 📬 Tap the link inside and your request goes live. Babysitters near you can then reply.'
 
 const inputStyle = {
   background: 'rgba(255,255,255,0.07)',
@@ -68,9 +71,17 @@ export default function Register() {
   // /register?for=parent — arrived from /for-parents or a parent ad
   const [params] = useSearchParams()
   const forParent = params.get('for') === 'parent'
+  // Came from the request form without an account: the request is saved,
+  // this is the last step (5. 10. 2026).
+  const [draft] = useState(() => (forParent ? loadRequestDraft() : null))
   useEffect(() => {
     if (forParent) setParentIntent()
   }, [forParent])
+  // Arriving from the bottom of the request form: start at the top, so the
+  // "Last step" heading is the first thing the parent sees.
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
   const [videoOpen, setVideoOpen] = useState(false)
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
@@ -106,13 +117,15 @@ export default function Register() {
           // New accounts get their profile role from this (profiles trigger),
           // so a parent never lands on the babysitter listing form — even when
           // the e-mail link opens in another browser. Existing accounts ignore it.
-          ...(forParent ? { data: { role: 'parent' } } : {}),
+          // The saved request travels with the new account too, so it still gets
+          // posted when the link opens in another browser.
+          ...(forParent ? { data: { role: 'parent', ...(draft ? { request_draft: draft } : {}) } } : {}),
         },
       })
       if (otpError) {
         setError(otpError.message)
       } else {
-        setSuccess(forParent ? SUCCESS_MSG_PARENT : SUCCESS_MSG)
+        setSuccess(draft ? SUCCESS_MSG_DRAFT : forParent ? SUCCESS_MSG_PARENT : SUCCESS_MSG)
       }
     } catch (err) {
       setError(err.message || 'Something went wrong. Please try again.')
@@ -147,10 +160,12 @@ export default function Register() {
         }}
       >
         <h1 className="text-white text-2xl font-bold text-center">
-          {forParent ? 'Post your free request' : 'Join RaisingAmsterdam'}
+          {draft ? 'Last step: publish your request' : forParent ? 'Post your free request' : 'Join RaisingAmsterdam'}
         </h1>
         <p className="text-white/60 text-sm text-center mt-2">
-          {forParent
+          {draft
+            ? 'Your request is saved. Create your free account so babysitters can see it, and you can see who replies.'
+            : forParent
             ? 'Create your free account, then tell babysitters what you need. They reply, you choose who to message.'
             : "It's free to join. Browse, post a listing, and meet other expat parents. Unlock contact whenever you're ready."}
         </p>
@@ -158,7 +173,9 @@ export default function Register() {
           className="text-center text-sm mt-3"
           style={{ color: '#34d399', fontWeight: 600 }}
         >
-          {forParent
+          {draft
+            ? 'Step 2 of 2: your free account'
+            : forParent
             ? 'Step 1 of 2: create your account · Step 2: post your request'
             : 'Step 1 of 2: create your account · Step 2: post your listing'}
         </p>

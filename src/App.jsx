@@ -12,6 +12,7 @@ import { Analytics } from '@vercel/analytics/react'
 import { AuthProvider, useAuth } from './context/AuthContext.jsx'
 import { supabase } from './lib/supabase'
 import { hasParentIntent } from './lib/intent'
+import { draftFromUser, loadRequestDraft } from './lib/requestDraft'
 import Home from './pages/Home.jsx'
 import Register from './pages/Register.jsx'
 import Listings from './pages/Listings.jsx'
@@ -32,6 +33,7 @@ import SosBoard from './pages/SosBoard.jsx'
 import PostSos from './pages/PostSos.jsx'
 import DeleteAccount from './pages/DeleteAccount.jsx'
 import ListingGate from './components/ListingGate.jsx'
+import PendingRequestPublisher from './components/PendingRequestPublisher.jsx'
 
 const NAVY = '#042C53'
 
@@ -47,18 +49,24 @@ function AuthCallback() {
   useEffect(() => {
     // Read before AuthContext clears it: parents go straight to the request form.
     const home = hasParentIntent() ? '/families/new' : '/dashboard'
+    // A request saved before sign-up: PendingRequestPublisher posts it and
+    // opens My requests itself — don't race it with a second redirect.
+    const localDraft = Boolean(loadRequestDraft())
     const params = new URLSearchParams(window.location.search)
     const tokenHash = params.get('token_hash')
     if (tokenHash) {
       supabase.auth
         .verifyOtp({ token_hash: tokenHash, type: params.get('type') || 'email' })
-        .then(({ error }) => {
-          navigate(error ? '/register?link=expired' : home, { replace: true })
+        .then(({ data, error }) => {
+          if (error) return navigate('/register?link=expired', { replace: true })
+          if (localDraft || draftFromUser(data?.user)) return
+          navigate(home, { replace: true })
         })
       return
     }
     if (window.location.hash.includes('access_token')) {
-      supabase.auth.getSession().then(() => {
+      supabase.auth.getSession().then(({ data }) => {
+        if (localDraft || draftFromUser(data?.session?.user)) return
         navigate(home, { replace: true })
       })
     }
@@ -263,6 +271,7 @@ export default function App() {
     <BrowserRouter>
       <AuthProvider>
         <AuthCallback />
+        <PendingRequestPublisher />
         <Analytics />
         <ListingGate />
         <Layout>
@@ -287,14 +296,8 @@ export default function App() {
             <Route path="/sos" element={<SosBoard />} />
             <Route path="/families" element={<FamilyRequests />} />
             <Route path="/for-parents" element={<ForParents />} />
-            <Route
-              path="/families/new"
-              element={
-                <ProtectedRoute>
-                  <PostFamilyRequest />
-                </ProtectedRoute>
-              }
-            />
+            {/* Open without an account: the form first, the account last (5. 10. 2026) */}
+            <Route path="/families/new" element={<PostFamilyRequest />} />
             <Route
               path="/my-requests"
               element={

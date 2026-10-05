@@ -265,9 +265,8 @@ export default function FamilyRequests() {
         <button
           type="button"
           onClick={() => {
-            if (user) return navigate('/families/new')
-            setParentIntent()
-            navigate('/register?for=parent')
+            if (!user) setParentIntent()
+            navigate('/families/new')
           }}
           style={{ ...helpBtn, width: 'auto', padding: '11px 20px' }}
         >
