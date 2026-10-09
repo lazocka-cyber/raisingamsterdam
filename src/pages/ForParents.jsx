@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext'
 import { setParentIntent } from '../lib/intent'
 import { MEMBERSHIP_PRICE } from '../lib/listingUtils'
 import SosSpotlight from '../components/SosSpotlight'
+import SeeBabysittersLink from '../components/SeeBabysittersLink'
 
 // Landing page for PARENTS (ads, group posts, flyers): /for-parents.
 // One job: get a parent to post a free request. Everything here is true today —
@@ -96,6 +97,7 @@ export default function ForParents() {
             </p>
             <div style={{ marginTop: 26, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 12 }}>
               <CtaButton onClick={start}>Post your free request →</CtaButton>
+              <SeeBabysittersLink />
               <p className="text-white/55" style={{ fontSize: 14 }}>
                 Free to post · {MEMBERSHIP_PRICE} once to message · No subscription
               </p>
@@ -112,6 +114,11 @@ export default function ForParents() {
                   References from families
                 </span>
               </div>
+            )}
+            {counts && (
+              <p className="text-white/60" style={{ fontSize: 14, marginTop: 14 }}>
+                We’re new in Amsterdam. The more families post, the more babysitters join. Posting costs nothing.
+              </p>
             )}
           </div>
 
