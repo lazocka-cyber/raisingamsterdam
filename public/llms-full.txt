@@ -79,11 +79,26 @@ Official sources
 Official sources
 - Apply for toeslagen — Belastingdienst
 
+## 🧮 How much the toeslag counts per hour (2026)
+The toeslag only counts your childcare price up to a maximum per hour. Anything above it, you pay yourself.
+- Type of care
+- Maximum hourly price 2026
+- Daycare (KDV)
+- €11.23
+- After-school care (BSO)
+- €9.98
+- Childminder (gastouder)
+- €8.49
+- Compare hourly prices before you sign. If your daycare charges more than the maximum, the difference comes fully out of your own pocket, every hour.
+- The amounts change every January. We update this card when the 2027 amounts are final.
+Official sources
+- Childcare allowance amounts 2026 — Rijksoverheid
+
 ## 💛 How to choose a good one
 - Read the free GGD inspection report — every registered location has one in the national register (LRK). In plain language it tells you whether the place meets the rules.
 - Then trust your eyes on a visit: are the children relaxed and happy? Are the carers warm, down on the floor and really with the kids?
 - Ask what matters for little ones: do the same faces come back each day (a stable stamgroep)? how often do staff change? how does settling-in (wennen) work? how many children per carer? how much time outdoors?
-- ⏳ Register early — around 70% of daycares have waiting lists, and many parents sign up during pregnancy.
+- ⏳ Register early — many daycares have waiting lists, especially in Amsterdam, and many parents sign up during pregnancy.
 Official sources
 - Check a daycare — Landelijk Register Kinderopvang
 Good to know: this is friendly orientation, not official or medical advice. Dutch rules and amounts change, so always check the official source linked in each section before you act on it.
@@ -170,7 +185,7 @@ Official sources
 
 ## 🧭 Public or faith-based? (openbaar vs bijzonder)
 - Openbaar (public) schools welcome every child and aren't based on a religion or worldview.
-- Bijzonder schools teach from a particular conviction or vision — religious (Catholic, Protestant, Islamic, Jewish…) or a special idea about education. "Oecumenical" boards like AMOS (29 schools across Amsterdam) are Christian in roots but open to all beliefs.
+- Bijzonder schools teach from a particular conviction or vision — religious (Catholic, Protestant, Islamic, Jewish…) or a special idea about education. "Oecumenical" boards like AMOS (26 schools on 29 locations across Amsterdam) are Christian in roots but open to all beliefs.
 - A lovely Dutch quirk: both public and bijzonder schools are fully funded by the government — there's no tuition, just a small voluntary contribution (vrijwillige ouderbijdrage). "Special" here doesn't mean paying.
 Official sources
 - Openbaar vs bijzonder — OCO
@@ -211,15 +226,15 @@ Official sources
 - Birth registration — Rijksoverheid
 
 ## 🪪 Your own basics (newcomers)
-- Just arrived? Register at your gemeente within 5 days to get your BSN. In Amsterdam, book the appointment early — waits can be 6–8 weeks.
+- Just arrived? Register at your gemeente within 5 days to get your BSN. In Amsterdam, book the appointment early — appointments can take several weeks.
 - Bring your passport/ID, proof of your Dutch address, and an employment contract if you have one. Then set up a DigiD online — your login for insurance, school, toeslag and more.
 Official sources
-- BSN & registration — I amsterdam
+- Registration & BSN for newcomers — IN Amsterdam
 
 ## ⏳ Register early — the waiting-list game
 - Midwife (verloskundige): book your first appointment as soon as your test is positive — usually around weeks 8–10.
 - Kraamzorg: sign up early because of waiting lists — ideally within the first 12 weeks, and in big cities like Amsterdam before week 8.
-- Daycare (KDV): around 70% have waiting lists, so many parents register during pregnancy.
+- Daycare (KDV): many have waiting lists, especially in Amsterdam, so many parents register during pregnancy.
 - Primary school: in Amsterdam you apply around your child's 3rd birthday — popular schools fill up.
 - Swimming lessons: spots fill up too, so put your child on the list in good time.
 Read next
@@ -247,7 +262,7 @@ Where to take it
 - Kinder-EHBO in English — Geboortecentrum Amsterdam
 - Baby & child first aid — Midwives 101
 - First aid workshop — Femme Amsterdam
-- Eerste Hulp aan Kinderen — Het Oranje Kruis
+- Find a certified child first-aid course (Eerste Hulp aan Kinderen) — Het Oranje Kruis
 - EHBO voor kinderen — Rode Kruis
 Good to know: this is friendly orientation, not official or medical advice. Always check the course provider and your own insurance policy before you book.
 

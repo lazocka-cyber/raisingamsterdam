@@ -77,7 +77,7 @@ const SECTIONS = [
       { label: 'Kinder-EHBO in English — Geboortecentrum Amsterdam', url: 'https://geboortecentrum.nl/en/course-centre/kinder-ehbo/' },
       { label: 'Baby & child first aid — Midwives 101', url: 'https://verloskundigen101.nl/en/cursus/eerste-hulp-baby-en-kind/' },
       { label: 'First aid workshop — Femme Amsterdam', url: 'https://www.femme-amsterdam.nl/' },
-      { label: 'Eerste Hulp aan Kinderen — Het Oranje Kruis', url: 'https://www.hetoranjekruis.nl/diplomas/certificaat-eerste-hulp-aan-kinderen/' },
+      { label: 'Find a certified child first-aid course — Het Oranje Kruis', url: 'https://cursusvinder.hetoranjekruis.nl/' },
       { label: 'EHBO voor kinderen — Rode Kruis', url: 'https://www.rodekruis.nl/ehbo/ehbo-cursus-kinderen/' },
     ],
   },
@@ -129,12 +129,22 @@ const SECTIONS = [
         ],
       },
       {
+        title: '🧮 How much the toeslag counts per hour (2026)',
+        points: [
+          'The toeslag only counts your childcare price up to a maximum per hour: €11.23 for daycare (KDV), €9.98 for after-school care (BSO) and €8.49 for a childminder (gastouder).',
+          'Compare hourly prices before you sign. If your daycare charges more, the difference comes fully out of your own pocket.',
+        ],
+        links: [
+          { label: 'Childcare allowance amounts 2026 — Rijksoverheid', url: 'https://www.rijksoverheid.nl/themas/belastingen-uitkeringen-en-toeslagen/kinderopvangtoeslag/bedragen-kinderopvangtoeslag-2026' },
+        ],
+      },
+      {
         title: '💛 How to choose a good one',
         points: [
           'Read the free GGD inspection report — every registered location has one in the national register (LRK). In plain language it tells you whether the place meets the rules.',
           'Then trust your eyes on a visit: are the children relaxed and happy? Are the carers warm, down on the floor and really with the kids?',
           'Ask what matters for little ones: do the same faces come back each day (a stable stamgroep)? how often do staff change? how does settling-in (wennen) work? how many children per carer? how much time outdoors?',
-          '⏳ Register early — around 70% of daycares have waiting lists, and many parents sign up during pregnancy.',
+          '⏳ Register early — many daycares have waiting lists, especially in Amsterdam, and many parents sign up during pregnancy.',
         ],
         links: [
           { label: 'Check a daycare — Landelijk Register Kinderopvang', url: 'https://www.landelijkregisterkinderopvang.nl/pp/' },
@@ -178,18 +188,17 @@ const SECTIONS = [
         links: [
           { label: 'Amsterdam School Finder — schoolwijzer', url: 'https://schoolwijzer.amsterdam.nl/en/' },
           { label: 'Primary school — I amsterdam', url: 'https://www.iamsterdam.com/en/live-work-study/living/education-family/primary-school' },
-          { label: 'International schools in Amsterdam & Amstelveen — our guide', url: '/guides/international-schools-amsterdam.html' },
         ],
       },
       {
         title: '🧭 Public or faith-based? (openbaar vs bijzonder)',
         points: [
           'Openbaar (public) schools welcome every child and aren’t based on a religion or worldview.',
-          'Bijzonder schools teach from a particular conviction or vision — religious (Catholic, Protestant, Islamic, Jewish…) or a special idea about education. “Oecumenical” boards like AMOS (29 schools across Amsterdam) are Christian in roots but open to all beliefs.',
+          'Bijzonder schools teach from a particular conviction or vision — religious (Catholic, Protestant, Islamic, Jewish…) or a special idea about education. “Oecumenical” boards like AMOS (26 schools on 29 locations across Amsterdam) are Christian in roots but open to all beliefs.',
           'A lovely Dutch quirk: both public and bijzonder schools are fully funded by the government — there’s no tuition, just a small voluntary contribution (vrijwillige ouderbijdrage). “Special” here doesn’t mean paying.',
         ],
         links: [
-          { label: 'Openbaar vs bijzonder — OCO', url: 'https://www.onderwijsconsument.nl/wat-is-openbaar-onderwijs-en-bijzonder-onderwijs/' },
+          { label: 'Openbaar vs bijzonder — OCO', url: 'https://ocoamsterdam.nl/vragen/wat-is-openbaar-onderwijs-en-bijzonder-onderwijs' },
           { label: 'AMOS schools — amosonderwijs.nl', url: 'https://amosonderwijs.nl/scholen/' },
         ],
       },
@@ -206,7 +215,6 @@ const SECTIONS = [
         ],
         links: [
           { label: 'School styles explained — Ouders.nl', url: 'https://www.ouders.nl/artikelen/welke-basisschoolvorm-kies-ik-voor-mijn-kind' },
-          { label: 'Vrije school (Waldorf) in Amsterdam — our guide', url: '/guides/vrije-school-waldorf-amsterdam.html' },
         ],
       },
       {
@@ -232,6 +240,40 @@ const SECTIONS = [
     ],
   },
   {
+    emoji: '🌍',
+    title: 'International schools (Amsterdam & Amstelveen)',
+    intro:
+      'Subsidised or private, who can get a place, what it costs in 2026/27, and the free bilingual Dutch options many expat families never hear about.',
+    points: [
+      'Three routes, not two: a regular Dutch school (free, local friends), a subsidised international school (DIS, lower fees but admission rules) or a private international school (no rules, much higher fees).',
+      'Subsidised schools are mainly for children who live in the Netherlands for a limited period because of a parent’s job. Planning to stay for good? Ask the school before you count on a place.',
+      'Fees 2026/27: AICS from €6,025 to €9,168 all-in, Amstelland International School €5,500, private schools such as ISA and the British School of Amsterdam roughly €9,500 to €33,000.',
+      'Apply as soon as your move is certain, and hand in the Amsterdam school form as a back-up: international schools admit through their own system.',
+      'New since 1 August 2026: a Dutch primary school may teach up to half of its time in English. DENISE and De Visserschool already do, for free.',
+    ],
+    links: [
+      { label: 'International schools in Amsterdam & Amstelveen — full guide with the fee table', url: '/guides/international-schools-amsterdam.html' },
+      { label: 'Admission rules — Dutch International Schools', url: 'https://www.dutchinternationalschools.nl/about-dis/admissions/' },
+    ],
+  },
+  {
+    emoji: '🌿',
+    title: 'Vrije school (Waldorf)',
+    intro:
+      'All seven Waldorf primary schools in Amsterdam, how admission really works, the deadlines, the costs and what is truly different.',
+    points: [
+      'A vrije school is a free, government-funded Dutch school with the same national goals and end test as every other school. Lessons are in Dutch.',
+      'Amsterdam has seven: Geert Groote School I and II (Zuid), Vrijeschool Amsterdam West, Thula (Oost), Kairos and Waldorf aan de Werf (Noord) and the Waldorf stream of IKC Nelson Mandela (Zuidoost).',
+      'The part most parents miss: at five of them every child with an Amsterdam address gets priority in the school lottery, wherever you live in the city.',
+      'Deadline coming up: children born 1 May to 31 August 2023 must be registered by 5 November 2026.',
+      'Children learn to read at the same age as at other Dutch schools, just with a different method. Watch out: the Cornelis Vrijschool is not a Waldorf school.',
+    ],
+    links: [
+      { label: 'Vrije school (Waldorf) in Amsterdam — full guide with all seven schools', url: '/guides/vrije-school-waldorf-amsterdam.html' },
+      { label: 'Primary school registration 2026/27 in English — BBO Amsterdam (PDF)', url: 'https://bboamsterdam.nl/wp-content/uploads/2025/11/Brochure-Amsterdam-Engels-2026-2027.pdf' },
+    ],
+  },
+  {
     emoji: '📋',
     title: 'Getting set up: paperwork & waiting lists',
     intro:
@@ -250,11 +292,11 @@ const SECTIONS = [
       {
         title: '🪪 Your own basics (newcomers)',
         points: [
-          'Just arrived? Register at your gemeente within 5 days to get your BSN. In Amsterdam, book the appointment early — waits can be 6–8 weeks.',
+          'Just arrived? Register at your gemeente within 5 days to get your BSN. In Amsterdam, book the appointment early — appointments can take several weeks.',
           'Bring your passport/ID, proof of your Dutch address, and an employment contract if you have one. Then set up a DigiD online — your login for insurance, school, toeslag and more.',
         ],
         links: [
-          { label: 'BSN & registration — I amsterdam', url: 'https://www.iamsterdam.com/en/live-work-study/moving-to-amsterdam/take-care-of-official-matters/bsn-and-the-personal-records-database' },
+          { label: 'Registration & BSN for newcomers — IN Amsterdam', url: 'https://www.iamsterdam.com/en/live-work-study/in-amsterdam/how-in-amsterdam-helps-international-newcomers/in-amsterdam-services-for-international-newcomers' },
         ],
       },
       {
@@ -262,7 +304,7 @@ const SECTIONS = [
         points: [
           'Midwife (verloskundige): book your first appointment as soon as your test is positive — usually around weeks 8–10.',
           'Kraamzorg: sign up early because of waiting lists — ideally within the first 12 weeks, and in big cities like Amsterdam before week 8.',
-          'Daycare (KDV): around 70% have waiting lists, so many parents register during pregnancy.',
+          'Daycare (KDV): many have waiting lists, especially in Amsterdam, so many parents register during pregnancy.',
           'Primary school: in Amsterdam you apply around your child’s 3rd birthday — popular schools fill up.',
           'Swimming lessons: spots fill up too, so put your child on the list in good time (more on that below).',
         ],
