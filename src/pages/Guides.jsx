@@ -178,6 +178,7 @@ const SECTIONS = [
         links: [
           { label: 'Amsterdam School Finder — schoolwijzer', url: 'https://schoolwijzer.amsterdam.nl/en/' },
           { label: 'Primary school — I amsterdam', url: 'https://www.iamsterdam.com/en/live-work-study/living/education-family/primary-school' },
+          { label: 'International schools in Amsterdam & Amstelveen — our guide', url: '/guides/international-schools-amsterdam.html' },
         ],
       },
       {
@@ -205,6 +206,7 @@ const SECTIONS = [
         ],
         links: [
           { label: 'School styles explained — Ouders.nl', url: 'https://www.ouders.nl/artikelen/welke-basisschoolvorm-kies-ik-voor-mijn-kind' },
+          { label: 'Vrije school (Waldorf) in Amsterdam — our guide', url: '/guides/vrije-school-waldorf-amsterdam.html' },
         ],
       },
       {

@@ -120,7 +120,7 @@ a:hover { color: var(--purple); }
 .card {
   display: block; text-decoration: none; color: inherit;
   background: var(--card); border: 1.5px solid var(--frame); border-radius: 14px;
-  padding: 20px; transition: background 0.15s, border-color 0.15s, transform 0.15s;
+  padding: 20px; transition: background 0.15s, border-color 0.15s;
 }
 .card:hover { background: var(--card-hover); border-color: #c4b5fd; transform: translateY(-2px); }
 .card .ico { font-size: 24px; display: block; margin-bottom: 10px; }
@@ -176,3 +176,23 @@ footer .fine { font-size: 13px; opacity: 0.75; line-height: 1.55; }
 .compare th{font-weight:600;color:rgba(255,255,255,.7);font-size:.85rem}
 .compare td:first-child{color:rgba(255,255,255,.8)}
 @media (max-width:560px){.compare{display:block;overflow-x:auto;white-space:nowrap}}
+
+/* reading progress bar + motion (guide-motion.js, 2026-10-29) */
+.read-progress {
+  position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 30;
+  background: linear-gradient(90deg, var(--purple), var(--green));
+  transform: scaleX(0); transform-origin: 0 50%;
+}
+.card { will-change: transform; }
+
+/* wide tables become stacked cards on phones (school guides, 2026-10-29) */
+@media (max-width:560px){
+  .compare.stack{display:block;white-space:normal;overflow:visible}
+  .compare.stack thead{display:none}
+  .compare.stack tbody,.compare.stack tr,.compare.stack td{display:block;width:100%}
+  .compare.stack tr{border:1.5px solid var(--frame);border-radius:12px;padding:12px 14px;margin-bottom:12px}
+  .compare.stack td{border:0;padding:4px 0;white-space:normal}
+  .compare.stack td::before{content:attr(data-label);display:block;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted)}
+  .compare.stack td:first-child{font-size:1.05rem}
+  .compare.stack td:first-child::before{display:none}
+}
