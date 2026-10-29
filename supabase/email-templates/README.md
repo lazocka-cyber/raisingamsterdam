@@ -5,5 +5,5 @@ Odkaz pak vede na raisingamsterdam.com místo supabase.co. Site URL v Supabase m
 
 | Šablona v Supabase | Předmět | Soubor |
 |---|---|---|
-| Confirm signup | One tap to finish joining RaisingAmsterdam | `confirm-signup.html` |
-| Magic Link | Your RaisingAmsterdam sign-in link | `magic-link.html` |
+| Confirm signup | Your code to finish joining RaisingAmsterdam | `confirm-signup.html` |
+| Magic Link | Your RaisingAmsterdam sign-in code | `magic-link.html` |

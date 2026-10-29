@@ -1,19 +1,28 @@
 import { useEffect, useState } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
-import { setParentIntent } from '../lib/intent'
-import { loadRequestDraft } from '../lib/requestDraft'
+import { hasParentIntent, setParentIntent } from '../lib/intent'
+import { draftFromUser, loadRequestDraft } from '../lib/requestDraft'
 
 const PURPLE = '#a78bfa'
 // Tutoriál pro chůvy na YouTube — když je ID prázdné, sekce s videem se nevykreslí
 const YOUTUBE_VIDEO_ID = 'GcOP2vPfZio'
 // Neutral: the same message reaches new babysitters, returning users and parents.
-const SUCCESS_MSG =
-  'Check your email! 📬 Tap the link inside to sign in. New babysitter? After signing in, post your free listing so families can find you.'
-const SUCCESS_MSG_PARENT =
-  'Check your email! 📬 Tap the link inside, then post your free request. Babysitters near you reply.'
-const SUCCESS_MSG_DRAFT =
-  'Check your email! 📬 Tap the link inside and your request goes live. Babysitters near you can then reply.'
+const CODE_MSG =
+  'Type the code here. New babysitter? Next you post your free listing so families can find you.'
+const CODE_MSG_PARENT =
+  'Type the code here, then post your free request. Babysitters near you reply.'
+const CODE_MSG_DRAFT =
+  'Type the code here and your request goes live. Babysitters near you can then reply.'
+
+// Facebook, Instagram & co. open links in their own built-in browser. Google
+// blocks sign-in there (403 disallowed_useragent), and an e-mail link opens in
+// another browser. Since 29. 10. 2026 people there sign in with the 6-digit
+// code from the e-mail and stay in the same window; the Google button is hidden.
+const IN_APP_BROWSER = /FBAN|FBAV|FB_IAB|FBIOS|Instagram|Messenger|MicroMessenger|Line\/|TikTok|musical_ly|BytedanceWebview|Snapchat|; wv\)/i
+const isInAppBrowser = () => IN_APP_BROWSER.test(navigator.userAgent || '')
+// Must match Supabase → Authentication → Email → "Email OTP length".
+const CODE_DIGITS = 6
 
 const inputStyle = {
   background: 'rgba(255,255,255,0.07)',
@@ -91,11 +100,14 @@ export default function Register() {
       ? 'That sign-in link has expired or was already used. Enter your email below and we\'ll send you a fresh one.'
       : '',
   )
-  const [success, setSuccess] = useState('')
+  // Set once the e-mail with the code has been sent: the form then asks for the code.
+  const [sentTo, setSentTo] = useState('')
+  const [code, setCode] = useState('')
+  const [inApp] = useState(isInAppBrowser)
+  const navigate = useNavigate()
 
   async function handleGoogleSignIn() {
     setError('')
-    setSuccess('')
     const { error: oauthError } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: { redirectTo: `${window.location.origin}/dashboard` },
@@ -108,7 +120,6 @@ export default function Register() {
     e.preventDefault()
     setLoading(true)
     setError('')
-    setSuccess('')
     try {
       const { error: otpError } = await supabase.auth.signInWithOtp({
         email,
@@ -125,8 +136,38 @@ export default function Register() {
       if (otpError) {
         setError(otpError.message)
       } else {
-        setSuccess(draft ? SUCCESS_MSG_DRAFT : forParent ? SUCCESS_MSG_PARENT : SUCCESS_MSG)
+        setSentTo(email)
+        setCode('')
       }
+    } catch (err) {
+      setError(err.message || 'Something went wrong. Please try again.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // The same e-mail carries a button and a 6-digit code. The code signs in
+  // right here, in the same window — the session never leaves this browser.
+  async function handleCodeSubmit(e) {
+    e.preventDefault()
+    setLoading(true)
+    setError('')
+    // Read before AuthContext clears it, same as AuthCallback in App.jsx.
+    const home = hasParentIntent() ? '/families/new' : '/dashboard'
+    const localDraft = Boolean(loadRequestDraft())
+    try {
+      const { data, error: verifyError } = await supabase.auth.verifyOtp({
+        email: sentTo,
+        token: code.replace(/\D/g, ''),
+        type: 'email',
+      })
+      if (verifyError) {
+        setError("That code doesn't match or has expired. Check the newest e-mail, or send a new code.")
+        return
+      }
+      // A saved request: PendingRequestPublisher posts it and opens My requests.
+      if (localDraft || draftFromUser(data?.user)) return
+      navigate(home, { replace: true })
     } catch (err) {
       setError(err.message || 'Something went wrong. Please try again.')
     } finally {
@@ -181,50 +222,96 @@ export default function Register() {
         </p>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginTop: 24 }}>
-          {/* Primary: one-click Google */}
-          <GoogleButton onClick={handleGoogleSignIn} />
+          {sentTo ? (
+            /* Step 2: the 6-digit code from the e-mail, typed in this same window */
+            <form onSubmit={handleCodeSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+              <p
+                style={{
+                  color: '#34d399',
+                  fontSize: 14,
+                  background: 'rgba(52,211,153,0.1)',
+                  border: '1px solid rgba(52,211,153,0.4)',
+                  borderRadius: 10,
+                  padding: '12px 14px',
+                  fontWeight: 600,
+                }}
+              >
+                Check your email 📬 We sent a {CODE_DIGITS}-digit code to {sentTo}.{' '}
+                {draft ? CODE_MSG_DRAFT : forParent ? CODE_MSG_PARENT : CODE_MSG}
+              </p>
+              <input
+                type="text"
+                inputMode="numeric"
+                autoComplete="one-time-code"
+                required
+                autoFocus
+                placeholder={`${CODE_DIGITS}-digit code`}
+                maxLength={10}
+                value={code}
+                onChange={(e) => setCode(e.target.value)}
+                style={{ ...inputStyle, fontSize: 22, letterSpacing: 6, textAlign: 'center' }}
+              />
+              <button type="submit" disabled={loading || code.replace(/\D/g, '').length < CODE_DIGITS} style={buttonStyle}>
+                {loading ? 'Checking…' : 'Sign in'}
+              </button>
+              <p className="text-white/45 text-xs text-center">
+                No e-mail? Check your spam folder, or{' '}
+                <button
+                  type="button"
+                  onClick={handleEmailSubmit}
+                  disabled={loading}
+                  style={{ color: '#60d0ff', background: 'none', border: 'none', padding: 0, cursor: 'pointer', textDecoration: 'underline' }}
+                >
+                  send a new code
+                </button>
+                {' · '}
+                <button
+                  type="button"
+                  onClick={() => { setSentTo(''); setCode(''); setError('') }}
+                  style={{ color: '#60d0ff', background: 'none', border: 'none', padding: 0, cursor: 'pointer', textDecoration: 'underline' }}
+                >
+                  use a different email
+                </button>
+              </p>
+            </form>
+          ) : (
+            <>
+              {/* Google works everywhere except inside Facebook/Instagram & co. */}
+              {!inApp && (
+                <>
+                  <GoogleButton onClick={handleGoogleSignIn} />
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 12, color: 'rgba(255,255,255,0.4)', fontSize: 13 }}>
+                    <span style={{ flex: 1, height: 1, background: 'rgba(255,255,255,0.15)' }} />
+                    or
+                    <span style={{ flex: 1, height: 1, background: 'rgba(255,255,255,0.15)' }} />
+                  </div>
+                </>
+              )}
 
-          {/* Divider */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, color: 'rgba(255,255,255,0.4)', fontSize: 13 }}>
-            <span style={{ flex: 1, height: 1, background: 'rgba(255,255,255,0.15)' }} />
-            or
-            <span style={{ flex: 1, height: 1, background: 'rgba(255,255,255,0.15)' }} />
-          </div>
-
-          {/* Email magic link */}
-          <form onSubmit={handleEmailSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-            <p className="text-white/60 text-sm">
-              No Google account? We'll email you a sign-in link.
-            </p>
-            <input
-              type="email"
-              required
-              placeholder="Your email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              style={inputStyle}
-            />
-            <button type="submit" disabled={loading} style={buttonStyle}>
-              {loading ? 'Sending…' : 'Send sign-in link'}
-            </button>
-          </form>
+              {/* Step 1: e-mail → a 6-digit code (the e-mail has a sign-in button too) */}
+              <form onSubmit={handleEmailSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                <p className="text-white/60 text-sm">
+                  {inApp
+                    ? `Enter your email and we'll send you a ${CODE_DIGITS}-digit code. No password needed.`
+                    : `No Google account? We'll email you a ${CODE_DIGITS}-digit code.`}
+                </p>
+                <input
+                  type="email"
+                  required
+                  autoComplete="email"
+                  placeholder="Your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  style={inputStyle}
+                />
+                <button type="submit" disabled={loading} style={buttonStyle}>
+                  {loading ? 'Sending…' : 'Send me a code'}
+                </button>
+              </form>
+            </>
+          )}
 
           {error && <p style={{ color: '#f87171', fontSize: 14 }}>{error}</p>}
-          {success && (
-            <p
-              style={{
-                color: '#34d399',
-                fontSize: 14,
-                background: 'rgba(52,211,153,0.1)',
-                border: '1px solid rgba(52,211,153,0.4)',
-                borderRadius: 10,
-                padding: '12px 14px',
-                fontWeight: 600,
-              }}
-            >
-              {success}
-            </p>
-          )}
 
           <p className="text-white/45 text-xs text-center" style={{ marginTop: 4 }}>
             Already bought access? Sign in, then add your key on the{' '}
