@@ -236,7 +236,7 @@ export default function MyRequests() {
         ) : loadError ? (
           <p style={{ color: '#fca5a5' }}>Couldn't load your requests. Check your connection and refresh the page.</p>
         ) : requests.length === 0 ? (
-          <div style={{ background: '#1a1a2e', borderRadius: 16 }} className="p-10 text-center">
+          <div style={{ background: 'transparent', border: 'var(--ra-card-border)', borderRadius: 16 }} className="p-10 text-center">
             <p className="text-white/70 text-lg">You haven't posted a request yet.</p>
             <Link
               to="/families/new"
@@ -250,7 +250,7 @@ export default function MyRequests() {
             const list = offers[r.id] ?? []
             const open = isOpen(r)
             return (
-              <div key={r.id} style={{ background: '#1a1a2e', borderRadius: 16, padding: '1.25rem', opacity: open ? 1 : 0.6 }}>
+              <div key={r.id} style={{ background: 'transparent', border: 'var(--ra-card-border)', borderRadius: 16, padding: '1.25rem', opacity: open ? 1 : 0.6 }}>
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <p className="text-white font-bold">📍 {r.area}</p>

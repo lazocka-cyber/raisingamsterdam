@@ -152,7 +152,7 @@ export default function Register() {
 
       <div
         style={{
-          background: '#1a1a2e',
+          background: 'transparent', border: 'var(--ra-card-border)',
           borderRadius: 16,
           padding: '2.5rem',
           maxWidth: 460,

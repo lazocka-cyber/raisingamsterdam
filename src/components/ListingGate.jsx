@@ -75,7 +75,7 @@ export default function ListingGate() {
         position: 'fixed',
         inset: 0,
         zIndex: 70,
-        background: 'rgba(4, 20, 40, 0.88)',
+        background: 'rgba(20, 18, 45, 0.88)',
         backdropFilter: 'blur(4px)',
         display: 'flex',
         alignItems: 'center',
@@ -85,7 +85,8 @@ export default function ListingGate() {
     >
       <div
         style={{
-          background: '#1a1a2e',
+          // A dialog needs its own surface: the page indigo (App.jsx PAGE_BG)
+          background: '#2E2A5C',
           border: '1px solid rgba(239, 68, 68, 0.5)',
           borderRadius: 20,
           padding: '2rem 1.75rem',

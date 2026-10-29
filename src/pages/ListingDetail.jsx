@@ -180,7 +180,7 @@ export default function ListingDetail() {
         ) : !listing ? (
           <p className="text-white/50">This listing doesn’t exist anymore.</p>
         ) : (
-          <div style={{ background: '#1a1a2e', borderRadius: 20, padding: '2rem' }}>
+          <div style={{ background: 'transparent', border: 'var(--ra-card-border)', borderRadius: 20, padding: '2rem' }}>
             {/* Header */}
             <div className="flex items-start gap-5">
               <div

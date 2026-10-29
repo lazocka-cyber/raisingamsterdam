@@ -17,7 +17,7 @@ export default function SosSpotlight({ forSitters = true }) {
   return (
     <div
       style={{
-        background: 'linear-gradient(160deg, rgba(239,68,68,0.22), rgba(249,115,22,0.10) 55%, #1a1a2e)',
+        background: 'linear-gradient(160deg, rgba(239,68,68,0.22), rgba(249,115,22,0.10) 55%, transparent)',
         border: `1px solid ${RED}99`,
         borderRadius: 22,
         padding: '24px 22px 22px',

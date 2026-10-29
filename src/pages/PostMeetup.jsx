@@ -131,8 +131,8 @@ export default function PostMeetup() {
         onSubmit={handleSubmit}
         style={{
           marginTop: 24,
-          background: '#1a1a2e',
-          border: '1px solid rgba(255,255,255,0.1)',
+          background: 'transparent',
+          border: 'var(--ra-card-border)',
           borderRadius: 16,
           padding: '1.75rem',
           display: 'flex',

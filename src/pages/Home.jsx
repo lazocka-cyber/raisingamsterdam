@@ -139,8 +139,8 @@ export default function Home() {
             <Link
               key={text}
               to={to}
-              className="flex flex-col items-center text-center gap-3 rounded-xl border border-white/10 px-6 py-8 transition-colors transition-transform hover:border-white/30 hover:-translate-y-1"
-              style={{ background: '#1a1a2e' }}
+              className="flex flex-col items-center text-center gap-3 rounded-xl border border-violet-400/55 px-6 py-8 transition-colors transition-transform hover:border-violet-300 hover:-translate-y-1"
+              style={{ background: 'transparent' }}
             >
               <span
                 className="feature-icon"

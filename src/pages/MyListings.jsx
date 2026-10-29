@@ -42,7 +42,7 @@ function MyListingCard({ listing, onEdit, onDelete, deleting }) {
 
   return (
     <div
-      style={{ background: '#1a1a2e', borderRadius: 16, padding: '1.5rem' }}
+      style={{ background: 'transparent', border: 'var(--ra-card-border)', borderRadius: 16, padding: '1.5rem' }}
       className="flex flex-col gap-3"
     >
       <div className="flex items-start gap-3">
@@ -278,7 +278,7 @@ export default function MyListings() {
           <p style={{ color: '#f87171' }}>Something went wrong: {error}</p>
         ) : listings.length === 0 ? (
           <div
-            style={{ background: '#1a1a2e', borderRadius: 16 }}
+            style={{ background: 'transparent', border: 'var(--ra-card-border)', borderRadius: 16 }}
             className="p-10 text-center"
           >
             <p className="text-white/70 text-lg">You haven’t posted any listings yet.</p>

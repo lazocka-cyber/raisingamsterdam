@@ -111,7 +111,7 @@ function SitterOnboarding({ listings }) {
   const completed = steps.filter((s) => s.done).length
 
   return (
-    <div style={{ background: '#1a1a2e', borderRadius: 16 }} className="p-8 text-left">
+    <div style={{ background: 'transparent', border: 'var(--ra-card-border)', borderRadius: 16 }} className="p-8 text-left">
       {allDone ? (
         <>
           <h2 className="text-white text-xl font-bold">You're all set! 🎉</h2>
@@ -170,7 +170,7 @@ function SitterOnboarding({ listings }) {
 function GuideCard({ emoji, title, children, actions, accent }) {
   return (
     <div
-      style={{ background: '#1a1a2e', borderRadius: 16, border: accent ? `2px solid ${accent}` : undefined }}
+      style={{ background: 'transparent', borderRadius: 16, border: accent ? `2px solid ${accent}` : 'var(--ra-card-border)' }}
       className="p-6 text-left"
     >
       <div className="flex items-start gap-3">
@@ -403,7 +403,7 @@ function ParentOnboarding() {
   return (
     <div className="flex flex-col gap-4">
       <div
-        style={{ background: '#1a1a2e', borderRadius: 16 }}
+        style={{ background: 'transparent', border: 'var(--ra-card-border)', borderRadius: 16 }}
         className="p-8 text-center"
       >
         <h2 className="text-white text-xl font-bold">Welcome! 👋</h2>
@@ -629,7 +629,7 @@ export default function Dashboard() {
       )}
 
       {loading ? (
-        <div style={{ background: '#1a1a2e', borderRadius: 16 }} className="p-10 text-center text-white/50">
+        <div style={{ background: 'transparent', border: 'var(--ra-card-border)', borderRadius: 16 }} className="p-10 text-center text-white/50">
           Loading…
         </div>
       ) : role === 'parent' ? (

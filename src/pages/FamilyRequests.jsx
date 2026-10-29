@@ -33,7 +33,7 @@ function Tag({ children, color }) {
 
 function RequestCard({ request, offerCount, action }) {
   return (
-    <div style={{ background: '#1a1a2e', borderRadius: 16, padding: '1.25rem 1.25rem 1rem' }}>
+    <div style={{ background: 'transparent', border: 'var(--ra-card-border)', borderRadius: 16, padding: '1.25rem 1.25rem 1rem' }}>
       <div className="flex items-start justify-between gap-3">
         <p className="text-white font-bold text-lg leading-snug">📍 {request.area}</p>
         <span className="text-white/40 text-xs" style={{ whiteSpace: 'nowrap', marginTop: 4 }}>
@@ -321,7 +321,7 @@ export default function FamilyRequests() {
         ) : error ? (
           <p style={{ color: '#fca5a5' }}>Could not load requests: {error}</p>
         ) : requests.length === 0 ? (
-          <div style={{ background: '#1a1a2e', borderRadius: 16 }} className="p-10 text-center">
+          <div style={{ background: 'transparent', border: 'var(--ra-card-border)', borderRadius: 16 }} className="p-10 text-center">
             <p className="text-white/70 text-lg">No requests right now.</p>
             <p className="text-white/50 mt-2">When a family posts what they need, it shows up here.</p>
           </div>

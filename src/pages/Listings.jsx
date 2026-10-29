@@ -162,7 +162,7 @@ function ListingCard({ listing, user, isMember, rating }) {
           navigate(`/listings/${listing.id}`)
         }
       }}
-      style={{ background: '#1a1a2e', borderRadius: 16, padding: '1.5rem', cursor: 'pointer' }}
+      style={{ background: 'transparent', border: 'var(--ra-card-border)', borderRadius: 16, padding: '1.5rem', cursor: 'pointer' }}
       className="listing-card flex flex-col gap-3"
     >
       <div className="flex items-start gap-3">

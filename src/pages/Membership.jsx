@@ -64,7 +64,7 @@ export default function Membership() {
   if (!user) {
     return (
       <section className="mx-auto px-6 py-16" style={{ maxWidth: 520 }}>
-        <div style={{ background: '#1a1a2e', borderRadius: 16 }} className="p-10 text-center">
+        <div style={{ background: 'transparent', border: 'var(--ra-card-border)', borderRadius: 16 }} className="p-10 text-center">
           <h1 className="text-white text-2xl font-bold">Become a member</h1>
           <p className="text-white/65 mt-3">
             Sign in first (it's free) — then unlock contact whenever you're ready.
@@ -84,7 +84,7 @@ export default function Membership() {
   if (isMember || done) {
     return (
       <section className="mx-auto px-6 py-16" style={{ maxWidth: 520 }}>
-        <div style={{ background: '#1a1a2e', borderRadius: 16 }} className="p-10 text-center">
+        <div style={{ background: 'transparent', border: 'var(--ra-card-border)', borderRadius: 16 }} className="p-10 text-center">
           <div style={{ fontSize: 40 }}>🎉</div>
           <h1 className="text-white text-2xl font-bold mt-2">You're a member!</h1>
           <p className="text-white/65 mt-3">
@@ -149,7 +149,7 @@ export default function Membership() {
         subscription, no recurring fees.
       </p>
 
-      <div style={{ background: '#1a1a2e', borderRadius: 16 }} className="p-6 mt-6">
+      <div style={{ background: 'transparent', border: 'var(--ra-card-border)', borderRadius: 16 }} className="p-6 mt-6">
         <p className="text-white/80 font-semibold" style={{ marginBottom: 12 }}>
           Membership unlocks:
         </p>

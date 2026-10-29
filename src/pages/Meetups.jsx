@@ -50,8 +50,8 @@ function MeetupCard({ item, isOwner, onDelete, busy }) {
   return (
     <div
       style={{
-        background: '#1a1a2e',
-        border: '1px solid rgba(255,255,255,0.1)',
+        background: 'transparent',
+        border: 'var(--ra-card-border)',
         borderRadius: 16,
         padding: '18px 20px',
         display: 'flex',
@@ -235,7 +235,7 @@ export default function Meetups() {
 
       {/* Signed-out gate */}
       {!authLoading && !user ? (
-        <div style={{ background: '#1a1a2e', borderRadius: 16 }} className="p-10 text-center mt-8">
+        <div style={{ background: 'transparent', border: 'var(--ra-card-border)', borderRadius: 16 }} className="p-10 text-center mt-8">
           <p className="text-white/80 text-lg">Sign in to meet other parents 👋</p>
           <p className="text-white/55 mt-2">
             This board is for the community, so it’s only visible to members.
@@ -320,7 +320,7 @@ export default function Meetups() {
             ) : error ? (
               <p style={{ color: '#fca5a5' }}>Could not load posts: {error}</p>
             ) : visible.length === 0 ? (
-              <div style={{ background: '#1a1a2e', borderRadius: 16 }} className="p-10 text-center">
+              <div style={{ background: 'transparent', border: 'var(--ra-card-border)', borderRadius: 16 }} className="p-10 text-center">
                 <p className="text-white/70 text-lg">Nothing here yet. 🌱</p>
                 <p className="text-white/50 mt-2">
                   Be the first — post a meetup or a quick hello.

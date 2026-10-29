@@ -15,7 +15,9 @@ const NAVY = '#042C53'
 const GREEN = '#34d399'
 const CYAN = '#60d0ff'
 const PURPLE = '#a78bfa'
-const CARD = '#1a1a2e'
+const CARD = 'transparent'
+// Page background (App.jsx) — fills the inside of the gradient number rings
+const PAGE_BG = '#2E2A5C'
 const CTA_GRADIENT = 'linear-gradient(90deg, #34d399, #60d0ff)'
 
 const SERVICES = ['Tutors & homework help', 'Dutch lessons for parents', 'Kids yoga', 'Birthday parties', 'Private chef & family meals', 'Cleaning & home help']
@@ -159,14 +161,14 @@ export default function ForParents() {
         <h2 className="text-white font-bold text-2xl">How it works</h2>
         <div className="grid gap-4 sm:grid-cols-3" style={{ marginTop: 18 }}>
           {STEPS.map((s) => (
-            <div key={s.n} style={{ background: CARD, borderRadius: 18, padding: '22px 22px 24px', border: '1px solid rgba(255,255,255,0.08)' }}>
+            <div key={s.n} style={{ background: CARD, borderRadius: 18, padding: '22px 22px 24px', border: 'var(--ra-card-border)' }}>
               <div
                 style={{
                   width: 46,
                   height: 46,
                   borderRadius: '50%',
                   border: '3px solid transparent',
-                  background: `linear-gradient(${CARD}, ${CARD}) padding-box, ${CTA_GRADIENT} border-box`,
+                  background: `linear-gradient(${PAGE_BG}, ${PAGE_BG}) padding-box, ${CTA_GRADIENT} border-box`,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',

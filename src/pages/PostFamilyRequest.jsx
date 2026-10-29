@@ -103,7 +103,7 @@ export default function PostFamilyRequest() {
         onSubmit={handleSubmit}
         style={{
           marginTop: 22,
-          background: '#1a1a2e',
+          background: 'transparent', border: 'var(--ra-card-border)',
           borderRadius: 16,
           padding: '1.5rem',
           display: 'flex',

@@ -51,7 +51,7 @@ export default function PostSos() {
   if (!isMember) {
     return (
       <section className="mx-auto px-6 py-16" style={{ maxWidth: 520 }}>
-        <div style={{ background: '#1a1a2e', borderRadius: 16 }} className="p-10 text-center">
+        <div style={{ background: 'transparent', border: 'var(--ra-card-border)', borderRadius: 16 }} className="p-10 text-center">
           <div style={{ fontSize: 38 }}>🚨</div>
           <h1 className="text-white text-2xl font-bold mt-2">Posting SOS is a member feature</h1>
           <p className="text-white/65 mt-3">
@@ -134,7 +134,7 @@ export default function PostSos() {
         onSubmit={handleSubmit}
         style={{
           marginTop: 24,
-          background: '#1a1a2e',
+          background: 'transparent',
           border: `1px solid ${RED}55`,
           borderRadius: 16,
           padding: '1.75rem',

@@ -1,6 +1,8 @@
 @import "tailwindcss";
 
 :root {
+  /* Card frame on the indigo page (29. 10. 2026: cards are frames, no dark fill) */
+  --ra-card-border: 1.5px solid rgba(167, 139, 250, 0.55);
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
@@ -127,8 +129,9 @@ body {
 
 /* Section cards */
 .pl-card {
-  background: #1a1a2e;
+  background: transparent;
   border-radius: 20px;
+  border: var(--ra-card-border);
   border-left: 4px solid var(--accent);
   box-shadow: 0 0 26px -8px var(--accent);
   padding: 1.75rem;

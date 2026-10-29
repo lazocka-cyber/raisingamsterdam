@@ -38,9 +38,9 @@ export default function DeleteAccount() {
   }
 
   const card = {
-    background: '#1a1a2e',
+    background: 'transparent',
     borderRadius: 16,
-    border: '1px solid rgba(255,255,255,0.1)',
+    border: 'var(--ra-card-border)',
   }
 
   return (

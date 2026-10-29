@@ -339,7 +339,7 @@ function GuideLink({ label, url }) {
 // reveal the full details when the parent taps it.
 function GuideSection({ section, open, onToggle }) {
   return (
-    <div style={{ background: '#1a1a2e', borderRadius: 16 }} className="text-left overflow-hidden">
+    <div style={{ background: 'transparent', border: 'var(--ra-card-border)', borderRadius: 16 }} className="text-left overflow-hidden">
       <button
         type="button"
         onClick={onToggle}
@@ -460,8 +460,8 @@ export default function Guides() {
             rel="noopener"
             style={{
               display: 'block',
-              background: '#1a1a2e',
-              border: '1px solid rgba(255,255,255,0.12)',
+              background: 'transparent',
+              border: 'var(--ra-card-border)',
               borderRadius: 14,
               padding: '16px 18px',
             }}

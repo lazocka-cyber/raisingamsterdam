@@ -35,7 +35,8 @@ import DeleteAccount from './pages/DeleteAccount.jsx'
 import ListingGate from './components/ListingGate.jsx'
 import PendingRequestPublisher from './components/PendingRequestPublisher.jsx'
 
-const NAVY = '#042C53'
+// Page background — soft indigo since 29. 10. 2026 (was navy #042C53)
+const PAGE_BG = '#2E2A5C'
 
 // Handles the Supabase magic-link redirect. Two link styles:
 // - new (since 1. 10. 2026): the e-mail links straight to raisingamsterdam.com
@@ -216,7 +217,7 @@ function NavBar() {
 
 function Layout({ children }) {
   return (
-    <div className="min-h-screen flex flex-col" style={{ backgroundColor: NAVY }}>
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: PAGE_BG }}>
       <NavBar />
       <main className="flex-1 w-full">{children}</main>
       <footer className="border-t border-white/10">

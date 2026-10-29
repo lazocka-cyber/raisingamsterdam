@@ -283,7 +283,7 @@ export default function SosBoard() {
         ) : error ? (
           <p style={{ color: '#fca5a5' }}>Could not load requests: {error}</p>
         ) : requests.length === 0 ? (
-          <div style={{ background: '#1a1a2e', borderRadius: 16 }} className="p-10 text-center">
+          <div style={{ background: 'transparent', border: 'var(--ra-card-border)', borderRadius: 16 }} className="p-10 text-center">
             <p className="text-white/70 text-lg">No SOS requests right now. 🎉</p>
             <p className="text-white/50 mt-2">When a family needs urgent help, it'll show up here.</p>
           </div>
