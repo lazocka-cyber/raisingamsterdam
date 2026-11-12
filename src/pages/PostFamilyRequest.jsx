@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext'
 import { AGE_GROUP_OPTIONS, AVAILABILITY_OPTIONS } from '../lib/listingUtils'
 import { loadRequestDraft, saveRequestDraft } from '../lib/requestDraft'
 import { setParentIntent } from '../lib/intent'
+import { hasContactDetails, CONTACT_ERROR } from '../lib/contactGuard'
 
 // A parent's free request ("Families looking for help"). No phone number:
 // the parent contacts sitters on WhatsApp after unlocking membership.
@@ -56,6 +57,10 @@ export default function PostFamilyRequest() {
     }
     if (days.length === 0) {
       setError('Pick at least one moment you need help.')
+      return
+    }
+    if (hasContactDetails(note) || hasContactDetails(area)) {
+      setError(CONTACT_ERROR)
       return
     }
     // No account yet: keep the request and create the account as the last step.
@@ -133,7 +138,10 @@ export default function PostFamilyRequest() {
         </div>
 
         <label className="flex flex-col gap-2">
-          <span className="text-white/70 text-sm">A few words (optional)</span>
+          <span className="text-white/70 text-sm">
+            A few words (optional){' '}
+            <span className="text-white/40">· no phone number or email</span>
+          </span>
           <textarea
             value={note}
             onChange={(e) => setNote(e.target.value)}
