@@ -130,7 +130,7 @@ export default function Home() {
         <div className="mx-auto w-full max-w-xl">
           <div className="flex items-center gap-4">
             <div className="home-logo">
-              <Logo3D size={84} />
+              <Logo3D size={84} textureUrl="/earth-texture-small.jpg" />
             </div>
             <h1 className="text-[31px] leading-[1.12] sm:text-5xl font-extrabold text-white tracking-tight">
               Babysitters in <span style={{ color: '#60d0ff' }}>Amsterdam</span>
@@ -166,6 +166,8 @@ export default function Home() {
             </Link>
           </div>
 
+          {/* fixed room for the three cards, so the page does not jump when they arrive */}
+          <div className="home-sitters">
           {sitters.length > 0 && (
             <>
               <h2 className="home-label">Babysitters on RaisingAmsterdam</h2>
@@ -177,6 +179,7 @@ export default function Home() {
               </Link>
             </>
           )}
+          </div>
         </div>
       </section>
 

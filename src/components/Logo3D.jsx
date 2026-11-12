@@ -51,6 +51,14 @@ function loadThree() {
   return threePromise;
 }
 
+function whenIdle() {
+  return new Promise((resolve) => {
+    const go = () => (window.requestIdleCallback ? window.requestIdleCallback(resolve, { timeout: 2500 }) : setTimeout(resolve, 600));
+    if (document.readyState === 'complete') go();
+    else window.addEventListener('load', go, { once: true });
+  });
+}
+
 export default function Logo3D({ size = 260, textureUrl = '/earth-texture.jpg' }) {
   const canvasRef = useRef(null);
 
@@ -59,8 +67,10 @@ export default function Logo3D({ size = 260, textureUrl = '/earth-texture.jpg' }
     let rafId = 0;
     const disposables = [];
 
-    loadThree().then((THREE) => {
-      if (disposed || !canvasRef.current) return;
+    // Zeměkoule je ozdoba: nejdřív ať se ukáže text a tlačítka, 3D knihovna
+    // a obrázek Země se začnou stahovat až po načtení stránky, v klidu.
+    whenIdle().then(() => (disposed ? null : loadThree())).then((THREE) => {
+      if (!THREE || disposed || !canvasRef.current) return;
 
       const renderer = new THREE.WebGLRenderer({ canvas: canvasRef.current, alpha: true, antialias: true });
       renderer.setSize(size, size);
@@ -72,7 +82,7 @@ export default function Logo3D({ size = 260, textureUrl = '/earth-texture.jpg' }
       camera.position.z = CAM_FAR;
 
       const R = 1.85;
-      const geo = new THREE.SphereGeometry(R, 64, 64);
+      const geo = new THREE.SphereGeometry(R, 48, 48);
       const tex = new THREE.TextureLoader().load(textureUrl);
       const mat = new THREE.MeshStandardMaterial({ map: tex, roughness: 0.85, metalness: 0 });
       const earth = new THREE.Mesh(geo, mat);
@@ -81,7 +91,7 @@ export default function Logo3D({ size = 260, textureUrl = '/earth-texture.jpg' }
       disposables.push(geo, tex, mat);
 
       // Atmosféra — jemná modrá záře kolem
-      const glowGeo = new THREE.SphereGeometry(R * 1.05, 64, 64);
+      const glowGeo = new THREE.SphereGeometry(R * 1.05, 32, 32);
       const glowMat = new THREE.MeshBasicMaterial({ color: 0x47bfff, transparent: true, opacity: 0.16, side: THREE.BackSide });
       scene.add(new THREE.Mesh(glowGeo, glowMat));
       disposables.push(glowGeo, glowMat);
@@ -125,9 +135,16 @@ export default function Logo3D({ size = 260, textureUrl = '/earth-texture.jpg' }
       const onClick = () => { start = performance.now(); };
       canvasRef.current.addEventListener('click', onClick);
 
+      let lastDraw = 0;
       const animate = (now) => {
         rafId = requestAnimationFrame(animate);
         const t = now - start;
+        // Po úvodní otočce už jen pulzuje tečka: stačí překreslit ~15× za sekundu,
+        // a vůbec ne, když je záložka schovaná. Šetří to telefon i baterii.
+        if (t > SPIN_MS + ZOOM_DELAY + ZOOM_MS + 200) {
+          if (document.hidden || now - lastDraw < 66) return;
+        }
+        lastDraw = now;
 
         // FÁZE 1 — roztočení a brzdění na Nizozemsku
         const p = clamp01(t / SPIN_MS);
@@ -176,7 +193,15 @@ export default function Logo3D({ size = 260, textureUrl = '/earth-texture.jpg' }
   return (
     <canvas
       ref={canvasRef}
-      style={{ width: size, height: size, display: 'block', cursor: 'pointer' }}
+      style={{
+        width: size,
+        height: size,
+        display: 'block',
+        cursor: 'pointer',
+        // klidný modrý kruh, než se zeměkoule dokreslí; je o kousek menší než zeměkoule,
+        // takže ho pak celý zakryje
+        background: 'radial-gradient(circle closest-side, #3b82c4 0%, #1d4f91 60%, #173a6e 79%, transparent 81%)',
+      }}
       title="Click to spin again"
     />
   );
