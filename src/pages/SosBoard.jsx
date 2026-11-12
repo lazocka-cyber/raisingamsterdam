@@ -104,7 +104,7 @@ function SosCard({ sos, isOwner, onClose, onDelete, busy, user, hasListing }) {
           </div>
         ) : !user ? (
           <>
-            <Link to="/register" className="sos-help-btn">
+            <Link to="/register?for=signin" className="sos-help-btn">
               💬 I can help · sign in
             </Link>
             <p style={hintStyle}>Only signed-in babysitters and services see the family’s WhatsApp.</p>
@@ -155,7 +155,7 @@ export default function SosBoard() {
   const location = useLocation()
 
   // Posting an SOS is a member perk; responding to one stays free for sitters.
-  const postTarget = !user ? '/register' : !isMember ? '/membership' : '/sos/new'
+  const postTarget = !user ? '/register?for=signin' : !isMember ? '/membership' : '/sos/new'
   const postLabel = !user ? 'Sign in to post SOS' : !isMember ? '🔒 Unlock to post SOS' : '+ Post SOS'
 
   const [requests, setRequests] = useState([])

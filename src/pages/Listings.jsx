@@ -111,7 +111,7 @@ function ContactAction({ listing, user, isMember }) {
   // Not signed in → invite to join (free).
   if (!user) {
     return (
-      <Link to="/register" onClick={stop} style={{ ...pillStyle, color: 'rgba(255,255,255,0.55)' }}>
+      <Link to="/register?for=signin" onClick={stop} style={{ ...pillStyle, color: 'rgba(255,255,255,0.55)' }}>
         Sign in to contact
       </Link>
     )

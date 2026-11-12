@@ -70,7 +70,7 @@ export default function Membership() {
             Sign in first (it's free) — then unlock contact whenever you're ready.
           </p>
           <Link
-            to="/register"
+            to="/register?for=signin"
             style={{ display: 'inline-block', marginTop: 22, background: GREEN, color: NAVY, borderRadius: 10, padding: '11px 22px', fontWeight: 700 }}
           >
             Sign in / Join free

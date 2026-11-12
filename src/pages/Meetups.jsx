@@ -241,7 +241,7 @@ export default function Meetups() {
             This board is for the community, so it’s only visible to members.
           </p>
           <Link
-            to="/register"
+            to="/register?for=signin"
             style={{
               display: 'inline-block',
               marginTop: 20,

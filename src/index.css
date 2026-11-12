@@ -290,20 +290,135 @@ body {
 
 /* Home hero globe: 240 px, scaled to 168 px on phones (the canvas keeps its size) */
 .home-logo {
-  width: 240px;
-  height: 240px;
+  width: 84px;
+  height: 84px;
+  flex: none;
 }
 
-@media (max-width: 639px) {
-  .home-logo {
-    width: 168px;
-    height: 168px;
-  }
-
-  .home-logo > * {
-    transform: scale(0.7);
-    transform-origin: top left;
-  }
+/* Home: two front doors, calm SOS row, babysitter preview */
+.home-door {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-radius: 18px;
+  padding: 18px 20px;
+  margin-top: 14px;
+  transition: transform 0.15s ease;
+}
+.home-door:active {
+  transform: scale(0.98);
+}
+.home-door__title {
+  display: block;
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+}
+.home-door__sub {
+  display: block;
+  font-size: 15px;
+  font-weight: 600;
+  margin-top: 4px;
+}
+.home-door__arrow {
+  font-size: 26px;
+  font-weight: 700;
+}
+.home-sos {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border: var(--ra-card-border);
+  border-radius: 18px;
+  padding: 15px 20px;
+  margin-top: 14px;
+}
+.home-sos__title {
+  display: block;
+  color: white;
+  font-size: 19px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+.home-sos__sub {
+  display: block;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 15px;
+  font-weight: 600;
+  margin-top: 3px;
+}
+.home-sos__btn {
+  flex: none;
+  background: linear-gradient(90deg, #ef4444, #f97316);
+  color: white;
+  font-weight: 800;
+  font-size: 15px;
+  border-radius: 999px;
+  padding: 9px 16px;
+  white-space: nowrap;
+}
+.home-label {
+  margin-top: 26px;
+  color: #00b8ff;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.home-sitter {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border: var(--ra-card-border);
+  border-radius: 18px;
+  padding: 14px;
+  margin-top: 10px;
+}
+.home-sitter__photo {
+  width: 64px;
+  height: 64px;
+  flex: none;
+  border-radius: 50%;
+  overflow: hidden;
+  background: rgba(167, 139, 250, 0.28);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 22px;
+  font-weight: 800;
+}
+.home-sitter__photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.home-sitter__name {
+  display: block;
+  color: white;
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.25;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+.home-sitter__meta {
+  display: block;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 15px;
+  margin-top: 3px;
+}
+.home-all {
+  display: block;
+  text-align: center;
+  margin-top: 14px;
+  color: #00b8ff;
+  font-size: 16px;
+  font-weight: 700;
 }
 
 /* Always-visible SOS button in the top bar */

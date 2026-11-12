@@ -80,7 +80,7 @@ export default function DeleteAccount() {
             signed in to it.
           </p>
           <Link
-            to="/register"
+            to="/register?for=signin"
             className="inline-block mt-6 px-6 py-3 rounded-xl font-semibold"
             style={{ background: '#34d399', color: '#042C53' }}
           >

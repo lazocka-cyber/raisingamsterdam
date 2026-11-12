@@ -80,6 +80,12 @@ export default function Register() {
   // /register?for=parent — arrived from /for-parents or a parent ad
   const [params] = useSearchParams()
   const forParent = params.get('for') === 'parent'
+  // /register?for=signin — arrived from a "Sign in" link inside the app (contact a listing,
+  // membership, meetups, menu): short neutral texts, nothing about posting a listing.
+  const forSignin = params.get('for') === 'signin'
+  // Everyone else (babysitter ads, the green door on Home, plain /register) gets the
+  // texts written for babysitters.
+  const forSitter = !forParent && !forSignin
   // Came from the request form without an account: the request is saved,
   // this is the last step (5. 10. 2026).
   const [draft] = useState(() => (forParent ? loadRequestDraft() : null))
@@ -178,7 +184,7 @@ export default function Register() {
   return (
     <section style={{ minHeight: '100%' }} className="w-full px-6 pt-6 pb-16 flex flex-col items-center">
 
-      {YOUTUBE_VIDEO_ID && !forParent && (
+      {YOUTUBE_VIDEO_ID && forSitter && (
         <button
           type="button"
           onClick={() =>
@@ -201,25 +207,39 @@ export default function Register() {
         }}
       >
         <h1 className="text-white text-2xl font-bold text-center">
-          {draft ? 'Last step: publish your request' : forParent ? 'Post your free request' : 'Join RaisingAmsterdam'}
+          {draft ? 'Last step: publish your request' : forParent ? 'Post your free request' : forSitter ? (<>Babysit for families in <span style={{ color: '#60d0ff' }}>Amsterdam</span></>) : 'Sign in or join free'}
         </h1>
-        <p className="text-white/60 text-sm text-center mt-2">
-          {draft
-            ? 'Your request is saved. Create your free account so babysitters can see it, and you can see who replies.'
-            : forParent
-            ? 'Create your free account, then tell babysitters what you need. They reply, you choose who to message.'
-            : "It's free to join. Browse, post a listing, and meet other expat parents. Unlock contact whenever you're ready."}
-        </p>
-        <p
-          className="text-center text-sm mt-3"
-          style={{ color: '#34d399', fontWeight: 600 }}
-        >
-          {draft
-            ? 'Step 2 of 2: your free account'
-            : forParent
-            ? 'Step 1 of 2: create your account · Step 2: post your request'
-            : 'Step 1 of 2: create your account · Step 2: post your listing'}
-        </p>
+        {forSitter && !draft ? (
+          <ul className="mt-4" style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {['Free for babysitters. Always.', 'Families message you on WhatsApp.', 'Your profile is ready in 2 minutes.'].map((t) => (
+              <li key={t} className="text-white font-semibold" style={{ display: 'flex', gap: 10, fontSize: 16 }}>
+                <span aria-hidden="true" style={{ color: '#34d399' }}>✓</span>
+                {t}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <>
+          <p className="text-white/60 text-sm text-center mt-2">
+            {draft
+              ? 'Your request is saved. Create your free account so babysitters can see it, and you can see who replies.'
+              : forParent
+              ? 'Create your free account, then tell babysitters what you need. They reply, you choose who to message.'
+              : 'One free account for everything on RaisingAmsterdam. No password, we email you a code.'}
+          </p>
+          {(draft || forParent) && (
+            <p
+              className="text-center text-sm mt-3"
+              style={{ color: '#34d399', fontWeight: 600 }}
+            >
+              {draft
+                ? 'Step 2 of 2: your free account'
+                : 'Step 1 of 2: create your account · Step 2: post your request'}
+            </p>
+          )}
+
+          </>
+        )}
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginTop: 24 }}>
           {sentTo ? (
@@ -317,12 +337,14 @@ export default function Register() {
             Already bought access? Sign in, then add your key on the{' '}
             <Link to="/membership" style={{ color: '#60d0ff' }}>Membership</Link> page.
           </p>
-          {!forParent && (
+          {forSitter ? (
             <p className="text-white/45 text-xs text-center">
-              Looking for a babysitter?{' '}
-              <Link to="/for-parents" style={{ color: '#60d0ff' }}>Post a free request</Link>
+              Looking for a babysitter instead?{' '}
+              <Link to="/listings?cat=babysitter" style={{ color: '#60d0ff' }}>See babysitters</Link>
+              <br />
+              Offering a family service? Join here too, it is free.
             </p>
-          )}
+          ) : null}
         </div>
       </div>
 
@@ -330,7 +352,7 @@ export default function Register() {
           Nad kartou zabíralo na iPhonu celou první obrazovku a tlačítko registrace
           nebylo vidět. Aby se video znovu neztratilo (29. 8.: nikdo ho nenašel),
           vede na něj odkaz „Watch how it works“ nad kartou. */}
-      {YOUTUBE_VIDEO_ID && !forParent && (
+      {YOUTUBE_VIDEO_ID && forSitter && (
         <div id="tutorial-video" className="w-full mt-8" style={{ maxWidth: 460 }}>
           <h2 className="text-white text-lg font-semibold text-center">
             See how to post your listing

@@ -76,7 +76,7 @@ function ContactButton({ listing, user, isMember }) {
   if (!user) {
     return (
       <Link
-        to="/register"
+        to="/register?for=signin"
         style={{
           ...base,
           background: 'rgba(255,255,255,0.08)',

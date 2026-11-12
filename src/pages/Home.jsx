@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import Logo3D from '../components/Logo3D'
-import SosSpotlight from '../components/SosSpotlight'
+import { supabase } from '../lib/supabase'
+import { formatPrice } from '../lib/listingUtils'
 
 const STROKE = '#a78bfa'
 const ACCENT = '#34d399'
@@ -59,76 +60,123 @@ const features = [
   },
 ]
 
-const TW_FULL = 'RaisingAmsterdam'
-const TW_SPLIT = 7 // „Raising" bíle | „Amsterdam" fialově
+const BLUE = '#00b8ff'
 
-// Typewriter nadpis hero sekce — vypíše „RaisingAmsterdam" znak po znaku,
-// po dopsání zůstane stát s blikajícím kurzorem.
-function Typewriter() {
-  const [count, setCount] = useState(0)
-  useEffect(() => {
-    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setCount(TW_FULL.length)
-      return
-    }
-    let i = 0
-    let timer
-    const tick = () => {
-      i += 1
-      setCount(i)
-      if (i < TW_FULL.length) timer = setTimeout(tick, 80)
-    }
-    timer = setTimeout(tick, 400) // krátká prodleva po načtení
-    return () => clearTimeout(timer)
-  }, [])
-
-  const head = TW_FULL.slice(0, Math.min(count, TW_SPLIT))
-  const tail = TW_FULL.slice(TW_SPLIT, count)
+// Two front doors: parents go straight to the babysitters (no account needed),
+// babysitters go to a sign-up page written only for them.
+function Door({ to, title, sub, bg, color }) {
   return (
-    <h1
-      aria-label={TW_FULL}
-      className="mt-6 text-4xl sm:text-6xl font-bold text-white tracking-tight min-h-[1.3em]"
+    <Link
+      to={to}
+      className="home-door"
+      style={{ background: bg, color }}
     >
-      {head}
-      {tail && <span className="text-[#a78bfa]">{tail}</span>}
-      <span className="tw-cursor" aria-hidden="true" />
-    </h1>
+      <span>
+        <span className="home-door__title">{title}</span>
+        <span className="home-door__sub">{sub}</span>
+      </span>
+      <span className="home-door__arrow" aria-hidden="true">→</span>
+    </Link>
+  )
+}
+
+function SitterCard({ listing }) {
+  const meta = [listing.location, formatPrice(listing.price)].filter(Boolean).join(' · ')
+  return (
+    <Link to={`/listings/${listing.id}`} className="home-sitter">
+      <span className="home-sitter__photo">
+        {listing.photo_url ? (
+          <img src={listing.photo_url} alt="" />
+        ) : (
+          <span aria-hidden="true">{(listing.title || 'B').trim().charAt(0).toUpperCase()}</span>
+        )}
+      </span>
+      <span style={{ minWidth: 0 }}>
+        <span className="home-sitter__name">{listing.title}</span>
+        {meta && <span className="home-sitter__meta">{meta}</span>}
+      </span>
+    </Link>
   )
 }
 
 export default function Home() {
+  const [sitters, setSitters] = useState([])
+  const [count, setCount] = useState(null)
+
+  useEffect(() => {
+    let cancelled = false
+    async function load() {
+      const { data, error } = await supabase
+        .from('listings')
+        .select('id, title, price, location, photo_url, created_at')
+        .eq('category', 'babysitter')
+        .order('created_at', { ascending: false })
+      if (cancelled || error || !data) return
+      setCount(data.length)
+      // Faces first: babysitters with a photo, newest on top.
+      const withPhoto = data.filter((l) => l.photo_url)
+      const rest = data.filter((l) => !l.photo_url)
+      setSitters([...withPhoto, ...rest].slice(0, 3))
+    }
+    load()
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
   return (
     <div className="w-full">
-      {/* Hero — full width */}
-      <section className="w-full px-6 pt-8 pb-16 sm:py-28 text-center">
-        <div className="mx-auto max-w-4xl flex flex-col items-center">
-          {/* Smaller globe on phones, so the SOS block below fits on the first screen */}
-          <div className="home-logo">
-            <Logo3D size={240} />
+      <section className="w-full px-6 pt-6 pb-12 sm:pt-14">
+        <div className="mx-auto w-full max-w-xl">
+          <div className="flex items-center gap-4">
+            <div className="home-logo">
+              <Logo3D size={84} />
+            </div>
+            <h1 className="text-[31px] leading-[1.12] sm:text-5xl font-extrabold text-white tracking-tight">
+              Babysitters in <span style={{ color: '#60d0ff' }}>Amsterdam</span>
+            </h1>
           </div>
-          <Typewriter />
-          <p className="mt-5 text-lg sm:text-xl text-white/70 max-w-2xl mx-auto">
-            The expat parent community in Amsterdam — connect, share and belong.
+          <p className="mt-3 text-[17px] sm:text-xl text-white/75 leading-snug">
+            English-speaking babysitters for international families. You message them on WhatsApp.
           </p>
-          <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
-            <Link
-              to="/register"
-              className="px-7 py-3 rounded-lg bg-sky-400 text-[#042C53] font-semibold hover:bg-sky-300 transition-colors"
-            >
-              Get started
-            </Link>
-            <Link
-              to="/listings"
-              className="px-7 py-3 rounded-lg border border-white/20 text-white font-semibold hover:bg-white/10 transition-colors"
-            >
-              Browse listings
+
+          <Door
+            to="/listings?cat=babysitter"
+            title="I need a babysitter"
+            sub={count ? `See ${count} babysitters · free to look` : 'See babysitters · free to look'}
+            bg={BLUE}
+            color="#06243f"
+          />
+          <Door
+            to="/register?for=sitter"
+            title="I am a babysitter"
+            sub="Get found by families · always free"
+            bg={ACCENT}
+            color="#06301f"
+          />
+
+          {/* SOS — on the first screen, calm: same background as the page, only the button is orange */}
+          <div className="home-sos">
+            <span>
+              <span className="home-sos__title">Need a babysitter today?</span>
+              <span className="home-sos__sub">Babysitters get a ping on their phone</span>
+            </span>
+            <Link to="/sos/new" className="home-sos__btn">
+              Send SOS
             </Link>
           </div>
 
-          {/* SOS — the most important feature, right under the hero */}
-          <div className="mt-8 sm:mt-12 w-full max-w-2xl">
-            <SosSpotlight />
-          </div>
+          {sitters.length > 0 && (
+            <>
+              <h2 className="home-label">Babysitters on RaisingAmsterdam</h2>
+              {sitters.map((l) => (
+                <SitterCard key={l.id} listing={l} />
+              ))}
+              <Link to="/listings?cat=babysitter" className="home-all">
+                See all babysitters →
+              </Link>
+            </>
+          )}
         </div>
       </section>
 

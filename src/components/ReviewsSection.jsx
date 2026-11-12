@@ -219,7 +219,7 @@ export default function ReviewsSection({ listingId, listingOwnerId, category, us
       {/* Prompt for non-members */}
       {!canReview && !isOwner && (
         <p className="text-white/50 text-sm" style={{ marginBottom: 16 }}>
-          <Link to={user ? '/membership' : '/register'} className="underline">
+          <Link to={user ? '/membership' : '/register?for=signin'} className="underline">
             {user ? 'Become a member' : 'Sign in'}
           </Link>{' '}
           {prompts.join}.

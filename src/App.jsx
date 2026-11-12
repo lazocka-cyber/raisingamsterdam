@@ -90,7 +90,7 @@ function ProtectedRoute({ children }) {
     )
   }
   if (!user) {
-    return <Navigate to="/register" replace />
+    return <Navigate to="/register?for=signin" replace />
   }
   return children
 }
@@ -144,8 +144,8 @@ function NavBar() {
           </button>
         </>
       ) : (
-        <NavLink to="/register" className={linkClass} onClick={() => setOpen(false)}>
-          Register
+        <NavLink to="/register?for=signin" className={linkClass} onClick={() => setOpen(false)}>
+          Sign in / Join free
         </NavLink>
       )}
     </>
