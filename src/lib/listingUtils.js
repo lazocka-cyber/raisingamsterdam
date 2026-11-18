@@ -84,3 +84,7 @@ export function daysAgo(value) {
 // keep the two in sync (checked on the real checkout 3. 10. 2026).
 export const MEMBERSHIP_PRICE = '€24.95'
 export const MEMBERSHIP_BUY_URL = 'https://peuterpraktisch.gumroad.com/l/raisingamsterdam'
+// Sleva pro prvních 100 rodin (Gumroad kód FIRST100): základ €12.40 + 21 % DPH = €15.
+// Až se kód vyčerpá nebo zruší, nastav MEMBERSHIP_DISCOUNT_URL na null a řádek se slevou zmizí.
+export const MEMBERSHIP_DISCOUNT_URL = 'https://peuterpraktisch.gumroad.com/l/raisingamsterdam/FIRST100'
+export const MEMBERSHIP_DISCOUNT_PRICE = '€15'
