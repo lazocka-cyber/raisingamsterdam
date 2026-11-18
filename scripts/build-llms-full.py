@@ -29,6 +29,7 @@ PAGES = [
     ("guides/swimming-and-zwemdiploma.html", "Swimming & the zwemdiploma"),
     ("guides/international-schools-amsterdam.html", "International schools in Amsterdam & Amstelveen"),
     ("guides/vrije-school-waldorf-amsterdam.html", "Vrije school (Waldorf) in Amsterdam"),
+    ("guides/babysitting-amsterdam-rates-rules.html", "Babysitter rates in Amsterdam: pay, rules and how to choose"),
 ]
 
 # childcare-guide.html tu ZAMERNE neni: je to printable 12stranovy layout bez <main>

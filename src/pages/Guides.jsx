@@ -274,6 +274,23 @@ const SECTIONS = [
     ],
   },
   {
+    emoji: '🍼',
+    title: 'Babysitting: rates & rules',
+    intro:
+      'What babysitters in Amsterdam ask per hour, the legal minimum for every age, the Dutch rules when someone babysits at your home, and how to choose.',
+    points: [
+      'On RaisingAmsterdam in November 2026, babysitters who state a price ask between €12 and €23 per hour, most often €15 to €20. More than half agree the rate with the parents.',
+      'By law an adult babysitter (21 or older) gets at least the minimum wage: €14.99 per hour from 1 July 2026, plus 8% holiday pay. Younger sitters have lower minimums.',
+      'Under 4 days a week the simplified household scheme applies (Regeling dienstverlening aan huis): no paperwork for the tax office, but paid holidays and up to 6 weeks of pay during illness.',
+      'There is no kinderopvangtoeslag for a private babysitter. The allowance is only for registered childcare.',
+      'Meet first with your child there, do one trial hour while you are home, and call one or two references.',
+    ],
+    links: [
+      { label: 'Babysitter rates in Amsterdam — full guide with the table per age', url: '/guides/babysitting-amsterdam-rates-rules.html' },
+      { label: 'Minimum wage amounts 2026 — Rijksoverheid (Dutch)', url: 'https://www.rijksoverheid.nl/onderwerpen/minimumloon/bedragen-minimumloon/bedragen-minimumloon-2026' },
+    ],
+  },
+  {
     emoji: '📋',
     title: 'Getting set up: paperwork & waiting lists',
     intro:
