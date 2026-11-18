@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
 import { BADGE, daysAgo, MEMBERSHIP_PRICE, openListingContact } from '../lib/listingUtils'
 import { Stars } from '../components/Stars'
+import NotifyButton from '../components/NotifyButton'
 
 // The parent's side of "Families looking for help": her requests and who
 // offered help. WhatsApp stays locked until membership (get_listing_contact
@@ -194,6 +195,9 @@ export default function MyRequests() {
           {toast}
         </div>
       )}
+
+      {/* Ping + e-mail when a babysitter replies (offer-notify Edge Function). */}
+      <NotifyButton variant="family" />
 
       {/* Unlock — shown once someone replied and the parent isn't a member yet */}
       {!isMember && totalOffers > 0 && (
