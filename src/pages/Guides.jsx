@@ -1,4 +1,33 @@
 import { useState } from 'react'
+import { AnimatePresence, MotionConfig, motion } from 'motion/react'
+
+// ── Pohyb na stránce Guides ────────────────────────────────────────────────
+// Klidný, ale viditelný: karta se rozbalí, body přijdou jeden po druhém,
+// ikona se pohne. Kdo má v zařízení vypnuté animace, dostane jen prolnutí
+// (MotionConfig reducedMotion="user" dole ve stránce).
+const EASE = [0.22, 1, 0.36, 1]
+const listV = { hidden: {}, show: { transition: { staggerChildren: 0.09, delayChildren: 0.15 } } }
+const itemV = {
+  hidden: { opacity: 0, x: -16 },
+  show: { opacity: 1, x: 0, transition: { duration: 0.6, ease: EASE } },
+}
+const dotV = {
+  hidden: { scale: 0 },
+  show: { scale: 1, transition: { type: 'spring', stiffness: 420, damping: 13 } },
+}
+const riseV = {
+  hidden: { opacity: 0, y: 14 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE } },
+}
+const lineV = {
+  hidden: { scaleX: 0, opacity: 0 },
+  show: { scaleX: 1, opacity: 1, transition: { duration: 0.95, ease: EASE } },
+}
+const pageV = { pageHidden: {}, pageShow: { transition: { staggerChildren: 0.07, delayChildren: 0.05 } } }
+const cardV = {
+  pageHidden: { opacity: 0, y: 28 },
+  pageShow: { opacity: 1, y: 0, transition: { duration: 0.75, ease: EASE } },
+}
 
 const PURPLE = '#a78bfa'
 
@@ -349,10 +378,11 @@ const SECTIONS = [
 
 function PointList({ points }) {
   return (
-    <ul style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+    <motion.ul variants={listV} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
       {points.map((point, i) => (
-        <li key={i} style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
-          <span
+        <motion.li key={i} variants={itemV} style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
+          <motion.span
+            variants={dotV}
             style={{
               flexShrink: 0,
               width: 7,
@@ -366,15 +396,18 @@ function PointList({ points }) {
           <span style={{ color: 'rgba(255,255,255,0.8)', fontSize: 14.5, lineHeight: 1.55 }}>
             {point}
           </span>
-        </li>
+        </motion.li>
       ))}
-    </ul>
+    </motion.ul>
   )
 }
 
 function GuideLink({ label, url }) {
   return (
-    <a
+    <motion.a
+      variants={riseV}
+      whileHover={{ y: -2, backgroundColor: 'rgba(255,255,255,0.12)' }}
+      whileTap={{ scale: 0.96 }}
       href={url}
       target="_blank"
       rel="noopener noreferrer"
@@ -392,7 +425,7 @@ function GuideLink({ label, url }) {
       }}
     >
       {label} <span aria-hidden="true">↗</span>
-    </a>
+    </motion.a>
   )
 }
 
@@ -400,7 +433,17 @@ function GuideLink({ label, url }) {
 // reveal the full details when the parent taps it.
 function GuideSection({ section, open, onToggle }) {
   return (
-    <div style={{ background: 'transparent', border: 'var(--ra-card-border)', borderRadius: 16 }} className="text-left overflow-hidden">
+    <motion.div
+      variants={cardV}
+      animate={{
+        boxShadow: open
+          ? '0 0 0 1px rgba(167,139,250,0.6), 0 22px 60px -24px rgba(124,58,237,0.7)'
+          : '0 0 0 0px rgba(167,139,250,0), 0 0px 0px 0px rgba(124,58,237,0)',
+      }}
+      transition={{ duration: 0.7, ease: EASE }}
+      style={{ background: 'transparent', border: 'var(--ra-card-border)', borderRadius: 16 }}
+      className="text-left overflow-hidden"
+    >
       <button
         type="button"
         onClick={onToggle}
@@ -408,34 +451,66 @@ function GuideSection({ section, open, onToggle }) {
         className="w-full flex items-center gap-3 p-5 sm:p-6 text-left"
         style={{ background: 'none', border: 'none', cursor: 'pointer' }}
       >
-        <span style={{ fontSize: 26, lineHeight: 1 }} aria-hidden="true">
+        <motion.span
+          animate={
+            open
+              ? { rotate: [0, -16, 11, -5, 0], scale: [1, 1.32, 1.12, 1.2, 1.15] }
+              : { rotate: 0, scale: 1 }
+          }
+          transition={{ duration: 0.95, ease: 'easeInOut' }}
+          style={{ fontSize: 26, lineHeight: 1, display: 'inline-block' }}
+          aria-hidden="true"
+        >
           {section.emoji}
-        </span>
+        </motion.span>
         <span className="flex-1 min-w-0">
           <span className="block text-white font-bold text-lg">{section.title}</span>
           <span className="block text-white/55 text-sm mt-0.5">{section.intro}</span>
         </span>
-        <span
+        <motion.span
           aria-hidden="true"
-          style={{
-            flexShrink: 0,
-            color: 'rgba(255,255,255,0.5)',
-            fontSize: 18,
-            transform: open ? 'rotate(90deg)' : 'rotate(0deg)',
-            transition: 'transform 0.18s ease',
-          }}
+          animate={{ rotate: open ? 90 : 0, color: open ? 'rgba(196,181,253,1)' : 'rgba(255,255,255,0.5)' }}
+          transition={{ type: 'spring', stiffness: 260, damping: 18 }}
+          style={{ flexShrink: 0, fontSize: 18, display: 'inline-block' }}
         >
           ▸
-        </span>
+        </motion.span>
       </button>
 
+      <AnimatePresence initial={false}>
       {open && (
-        <div className="px-5 sm:px-6 pb-6" style={{ paddingLeft: 'calc(1.25rem + 26px + 0.75rem)' }}>
+        <motion.div
+          key="content"
+          initial={{ height: 0, opacity: 0 }}
+          animate={{ height: 'auto', opacity: 1 }}
+          exit={{ height: 0, opacity: 0 }}
+          transition={{ height: { duration: 0.75, ease: EASE }, opacity: { duration: 0.5, ease: 'easeOut' } }}
+          style={{ overflow: 'hidden' }}
+        >
+        <motion.div
+          variants={listV}
+          initial="hidden"
+          animate="show"
+          className="px-5 sm:px-6 pb-6"
+          style={{ paddingLeft: 'calc(1.25rem + 26px + 0.75rem)' }}
+        >
+          <motion.div
+            variants={lineV}
+            aria-hidden="true"
+            style={{
+              height: 2,
+              borderRadius: 2,
+              marginBottom: 16,
+              transformOrigin: 'left',
+              background: 'linear-gradient(90deg, #a78bfa, #34d399 55%, rgba(52,211,153,0))',
+            }}
+          />
           {section.subsections ? (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <motion.div variants={listV} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               {section.subsections.map((sub) => (
-                <div
+                <motion.div
                   key={sub.title}
+                  variants={riseV}
                   style={{
                     background: 'rgba(255,255,255,0.04)',
                     border: '1px solid rgba(255,255,255,0.08)',
@@ -448,28 +523,30 @@ function GuideSection({ section, open, onToggle }) {
                   </p>
                   <PointList points={sub.points} />
                   {sub.links && (
-                    <div className="mt-4 flex flex-wrap gap-2">
+                    <motion.div variants={listV} className="mt-4 flex flex-wrap gap-2">
                       {sub.links.map((l) => (
                         <GuideLink key={l.url} label={l.label} url={l.url} />
                       ))}
-                    </div>
+                    </motion.div>
                   )}
-                </div>
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           ) : (
             <>
               <PointList points={section.points} />
-              <div className="mt-5 flex flex-wrap gap-2">
+              <motion.div variants={listV} className="mt-5 flex flex-wrap gap-2">
                 {section.links.map((l) => (
                   <GuideLink key={l.url} label={l.label} url={l.url} />
                 ))}
-              </div>
+              </motion.div>
             </>
           )}
-        </div>
+        </motion.div>
+        </motion.div>
       )}
-    </div>
+      </AnimatePresence>
+    </motion.div>
   )
 }
 
@@ -478,6 +555,7 @@ export default function Guides() {
   const [openIndex, setOpenIndex] = useState(null)
 
   return (
+    <MotionConfig reducedMotion="user">
     <section className="mx-auto max-w-3xl px-6 py-12">
       <h1 className="text-3xl font-bold text-white">Guides</h1>
       <p className="mt-2 text-white/60">
@@ -486,7 +564,7 @@ export default function Guides() {
         topic to read more.
       </p>
 
-      <div className="mt-6 flex flex-col gap-3">
+      <motion.div variants={pageV} initial="pageHidden" animate="pageShow" className="mt-6 flex flex-col gap-3">
         {SECTIONS.map((section, i) => (
           <GuideSection
             key={section.title}
@@ -495,7 +573,7 @@ export default function Guides() {
             onToggle={() => setOpenIndex(openIndex === i ? null : i)}
           />
         ))}
-      </div>
+      </motion.div>
 
       {/* Our free sites — linked from the footer too. */}
       <h2 className="text-white font-bold text-xl" style={{ marginTop: 32 }}>
@@ -561,5 +639,6 @@ export default function Guides() {
         can't accept responsibility for decisions made based on this information.
       </div>
     </section>
+    </MotionConfig>
   )
 }
