@@ -238,7 +238,7 @@ export default function Meetups() {
         <div style={{ background: 'transparent', border: 'var(--ra-card-border)', borderRadius: 16 }} className="p-10 text-center mt-8">
           <p className="text-white/80 text-lg">Sign in to meet other parents 👋</p>
           <p className="text-white/55 mt-2">
-            This board is for the community, so it’s only visible to members.
+            This board is for the community, so you need to sign in to see it. It’s free.
           </p>
           <Link
             to="/register?for=signin"
